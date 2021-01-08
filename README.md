@@ -18,7 +18,7 @@ DeskTranslate is a tool which does live translation of any application on your d
 
 DeskTranslate is written in Python with:
 
-- PyQt 5 for its GUI
+- PyQt5 for its GUI
 - Tkinter for measuring screen dimensions
 - Pillow for Screen capture
 - cv2 for image processing
@@ -38,8 +38,8 @@ DeskTranslate is written in Python with:
 
 - We created something amazing which solves an actual problem
 - There is no similar product out there, other than painstakingly manually holding your phone to scan your screen with Google translate
-- Creating a decent looking GUI in pyqt5 despite having very little time to learn it
-- Designing a professional looking logo hehe
+- Creating a decent looking GUI in PyQt5 despite having very little time to learn it
+- Designing a professional looking logo
 
 ## What we learned
 
