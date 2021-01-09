@@ -125,4 +125,4 @@ We enabled dynamic text box resizing to make it easier for the user to position 
 
 **A**: Yes, since the translation engines rely on API calls to online translators to work.
 
-
+[Jump to top](#deskTranslate-user-guide)
