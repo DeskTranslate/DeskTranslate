@@ -12,6 +12,11 @@ Welcome to DeskTranslate, a live, seamless OCR translation tool right on your de
     * [Selecting Borders](#selecting-borders)
     * [Auto Translate](#auto-translate)
   * [Customization](#customization) 
+    * [Font Size](#font-size)
+    * [Translate Window Opacity](#translate-window-opacity)
+    * [Text Color](#text-color)
+    * [Translator Engine](#translator-engine)
+    * [Narration](#narration)
   * [Bonus Features](#bonus-features)
     * [Splash Screen](#splash-screen)
     * [Text Box Resizing](#text-box-resizing)
@@ -67,23 +72,32 @@ Click the dropdown lists and either type in the first few characters of the lang
 Click on the `Select Borders` button on the Translate tab to start the selection. You can then draw a rectangle to indicate the where the text you would like to translate will be.
 
 #### Auto Translate
-![](images/DeskTranslate_zoom_BG_3.gif)
+![](images/auto_translate.gif)
 After selecting the borders, click the `Translate` button on the Translate tab. The app will automatically begin the OCR and translation process, and the translated text will be regularly updated in the translation window.
 
 ### Customization
 To improve accessibility, we have enabled the user to customize certain features of the app as well as enable text to speech.
 
-![](images/DeskTranslate_zoom_BG_2.gif)
-
 #### Font Size
+![](images/font_size_change.gif)
+To increase the font size, click on the `Font` dropdown list in the `Settings` tab and select a font size.
+
 
 #### Translate Window Opacity
+![](images/opacity_change.gif)
+If you want to overlay the translate window with the game you are playing, you can change the opacity of the window. Simply slide the `opacity` slider in the `Settings` tab.
+
 
 #### Text Color
+![](images/color_change.gif)
+To change the color of the text in the translate window, click the select color button in the `Settings` tab. This will open up a color picker window. After selecting a color, click ok to save your change.
 
 #### Translator Engine
+![](images/engine_change.gif)
+DeskTranslate offers 4 different translation engines; GoogleTranslator, PonsTranslator, LingueeTranslator and MyMemoryTranslator. To select a translation engine, click on the `Engine` dropdown in the `Settings` tab and select an engine.
 
 #### Narration
+![](images/text_to_speech_enable.gif)
 To assist the visually impaired, DeskTranslator features a built-in text-to-speech system that narrates the text in the translate window. To Activate it, simply tick `Enable text to speech` checkbox found at the bottom of the `Settings` tab.
 
 
