@@ -8,6 +8,7 @@
 * [Features](#features)
   * [Translation](#translation)
   * [Text-to-speech](#text-to-speech)
+    * [Selecting languages](#selecting-languages)
   * [Customization](#customization)      
 * [FAQ](#faq)
 
