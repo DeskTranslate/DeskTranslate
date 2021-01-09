@@ -8,6 +8,8 @@
 * [Features](#features)
   * [Translation](#translation)
     * [Selecting languages](#selecting-languages)
+    * [Selecting Borders](#selecting-borders)
+    * [Auto Translate](#auto-translate)
   * [Text-to-speech](#text-to-speech)
   * [Customization](#customization)      
 * [FAQ](#faq)
@@ -46,7 +48,7 @@ It has 3 main features:
 #### Selecting Borders
 
 
-#### Translate
+#### Auto Translate
 
 
 ### Customization
