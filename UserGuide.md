@@ -28,6 +28,8 @@ It has 3 main features:
 * Text2Speech
 * Customizable font sizes and colours
 
+:exclamation: Do note that DeskTranslate is currently only available in Windows.
+
 ## Quick Start
 
 ![](images/githubDownload.png)
@@ -41,7 +43,12 @@ It has 3 main features:
 4. Download the libraries required:  
 `pip install -r requirements.txt`
 
-5. Next, enter the following command to start the program:
+5. Visit [this link](https://github.com/UB-Mannheim/tesseract/wiki) to download Tesseract v5.0.0, in order 
+for our program to work on your computer.
+
+6. At the installation wizard, check all boxes to ensure that all language training data will be included for DeskTranslate. 
+
+7. Next, enter the following command to start the program:
 `python main.py`
 
 ## Features 
