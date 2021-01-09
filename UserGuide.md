@@ -10,8 +10,10 @@
     * [Selecting languages](#selecting-languages)
     * [Selecting Borders](#selecting-borders)
     * [Auto Translate](#auto-translate)
-  * [Text-to-speech](#text-to-speech)
-  * [Customization](#customization)      
+  * [Customization](#customization) 
+  * [Bonus Features](#bonus-features)
+    * [Splash Screen](#splash-screen)
+    * [Text Box Resizing](#text-box-resizing)
 * [FAQ](#faq)
 
 
@@ -59,7 +61,13 @@ It has 3 main features:
 
 ### Customization
 
-#### Text-to-speech
+### Bonus Features
+
+#### Splash Screen
+![](images/DeskTranslate_zoom_BG_4.gif)
+
+#### Text Box Resizing
+![](images/stretch_window.gif)
 
 
 ## FAQ
