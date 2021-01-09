@@ -60,6 +60,7 @@ It has 3 main features:
 ![](images/stretch_window.gif)
 
 ### Customization
+![](images/DeskTranslate_zoom_BG_2.gif)
 
 ### Bonus Features
 
