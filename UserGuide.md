@@ -1,7 +1,8 @@
 # DeskTranslate User Guide
 
-## Contents page
+Welcome to DeskTranslate, a live, seamless OCR translation tool right on your desktop!
 
+## Contents page
 
 * [Introduction](#introduction)
 * [Quick Start](#quick-start)
@@ -52,26 +53,50 @@ It has 3 main features:
 
 #### Selecting Languages
 ![](images/select_languages.gif)
+Click the dropdown lists and either type in the first few characters of the language you are searching for or scroll down and click it to select.
 
 #### Selecting Borders
 ![](images/select_border.gif)
+Click on the `Select Borders` button on the Translate tab to start the selection. You can then draw a rectangle to indicate the where the text you would like to translate will be.
 
 #### Auto Translate
-![](images/stretch_window.gif)
+![](images/DeskTranslate_zoom_BG_3.gif)
+After selecting the borders, click the `Translate` button on the Translate tab. The app will automatically begin the OCR and translation process, and the translated text will be regularly updated in the translation window.
 
 ### Customization
+To improve accessibility, we have enabled the user to customize certain features of the app as well as enable text to speech.
+
 ![](images/DeskTranslate_zoom_BG_2.gif)
 
+#### Font Size
+
+#### Translate Window Opacity
+
+#### Text Color
+
+#### Translator Engine
+
+#### Narration
+
+
+
 ### Bonus Features
+Additional features we added to improve the look and feel of the application
 
 #### Splash Screen
 ![](images/DeskTranslate_zoom_BG_4.gif)
+We added an animated splash screen to make the app look more profesional
 
 #### Text Box Resizing
 ![](images/stretch_window.gif)
+We enabled dynamic text box resizing to make it easier for the user to position and arrange the windows
 
 
 ## FAQ
+**Q**: Is the app free to use?
+**A**: Yes it is! 
 
+**Q**: Do I need to have an internet connection for the app to work?
+**A**: Yes, since the translation engines rely on API calls to online translators to work.
 
 
