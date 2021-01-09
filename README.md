@@ -1,6 +1,6 @@
 # DeskTranslator
 
-![](image/DeskTranslate.gif)
+![](images/DeskTranslate.gif)
 
 ## Inspiration: 
 
@@ -14,7 +14,7 @@ Vision problems and learning disabilities like dyslexia pose a great challenge f
 
 ## What it does:
 
-![](image/DeskTranslate_zoom_BG_3.gif)
+![](images/DeskTranslate_zoom_BG_3.gif)
 
 DeskTranslate is a tool which does live translation of any application on your desktop using optical character recognition technology. No longer do you have to break immersion by going through the hassle of copying and pasting foreign text onto Google translate (if it is even possible - as many times words are not being displayed in copy-able format). With DeskTranslate, just sit back and relax as translated text seamlessly gets displayed on your screen.  If your eyes got tired, we got text2speech for you too!
 
