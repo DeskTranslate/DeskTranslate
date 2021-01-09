@@ -73,19 +73,21 @@ To improve accessibility, we have enabled the user to customize certain features
 
 #### Font Size
 ![](images/font_size_change.gif)
+To increase the font size, click on the `Font` dropdown list in the `Settings` tab and select a font size.
 
 
 #### Translate Window Opacity
 ![](images/opacity_change.gif)
+If you want to overlay the translate window with the game you are playing, you can change the opacity of the window. Simply slide the `opacity` slider in the `Settings` tab.
 
 
 #### Text Color
 ![](images/color_change.gif)
-
+To change the color of the text in the translate window, click the select color button in the `Settings` tab. This will open up a color picker window. After selecting a color, click ok to save your change.
 
 #### Translator Engine
 ![](images/engine_change.gif)
-
+DeskTranslate offers 4 different translation engines; GoogleTranslator, PonsTranslator, LingueeTranslator and MyMemoryTranslator. To select a translation engine, click on the `Engine` dropdown in the `Settings` tab and select an engine.
 
 #### Narration
 ![](images/text_to_speech_enable.gif)
