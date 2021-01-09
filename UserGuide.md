@@ -49,13 +49,13 @@ It has 3 main features:
 ### Translation
 
 #### Selecting Languages
-
+![](images/DeskTranslate zoom BG (6).gif)
 
 #### Selecting Borders
-
+![](images/DeskTranslate zoom BG (7).gif)
 
 #### Auto Translate
-
+![](images/DeskTranslate zoom BG ().gif)
 
 ### Customization
 
