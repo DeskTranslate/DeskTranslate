@@ -15,7 +15,7 @@ from screen_reader import MyWidget, Worker
 from splashscreen import SplashScreenWindow
 from translate import Ui_translateWindow
 
-with open("countries/fromLanguage.csv") as f:
+with open("languageLists/fromLanguage.csv") as f:
     arr = [line.split(',') for line in f]
 
 dict = {}
@@ -31,7 +31,7 @@ for i in range(0, length):
     threeLetterCode = country[1].replace('\n', '')
     dict[name] = threeLetterCode
 
-with open("countries/toLanguage.csv") as file:
+with open("languageLists/toLanguage.csv") as file:
     arr1 = [line.split(',') for line in file]
 
 dict1 = {}
