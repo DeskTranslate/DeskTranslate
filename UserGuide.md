@@ -35,22 +35,16 @@ It has 3 main features:
 
 ## Features 
 
-* DeskTranslate has a intuitive GUI that is quite easy to use.
-* Included
-
-Basic CLI commands | Add Task items | Modify task list |  List view | Customisation
------------- | ------------- | ------------- | ------------- | ------------- |
-`help` | `todo` | `done` | `list` | `username`
-`filepath` | `event` | `undone` | `filter` | `divider`
-`save` | `deadline` | `delete` |- |- |
-`bye` | `load`| - |- |- |
-
+* DeskTranslate has a intuitive GUI that is quite easy to use, with a customizable display
+* Included a splash screen, in-app user guide, and about us section as well
 
 ### Translation
 
 #### Selecting Languages
 
+
 #### Selecting Borders
+
 
 #### Translate
 
