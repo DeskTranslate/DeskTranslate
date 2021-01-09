@@ -31,7 +31,13 @@ It has 3 main features:
 
 2. Ensure Python is install in your computer.
 
-3. Using terminal, go to the directory where the repo is downloaded to.   
+3. Using terminal, go to the directory where the repo is downloaded to. 
+
+4. Download the libraries required:  
+`pip install -r requirements.txt`
+
+5. Next, enter the following command to start the program:
+`python main.py`
 
 ## Features 
 
