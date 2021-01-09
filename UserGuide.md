@@ -24,7 +24,7 @@ DeskTranslate is a desktop application for translating foreign texts using optic
 
 It has 3 main features:
 
-* Live-translation
+* Real-Time translation
 * Text2Speech
 * Customizable font sizes and colours
 
@@ -77,7 +77,7 @@ To improve accessibility, we have enabled the user to customize certain features
 #### Translator Engine
 
 #### Narration
-
+To assist the visually impaired, DeskTranslator features a built-in text-to-speech system that narrates the text in the translate window. To Activate it, simply tick `Enable text to speech` checkbox found at the bottom of the `Settings` tab.
 
 
 ### Bonus Features
