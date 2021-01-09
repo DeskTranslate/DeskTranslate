@@ -7,8 +7,8 @@
 * [Quick Start](#quick-start)
 * [Features](#features)
   * [Translation](#translation)
-  * [Text-to-speech](#text-to-speech)
     * [Selecting languages](#selecting-languages)
+  * [Text-to-speech](#text-to-speech)
   * [Customization](#customization)      
 * [FAQ](#faq)
 
@@ -34,8 +34,16 @@ Basic CLI commands | Add Task items | Modify task list |  List view | Customisat
 
 ### Translation
 
+#### Selecting Languages
 
-### Text-to-speech
+#### Selecting Borders
+
+#### Translate
+
+
+### Customization
+
+#### Text-to-speech
 
 
 ## FAQ
