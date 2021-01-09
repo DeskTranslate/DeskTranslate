@@ -93,10 +93,13 @@ We enabled dynamic text box resizing to make it easier for the user to position 
 
 
 ## FAQ
+
 **Q**: Is the app free to use?
+
 **A**: Yes it is! 
 
 **Q**: Do I need to have an internet connection for the app to work?
+
 **A**: Yes, since the translation engines rely on API calls to online translators to work.
 
 
