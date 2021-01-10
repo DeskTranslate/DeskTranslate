@@ -2,7 +2,10 @@
 
 ![](images/DeskTranslate.gif)
 
-[User Guide](UserGuide.md)
+
+|:information_source:  | [User Guide](UserGuide.md)       |
+|---------------|:------------------------|
+
 
 ## Inspiration: 
 
