@@ -15,6 +15,12 @@
 
 ## Quick Start
 
+### Using our installer
+
+Releases of DeskTranslate can be found (here)[https://github.com/DeskTranslate/DeskTranslate/releases/tag/1].  
+
+### Downloading from our repo
+
 ![](images/githubDownload.png)
 
 1. To get started, download DeskTranslate at our main repo by clicking Code -> Download ZIP.
