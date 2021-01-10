@@ -1,4 +1,4 @@
-# DeskTranslator
+# DeskTranslate
 
 ![](images/DeskTranslate.gif)
 
@@ -68,3 +68,5 @@ DeskTranslate is written in Python with:
 - Improve text2speech with customizability (support voice of other languages, voice tone, pitch, speed)
 - In-place text overlay for the translated text
 - Mobile version, potentially adapt the concept for use on mobile devices to read off pdfs and images, or games with no translation provided
+
+[Jump to top](#desktranslate)
