@@ -1,6 +1,23 @@
+<style>
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+</style>
+
 # DeskTranslate User Guide
 
 Welcome to DeskTranslate, a live, seamless OCR translation tool right on your desktop!
+
+<a href="README.md">
+    <button>DeskTranslate main site</button>
+</a>
 
 |:information_source:  | Find out more about DeskTranslate [here](README.md)   |
 |---------------|------------------------|
