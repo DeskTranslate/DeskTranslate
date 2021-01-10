@@ -9,7 +9,8 @@
 |:information_source:  | [Devpost Link](https://devpost.com/software/desktranslate)   |
 |---------------|------------------------|
 
-
+## Contents
+{:toc}
 
 ## Inspiration: 
 
