@@ -34,8 +34,8 @@ It has 3 main features:
 * Customizable font sizes and colours
 
 
- :memo:        | Do note that DeskTranslate is currently only available in Windows.   |    
----------------|------------------------|
+| :memo:        | Do note that DeskTranslate is currently only available in Windows.   |    
+| ---------------|------------------------|
 
 
 
