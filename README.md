@@ -1,4 +1,4 @@
-# DeskTranslator
+# DeskTranslate
 
 ![](image/DeskTranslate.gif)
 
