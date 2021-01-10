@@ -2,6 +2,9 @@
 
 Welcome to DeskTranslate, a live, seamless OCR translation tool right on your desktop!
 
+|:information_source:  | Find out more about DeskTranslate (here)[UserGuide.md]   |
+|---------------|------------------------|
+
 ## Contents page
 
 * [Introduction](#introduction)
