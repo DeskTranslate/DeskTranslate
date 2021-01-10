@@ -33,8 +33,9 @@ It has 3 main features:
 * Text2Speech
 * Customizable font sizes and colours
 
-| :exclamation: Do note that DeskTranslate is currently only available in Windows.   |
-|-----------------------------------------|
+| :memo:        | Do note that DeskTranslate is currently only available in Windows.       |
+|---------------|:------------------------|
+
 
 
 ## Quick Start
