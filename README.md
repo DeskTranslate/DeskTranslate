@@ -3,8 +3,12 @@
 ![](images/DeskTranslate.gif)
 
 
-|:information_source:  | [User Guide](UserGuide.md)       |
+|:information_source:  | [User Guide](UserGuide.md)   |
 |---------------|:------------------------|
+
+|:information_source:  | [Devpost Link](https://devpost.com/software/desktranslate)   |
+|---------------|:------------------------|
+
 
 
 ## Inspiration: 
