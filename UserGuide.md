@@ -2,12 +2,8 @@
 
 Welcome to DeskTranslate, a live, seamless OCR translation tool right on your desktop!
 
-<a href="README.md">
-    <button background-color: #4CAF50; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;>DeskTranslate main site</button>
-</a>
+:information_source:  [DeskTranslate main site](README.md)  
 
-|:information_source:  | Find out more about DeskTranslate [here](README.md)   |
-|---------------|------------------------|
 
 ## Contents page
 
