@@ -384,6 +384,7 @@ class Ui_MainWindow(object):
         self.guide_label.setAlignment(QtCore.Qt.AlignCenter)
         self.guide_label.setObjectName("guide_label")
         self.guide_label.setWordWrap(True)
+        self.guide_label.setOpenExternalLinks(True)
 
         self.gridLayout_2.addWidget(self.guide_label, 0, 0, 1, 1)
 
@@ -462,8 +463,7 @@ class Ui_MainWindow(object):
                                             "background-color:transparent;\">&nbsp;&nbsp;&nbsp;&nbsp;5. Click the Translate button to start "
                                             "the translation</span></p><p align=\"left\"><span style=\" "
                                             "font-family:\'Arial\'; font-size:9pt; color:#FFFFFF; "
-                                            "background-color:transparent;\">Additionally, you can adjust the font "
-                                            "size and color to your liking. </span></p></body></html>"))
+                                            "background-color:transparent;\">Check out our <a href=\"https://desktranslate.github.io/DeskTranslator/UserGuide.html\" style=\" font-family:\'Arial\'; font-size:9pt; color:#dcca70; background-color:transparent;\">user guide</a> to learn more!</span></p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_welcome), _translate("MainWindow", "📙 Guide"))
         self.frm_label.setText(_translate("MainWindow", "From:"))
         self.to_label.setText(_translate("MainWindow", "To:"))
