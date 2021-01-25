@@ -8,10 +8,6 @@
 
 :information_source:  [Devpost Link](https://devpost.com/software/desktranslate)   
 
-
-## Contents
-{:toc}
-
 ## Inspiration: 
 
 We are in the 21st century, and yet many things we do on our computers are still bound by language barriers. Found an amazing game you wish to play online but it is not in English? You could only wait and hope for it to be translated one day. The same problem applies not just to games, but any form of media and software we use today. 
