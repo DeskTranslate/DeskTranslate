@@ -17,7 +17,7 @@
 
 ### Using our installer
 
-Releases of DeskTranslate can be found (here)[https://github.com/DeskTranslate/DeskTranslate/releases/tag/1].  
+Releases of DeskTranslate can be found [here](https://github.com/DeskTranslate/DeskTranslate/releases/tag/1).  
 
 ### Downloading from our repo
 
