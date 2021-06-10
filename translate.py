@@ -71,7 +71,7 @@ class Ui_translateWindow(QtWidgets.QMainWindow):
 
 
 if __name__ == "__main__":
-    import sys
+    # import sys
 
     app = QtWidgets.QApplication(sys.argv)
     translateWindow = QtWidgets.QMainWindow()
