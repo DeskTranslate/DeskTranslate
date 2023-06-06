@@ -70,7 +70,7 @@ class Ui_MainWindow(object):
             self.ui.close()
             self.thread.join()
 
-        self.ui = Ui_translateWindow(self.opacity_slider)
+        self.ui = Ui_translateWindow(self.opacity_slider, self.window_opacity_slider)
         self.ui.show()
         img_lang = self.frm_dropdown.currentText()
         trans_lang = self.to_dropdown.currentText()
@@ -101,9 +101,18 @@ class Ui_MainWindow(object):
         self.opacity_2_label.setText(str(new_opacity_value))
 
         try:
-            self.ui.setWindowOpacity(self.opacity_slider.value() / 100)
+            self.ui.opacity_effect_text_label.setOpacity(self.opacity_slider.value() / 100)
         except:
             print("Trying to edit opacity")
+
+    def on_click_window_opacity_changed(self):
+        new_window_opacity_value = self.window_opacity_slider.value()
+        self.window_opacity_2_label.setText(str(new_window_opacity_value))
+
+        try:
+            self.ui.setStyleSheet("background-color: rgba(0, 0, 0, " + str(self.window_opacity_slider.value() / 100) + ");")
+        except:
+            print("Trying to edit window opacity")
 
     def on_click_color_btn(self):
         newColor = QColorDialog.getColor()
@@ -285,7 +294,7 @@ class Ui_MainWindow(object):
         self.size_dropdown.currentTextChanged.connect(self.on_click_font_size_changed)
 
         self.opacity_label = QtWidgets.QLabel(self.tab_settings)
-        self.opacity_label.setMaximumSize(QtCore.QSize(90, 16777215))
+        self.opacity_label.setMaximumSize(QtCore.QSize(125, 16777215))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.opacity_label.setFont(font)
@@ -309,17 +318,43 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.opacity_2_label.setFont(font)
         self.opacity_2_label.setObjectName("opacity_2_label")
-
         self.gridLayout_3.addWidget(self.opacity_2_label, 1, 2, 1, 1)
+
+        self.window_opacity_label = QtWidgets.QLabel(self.tab_settings)
+        self.window_opacity_label.setMaximumSize(QtCore.QSize(125, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.window_opacity_label.setFont(font)
+        self.window_opacity_label.setObjectName("window_opacity_label")
+
+        self.gridLayout_3.addWidget(self.window_opacity_label, 2, 0, 1, 1)
+        self.window_opacity_slider = QtWidgets.QSlider(self.tab_settings)
+        self.window_opacity_slider.setMaximumSize(QtCore.QSize(374, 16777215))
+        self.window_opacity_slider.setMaximum(100)
+        self.window_opacity_slider.setProperty("value", 100)
+        self.window_opacity_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.window_opacity_slider.setObjectName("window_opacity_slider")
+        self.gridLayout_3.addWidget(self.window_opacity_slider, 2, 1, 1, 1)
+
+        # window opacity slider value changed
+        self.window_opacity_slider.valueChanged.connect(self.on_click_window_opacity_changed)
+
+        self.window_opacity_2_label = QtWidgets.QLabel(self.tab_settings)
+        self.window_opacity_2_label.setMaximumSize(QtCore.QSize(74, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.window_opacity_2_label.setFont(font)
+        self.window_opacity_2_label.setObjectName("window_opacity_2_label")
+        self.gridLayout_3.addWidget(self.window_opacity_2_label, 2, 2, 1, 1)
 
         self.color_label = QtWidgets.QLabel(self.tab_settings)
         self.color_label.setMaximumSize(QtCore.QSize(74, 16777215))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.color_label.setFont(font)
-        self.color_label.setObjectName("opacity_label_2")
+        self.color_label.setObjectName("color_label")
 
-        self.gridLayout_3.addWidget(self.color_label, 2, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.color_label, 3, 0, 1, 1)
         self.select_color_btn = QtWidgets.QPushButton(self.tab_settings)
         self.select_color_btn.setMaximumSize(QtCore.QSize(374, 16777215))
         font = QtGui.QFont()
@@ -331,7 +366,7 @@ class Ui_MainWindow(object):
         self.select_color_btn.clicked.connect(self.on_click_color_btn)
         self.select_borders_btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        self.gridLayout_3.addWidget(self.select_color_btn, 2, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.select_color_btn, 3, 1, 1, 1)
 
         self.engine_label = QtWidgets.QLabel(self.tab_settings)
         self.engine_label.setMaximumSize(QtCore.QSize(74, 16777215))
@@ -339,13 +374,13 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.engine_label.setFont(font)
         self.engine_label.setObjectName("engine_label")
-        self.gridLayout_3.addWidget(self.engine_label, 3, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.engine_label, 4, 0, 1, 1)
 
         self.engine_dropdown = QtWidgets.QComboBox(self.tab_settings)
         self.engine_dropdown.setMaximumSize(QtCore.QSize(374, 16777215))
         self.engine_dropdown.setCurrentText("")
         self.engine_dropdown.setObjectName("engine_dropdown")
-        self.gridLayout_3.addWidget(self.engine_dropdown, 3, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.engine_dropdown, 4, 1, 1, 1)
 
         # dropdown for font size
         translator_engines = ["GoogleTranslator", "PonsTranslator", "LingueeTranslator", "MyMemoryTranslator"]
@@ -353,19 +388,19 @@ class Ui_MainWindow(object):
         self.engine_dropdown.currentTextChanged.connect(self.on_click_engine_changed)
 
         self.text_to_speech_label = QtWidgets.QLabel(self.tab_settings)
-        self.text_to_speech_label.setMaximumSize(QtCore.QSize(90, 16777215))
+        self.text_to_speech_label.setMaximumSize(QtCore.QSize(125, 16777215))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.text_to_speech_label.setFont(font)
         self.text_to_speech_label.setObjectName("text_to_speech_label")
-        self.gridLayout_3.addWidget(self.text_to_speech_label, 4, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.text_to_speech_label, 5, 0, 1, 1)
 
         self.checkBox = QtWidgets.QCheckBox(self.tab_settings)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.checkBox.setFont(font)
         self.checkBox.setObjectName("checkBox")
-        self.gridLayout_3.addWidget(self.checkBox, 4, 1, 1, 2)
+        self.gridLayout_3.addWidget(self.checkBox, 5, 1, 1, 2)
 
         self.verticalLayout.addLayout(self.gridLayout_3)
         self.gridLayout_4.addLayout(self.verticalLayout, 0, 0, 1, 1)
@@ -475,8 +510,10 @@ class Ui_MainWindow(object):
             _translate("MainWindow", "<html><head/><body><p><span style=\" font-size:14pt;\">"
                                      "General</span></p></body></html>"))
         self.size_label.setText(_translate("MainWindow", "Size"))
-        self.opacity_label.setText(_translate("MainWindow", "Opacity"))
+        self.opacity_label.setText(_translate("MainWindow", "Text Opacity"))
         self.opacity_2_label.setText(_translate("MainWindow", "100"))
+        self.window_opacity_label.setText(_translate("MainWindow", "Window Opacity"))
+        self.window_opacity_2_label.setText(_translate("MainWindow", "100"))
         self.select_color_btn.setText(_translate("MainWindow", "Select color"))
         self.color_label.setText(_translate("MainWindow", "Color"))
         self.engine_label.setText(_translate("MainWindow", "Engine"))
