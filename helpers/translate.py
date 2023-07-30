@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pyperclip
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 
 class Ui_translateWindow(QtWidgets.QMainWindow):
@@ -21,7 +21,7 @@ class Ui_translateWindow(QtWidgets.QMainWindow):
         self.translated_text_label = QtWidgets.QLabel(self.centralwidget)
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.translated_text_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.translated_text_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.translated_text_label, 0, 0, 1, 1)
 
@@ -29,7 +29,7 @@ class Ui_translateWindow(QtWidgets.QMainWindow):
         font.setPointSize(12)
 
         self.translated_text_label.setFont(font)
-        self.translated_text_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.translated_text_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.translated_text_label.setObjectName("translated_text_label")
         self.translated_text_label.setWordWrap(True)
         self.translated_text_label.mousePressEvent = self.copy_clipboard
@@ -50,11 +50,11 @@ class Ui_translateWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
         self.setWindowFlags(
-            QtCore.Qt.Window |
-            QtCore.Qt.CustomizeWindowHint |
-            QtCore.Qt.WindowTitleHint |
-            QtCore.Qt.WindowCloseButtonHint |
-            QtCore.Qt.WindowStaysOnTopHint
+            QtCore.Qt.WindowType.Window |
+            QtCore.Qt.WindowType.CustomizeWindowHint |
+            QtCore.Qt.WindowType.WindowTitleHint |
+            QtCore.Qt.WindowType.WindowCloseButtonHint |
+            QtCore.Qt.WindowType.WindowStaysOnTopHint
         )
         self.setWindowOpacity(opacity_slider.value() / 100)
 

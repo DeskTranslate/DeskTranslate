@@ -3,10 +3,10 @@ deep_translator
 pytesseract
 pyttsx3
 PyGetWindow==0.0.9
-numpy==1.19.3
-opencv-python==4.5.1.48
-Pillow==8.1.0
+numpy==1.25.1
+opencv-python==4.8.0.74
+Pillow==10.0.0
 pyperclip==1.8.1
-PyQt5==5.15.2
-PyQt5-sip==12.8.1
+PyQt6
+PyQt6-sip
 PyRect==0.1.4
