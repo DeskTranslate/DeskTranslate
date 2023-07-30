@@ -1,12 +1,11 @@
 import time
-import tkinter as tk
 
 import cv2
 import numpy as np
 import pytesseract
 import pyttsx3
 from PIL import ImageGrab
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 from deep_translator import (GoogleTranslator,
                              PonsTranslator,
                              MyMemoryTranslator,
@@ -95,15 +94,16 @@ class Worker(QtCore.QObject):
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        root = tk.Tk()
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
+        screen = QtWidgets.QApplication.primaryScreen()
+        rect = screen.availableGeometry()
+        screen_width = rect.width()
+        screen_height = rect.height()
         self.setGeometry(0, 0, screen_width, screen_height)
         self.setWindowTitle(' ')
         self.begin = QtCore.QPoint()
         self.end = QtCore.QPoint()
         self.setWindowOpacity(0.3)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.show()
 
     def paintEvent(self, event):
@@ -126,7 +126,7 @@ class MyWidget(QtWidgets.QWidget):
 
     def closeEvent(self, event):
         QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.ArrowCursor)
+            QtGui.QCursor(QtCore.Qt.CursorShape.ArrowCursor)
         )
 
 
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication([""])
     window = MyWidget()
     QtWidgets.QApplication.setOverrideCursor(
-        QtGui.QCursor(QtCore.Qt.CrossCursor)
+        QtGui.QCursor(QtCore.Qt.CursorShape.CrossCursor)
     )
     window.show()
     app.aboutToQuit.connect(app.deleteLater)

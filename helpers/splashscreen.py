@@ -1,12 +1,12 @@
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtGui import QMovie
+from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtGui import QMovie
 
 
 class SplashScreenWindow(QtWidgets.QMainWindow):
     def __init__(self, main_window):
         super().__init__()
         self.main_window = main_window
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setObjectName("MainWindow")
         self.resize(500, 500)
         self.centralwidget = QtWidgets.QWidget(self)
