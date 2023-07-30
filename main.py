@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import ctypes
-
-import logging
 import sys
 from threading import Thread
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QColorDialog, QSizePolicy, QMessageBox, QLabel
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import QTimer
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QColorDialog, QSizePolicy, QMessageBox, QLabel, QApplication
 
-from screen_reader import MyWidget, Worker
-from splashscreen import SplashScreenWindow
-from translate import Ui_translateWindow
+from helpers import screen_reader, splashscreen, translate
 
 with open("languageLists/fromLanguage.csv") as f:
     arr = [line.split(',') for line in f]
@@ -55,13 +50,14 @@ class Ui_MainWindow(object):
         global borders_selected
         borders_selected = True
         QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.CrossCursor)
+            QtGui.QCursor(QtCore.Qt.CursorShape.CrossCursor)
         )
         snip_window.show()
 
     def on_click_openTranslateWin(self):
         if not borders_selected:
-            QMessageBox.information(None, "Please Select Borders", "<html><body><p style='color: black;'>Please select the borders first!</p></body></html>")
+            QMessageBox.information(None, "Please Select Borders",
+                                    "<html><body><p style='color: black;'>Please select the borders first!</p></body></html>")
             return
 
         # Thread execution point
@@ -70,7 +66,7 @@ class Ui_MainWindow(object):
             self.ui.close()
             self.thread.join()
 
-        self.ui = Ui_translateWindow(self.opacity_slider)
+        self.ui = translate.Ui_translateWindow(self.opacity_slider)
         self.ui.show()
         img_lang = self.frm_dropdown.currentText()
         trans_lang = self.to_dropdown.currentText()
@@ -78,7 +74,7 @@ class Ui_MainWindow(object):
         trans_code = dict1.get(trans_lang)
         print(img_code, trans_code)
         is_text2speech_enabled = self.checkBox.isChecked()
-        self.worker = Worker(snip_window,
+        self.worker = screen_reader.Worker(snip_window,
                              img_code, trans_code,
                              is_text2speech_enabled,
                              self.ui, self.translator_engine,
@@ -125,9 +121,10 @@ class Ui_MainWindow(object):
         self.thread = None
         self.worker = None
 
+        '''
         myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-
+        '''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(430, 275)
         MainWindow.setWindowIcon(QtGui.QIcon("./images/DeskTranslate.ico"))
@@ -161,12 +158,12 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(16)
         self.language_label.setFont(font)
-        self.language_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.language_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.language_label.setObjectName("label")
 
         self.gridLayout_7.addWidget(self.language_label, 0, 0, 1, 1)
         self.gridLayout_6 = QtWidgets.QGridLayout()
-        self.gridLayout_6.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.gridLayout_6.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.frm_label = QtWidgets.QLabel(self.tab_translate)
         self.frm_label.setMaximumSize(QtCore.QSize(67, 16777215))
@@ -215,7 +212,7 @@ class Ui_MainWindow(object):
         self.select_borders_btn.setFont(font)
         self.select_borders_btn.setAutoDefault(False)
         self.select_borders_btn.setObjectName("select_borders_btn")
-        self.select_borders_btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.select_borders_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.select_borders_btn.clicked.connect(self.on_click_select_borders)
 
         # add language list for translation text
@@ -228,7 +225,7 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
 
         self.translate_btn.clicked.connect(self.on_click_openTranslateWin)
-        self.translate_btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.translate_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self.translate_btn.setFont(font)
         self.translate_btn.setAutoDefault(False)
@@ -296,7 +293,7 @@ class Ui_MainWindow(object):
         self.opacity_slider.setMaximumSize(QtCore.QSize(374, 16777215))
         self.opacity_slider.setMaximum(100)
         self.opacity_slider.setProperty("value", 100)
-        self.opacity_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.opacity_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
         self.opacity_slider.setObjectName("opacity_slider")
         self.gridLayout_3.addWidget(self.opacity_slider, 1, 1, 1, 1)
 
@@ -329,7 +326,7 @@ class Ui_MainWindow(object):
         self.select_color_btn.setToolTip('Opens color dialog')
         self.select_color_btn.setAutoDefault(False)
         self.select_color_btn.clicked.connect(self.on_click_color_btn)
-        self.select_borders_btn.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.select_borders_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_3.addWidget(self.select_color_btn, 2, 1, 1, 1)
 
@@ -381,7 +378,7 @@ class Ui_MainWindow(object):
 
         self.guide_label = QtWidgets.QLabel(self.tab_welcome)
         #        self.home_label.setGeometry(QtCore.QRect(30, 0, 371, 191))
-        self.guide_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.guide_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.guide_label.setObjectName("guide_label")
         self.guide_label.setWordWrap(True)
         self.guide_label.setOpenExternalLinks(True)
@@ -403,7 +400,7 @@ class Ui_MainWindow(object):
         pixmap = QPixmap('images/DeskTranslate.png')
         # self.picture_label.setScaledContents(True)
         self.picture_label.setPixmap(pixmap.scaled(150, 150))
-        self.picture_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.picture_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.picture_label.adjustSize()
 
         self.gridLayout_us.addWidget(self.picture_label, 1, 0, 1, 1)
@@ -413,7 +410,7 @@ class Ui_MainWindow(object):
 
         self.about_us_label = QtWidgets.QLabel(self.tab_about_us)
         #        self.home_label.setGeometry(QtCore.QRect(30, 0, 371, 191))
-        self.about_us_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.about_us_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.about_us_label.setObjectName("about_us_label")
         self.about_us_label.setWordWrap(True)
         self.about_us_label.setOpenExternalLinks(True)
@@ -489,15 +486,18 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_settings), _translate("MainWindow", "⚙ Settings "))
 
 
+app = QApplication(sys.argv)
+
 if __name__ == "__main__":
-    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
-    app = QtWidgets.QApplication(sys.argv)
-    with open("./pyqt/ManjaroMix.qss", "r") as file:
+    #logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+    #app = QtWidgets.QApplication(sys.argv)
+    with open("pyqt/ManjaroMix.qss", "r") as file:
         qss = file.read()
         app.setStyleSheet(qss)
+        print("👋")
 
     # Snip window
-    snip_window = MyWidget()
+    snip_window = screen_reader.MyWidget()
     snip_window.hide()
     borders_selected = False
 
@@ -508,9 +508,10 @@ if __name__ == "__main__":
     MainWindow.hide()
 
     # SplashScreenWindow
-    splash_screen_window = SplashScreenWindow(MainWindow)
+    splash_screen_window = splashscreen.SplashScreenWindow(MainWindow)
     splash_screen_window.show()
     QTimer.singleShot(2500, splash_screen_window.close)
 
     # Run the application!
-    sys.exit(app.exec_())
+    #sys.exit(app.exec_())
+    app.exec()
