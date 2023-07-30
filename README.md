@@ -14,7 +14,7 @@
 
 
 ## macOS users
-Please visit [DeskTranslate-Mac](https://github.com/DeskTranslate/DeskTranslate-Mac) for installation instructions for macOS
+> Please visit [DeskTranslate-Mac](https://github.com/DeskTranslate/DeskTranslate-Mac) for installation instructions for macOS
 
 ## Quick Start
 
