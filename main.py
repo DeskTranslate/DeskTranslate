@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import ctypes
 from threading import Thread
 
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -121,10 +122,9 @@ class Ui_MainWindow(object):
         self.thread = None
         self.worker = None
 
-        '''
-        myappid = u'mycompany.myproduct.subproduct.version'  # arbitrary string
+        myappid = u'DeskTranslate.version1.1'  # arbitrary string
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
-        '''
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(430, 275)
         MainWindow.setWindowIcon(QtGui.QIcon("./images/DeskTranslate.ico"))
@@ -437,7 +437,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "DeskTranslator v1.0"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "DeskTranslate v1.1"))
         self.guide_label.setText(_translate("MainWindow",
                                             "<html><head/><body><p align=\"center\"><a "
                                             "name=\"docs-internal-guid-25bb1131-7fff-63a2-64a4-c6962f5bb8c4\"/><span "
