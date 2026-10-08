@@ -1,0 +1,13 @@
+name: Feature request
+description: An improvement to understanding screen text
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: What are you trying to understand on screen?
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What would improve that experience?

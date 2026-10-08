@@ -1,72 +1,124 @@
-# Welcome to DeskTranslate!
+<p align="center"><img src="src/desktranslate/assets/icon.svg" width="86" alt="DeskTranslate icon"></p>
 
-![](image/DeskTranslate.gif)
+# DeskTranslate 2
 
-## Links
-|:information_source:  | [Our Website](https://desktranslate.github.io/DeskTranslate/)   |
-|---------------|:------------------------|
+**Understand what's on screen. Keep enjoying what's underneath.**
 
-|:information_source:  | [User Guide](https://desktranslate.github.io/DeskTranslate/UserGuide.html)   |
-|---------------|:------------------------|
+Translate the dialogue in a game, subtitles in a video, a menu, or text in an image. Press a shortcut, select a region, and read the translation in a quiet, customizable overlay.
 
-|:information_source:  | [Devpost Link](https://devpost.com/software/desktranslate)   |
-|---------------|:------------------------|
+[Download the Windows beta](https://github.com/DeskTranslate/DeskTranslate/releases/tag/v2.0.0b1) Â· [Getting started](#your-first-translation) Â· [Privacy](docs/privacy.md) Â· [Report a problem](https://github.com/DeskTranslate/DeskTranslate/issues/new/choose)
 
+![DeskTranslate 2 in its midnight mint theme, showing synthetic Japanese dialogue](docs/screenshots/translate-dark.png)
 
-## macOS users
-> Please visit [DeskTranslate-Mac](https://github.com/DeskTranslate/DeskTranslate-Mac) for installation instructions for macOS
+## A new foundation for screen translation
 
-## Quick Start
+- **Choose once or stay live.** Snip a region for a single result, or watch a dialogue box for changes. Static frames skip OCR; obsolete requests cannot overwrite newer text.
+- **Recognition runs locally.** Managed, verified RapidOCR/ONNX models replace executable-path setup. Optional Tesseract remains available for existing installations. Japanese, Korean, Chinese, English and Spanish fixtures are included in the test corpus.
+- **Choose how to translate.** Start with keyless quick translation, connect a conventional API, or use contextual AI locally or in the cloud. OCR and translation are independent choices.
+- **Context for dialogue.** AI providers receive bounded recent lines and an optional glossary. Natural, literal, subtitle and game styles help preserve tone and terminology.
+- **An overlay that fits your content.** Editable subtitle presets, typography, colors, gradients, outlines, shadows, line limits, source/translation layout, position locking and click-through. Enter edit mode with `Ctrl+Alt+E`.
+- **Built for everyday use.** Searchable languages, remembered preferences, named profiles, global shortcuts, tray controls, light/dark themes, safe diagnostics and explicit update checks.
+- **Privacy you can understand.** Screenshots remain in memory. Local AI keeps recognized text on your machine. Cloud services receive recognized text and configured context, never screenshots. API keys use the OS credential vault. No telemetry or saved translation history.
 
-### Using our installer
+## Install
 
-#### Releases of DeskTranslate can be found [here](https://github.com/DeskTranslate/DeskTranslate/releases/tag/1.1a).  
+DeskTranslate 2 is a **Windows x64 beta**, targeting Windows 10 2004 or later and Windows 11. Download `DeskTranslate-2.0.0b1-Setup-x64.exe` from the [release page](https://github.com/DeskTranslate/DeskTranslate/releases/tag/v2.0.0b1). Installation is per user and needs no administrator account. Python and Tesseract are not required.
 
-The installer will set up `DeskTranslate` first.
+For a portable installation, extract the **entire** portable ZIP and launch `DeskTranslate.exe`. Keep `_internal` beside the executable. Portable describes the executable distribution; settings and downloaded recognition models still use `%LOCALAPPDATA%\DeskTranslate`.
 
-Once complete, it will launch another installer for [Tesseract](https://github.com/UB-Mannheim/tesseract/wiki).
+The beta binaries are unsigned. Verify their SHA-256 against `SHA256SUMS.txt` on the release page. These checksums detect accidental changes; they are not a code-signing certificate. A build-environment SBOM and third-party license notices accompany the release.
 
-> Installation of Tesseract is required to use DeskTranslate
+## Your first translation
 
-Components: ScrollView, Training Tools and Shortcut creation are not required. 
+1. Launch DeskTranslate and choose your reading and translation languages. Choose Japanese or Korean explicitly when reading those scripts.
+2. Keep **Quick translation** for the simplest setup. It sends recognized text to Google's public web endpoint without an API key; availability is not guaranteed. Recognition itself stays local.
+3. In **Recognition**, install the small models for your chosen language. Downloads show progress, support cancellation, and must pass SHA-256 verification.
+4. Press **Ctrl+Alt+T**, drag tightly around the text, and press **Enter**. **Escape** cancels. Resize a selection using its corners.
+5. Read the overlay. For continuing dialogue, use **Ctrl+Alt+L** and select the dialogue area.
 
-Feel free to uncheck them to reduce download size.
+Use a tight text region for changing video backgrounds. DeskTranslate keeps the overlay outside that region to prevent it from translating itself. If a region leaves no space for an overlay, use a smaller region or one-shot mode; the result can appear in the main window.
 
-![Capture3](https://github.com/DeskTranslate/DeskTranslate/assets/45708294/4bd16009-f509-47cf-8a2e-db9353acf4b1)
+| Action | Default shortcut |
+|---|---|
+| Select and translate once | Ctrl+Alt+T |
+| Select and start live | Ctrl+Alt+L |
+| Pause / resume | Ctrl+Alt+P |
+| Stop | Ctrl+Alt+S |
+| Reselect region | Ctrl+Alt+R |
+| Show / hide overlay | Ctrl+Alt+O |
+| Copy latest translation | Ctrl+Alt+C |
+| Edit overlay | Ctrl+Alt+E |
 
-If only 1 translation language is needed i.e. English to / from Japanese, check the corresponding data.
+Shortcuts are configurable and checked for conflicts. First-run setup adds Shift (then Win if needed) when another app owns a default shortcut; the welcome screen shows your assigned shortcut. Closing exits by default; keeping the app in the tray is an explicit preference.
 
-In this case, under both the `Additional script data (download)` and `Additional language data (download)`, select 
-- Japanese
-- Japanese (Vertical)
+## Make the overlay yours
 
-- ![Capture2](https://github.com/DeskTranslate/DeskTranslate/assets/45708294/69435085-f858-467e-b876-13a86e8d0a23)
+![Overlay showing synthetic original and translated dialogue](docs/screenshots/overlay-dark.png)
 
-In total, 5 checkboxes need to be checked to use it for Japanese translation. 
+Choose Midnight mint, Anime subtitles, Cinematic, Paper & ink, or High contrast in **Appearance**, then customize. Font family, size, weight, italic, text/source colors, separate text/background opacity, gradient direction, outline, shadow, spacing, padding, corner radius and alignment are editable. Position it at the top or bottom center, drag/resize it, or reset the layout.
 
-> Apply the above steps for the languages required
+Click-through lets a game receive mouse input. Edit mode temporarily restores interaction and pauses an active session; finish editing and resume when ready. A reduced-motion option disables the brief appearance fade. Long translations shrink within a bounded range and clip at the configured line limit; **Copy** retains the complete text. The main window also contains the full result.
 
-### Downloading from our repo [for developers]
+![DeskTranslate's paper and ink light theme](docs/screenshots/translate-light.png)
 
-![](images/githubDownload.png)
+## Translation providers
 
-1. To get started, download DeskTranslate at our main repo by clicking Code -> Download ZIP.
+| Provider | Processing | Setup |
+|---|---|---|
+| Google quick translation | Cloud, conventional MT | No key; public endpoint with no availability guarantee |
+| DeepL | Cloud, conventional MT | Your API key; Free/Pro API endpoint as appropriate |
+| LibreTranslate | Your local or HTTPS server | Endpoint; optional key; server languages vary |
+| OpenAI | Cloud, contextual AI | API key; discover/select a text model |
+| Anthropic Claude | Cloud, native Messages API | API key; discover/select a model |
+| Google Gemini | Cloud, native generateContent | API key; discover/select a compatible model |
+| OpenRouter | Cloud, contextual AI | API key; searchable catalog with available price/context metadata |
+| Ollama | Local, contextual AI | Start Ollama and install a model yourself |
+| LM Studio | Local, contextual AI | Load a model and start its local API server |
+| OpenAI compatible | Local or remote | Loopback HTTP or remote HTTPS base URL; optional key |
 
-2. Ensure Python is install in your computer.
+API providers may charge usage fees. Trial credits or free quotas are not promised. In **Providers**, select a service, enter a key if required, and **Save & test connection**. Choose a discovered model and **Apply translation settings**. Official provider links are available in the app. Model names are not permanently hardcoded.
 
-3. Using terminal, go to the directory where the repo is downloaded to. 
+**Find local AI servers** probes Ollama and LM Studio on localhost. DeskTranslate does not download large LLMs or silently fall back from local to cloud. Start/load the server yourself, test it, choose a model, and apply. Translation quality and speed depend on that model and your hardware.
 
-4. Download the libraries required:  
-`pip install -r requirements.txt`
+## What the beta has been checked against
 
-5. Visit [this link](https://github.com/UB-Mannheim/tesseract/wiki) to download Tesseract v5.0.0, in order 
-for our program to work on your computer.
+Core algorithms, concurrent stale-result rejection, settings recovery, ten provider request/response contracts, model integrity, UI flows and privacy boundaries have automated tests. The packaged runtime has been checked for startup, assets, isolated OCR and native credential storage. A guarded desktop integration probe at 125% scaling captures synthetic dialogue and translates it. The installer and portable app are built with PyInstaller and Inno Setup.
 
-6. At the installation wizard, check all boxes to ensure that all language training data will be included for DeskTranslate. 
+The [validation report](docs/validation.md) and [raw OCR benchmark](docs/ocr-benchmark.json) describe the evidence and remaining qualification work. Seven of nine synthetic fixtures have zero whitespace-normalized character error with original colors; Chinese punctuation/traditional-character errors remain. Synthetic fixtures are a regression corpus, not a claim about every game or video. Typical warm OCR on this host took roughly 0.9â€“1.4 seconds; rapid subtitles may outpace it.
 
-7. Next, enter the following command to start the program:
-`python main.py`
+## Current limits
 
+- Regions stay within one monitor. Negative origins and mixed-scale coordinate transforms are tested; physical mixed-DPI, hot-plug and exclusive-fullscreen coverage still need a hardware matrix. Use windowed/borderless mode if capture is blank. Protected content cannot be promised.
+- Auto recognition uses a Chinese/Latin family and is not universal. Choose the source script explicitly. Vertical reading order is experimental; curved/rotated/stylized text may fail.
+- AI adapters have mocked contract coverage. Paid-account and local-model quality testing require your configured providers; no universal accuracy or compatibility claim is made.
+- This beta provides local CPU OCR. Cloud OCR, vision uploads, GPU inference, automatic model routing, window-following regions, multiple simultaneous regions, speech and persistent history are not shipped.
+- macOS/Linux source portability is unqualified. The separate legacy [Mac project](https://github.com/DeskTranslate/DeskTranslate-Mac) is not the DeskTranslate 2 release.
 
+## Develop and build
 
+Use **Python 3.12 x64 on Windows** for the qualified build. Application source accepts Python 3.12â€“3.14; those other interpreters need their own release qualification.
 
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python -m pip install --require-hashes -r requirements-bootstrap.lock
+.\.venv\Scripts\python -m pip install --require-hashes --no-build-isolation -r requirements-windows.lock
+.\.venv\Scripts\python -m pip install --no-deps --no-build-isolation -e .
+.\.venv\Scripts\python -m desktranslate
+```
+
+```powershell
+.\.venv\Scripts\python -m pytest -q --basetemp=.test-tmp
+.\.venv\Scripts\python -m ruff check src tests tools
+.\.venv\Scripts\python -m ruff format --check src tests tools
+.\.venv\Scripts\python -m mypy src
+.\.venv\Scripts\python -m desktranslate --smoke-test
+.\.venv\Scripts\python -m pip_audit --require-hashes --disable-pip -r requirements-windows.lock
+.\.venv\Scripts\python tools/library_sources.py
+.\.venv\Scripts\python tools/build.py --installer
+```
+
+Install [Inno Setup 6](https://jrsoftware.org/isinfo.php) and put `ISCC` on PATH or set `ISCC_PATH` to its verified compiler. Build outputs are in `dist/`: portable ZIP, per-user installer, SBOM and checksums. [CONTRIBUTING](CONTRIBUTING.md), [architecture](docs/architecture.md), [the original audit](docs/audit.md), and [release qualification](docs/release-checklist.md) explain the workflow. See [SECURITY](SECURITY.md) for private vulnerability reporting.
+
+## License
+
+DeskTranslate 2 is licensed under [MIT](LICENSE). Third-party libraries and downloaded OCR models retain their own licenses. Qt/PySide6 license notices and replaceable shared libraries are included in binary distributions; see [third-party attribution](docs/third-party.md).

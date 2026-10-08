@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools==84.0.0", "wheel==0.46.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "desktranslate"
+version = "2.0.0b1"
+description = "Understand the text on your screen, one region at a time."
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+  "PySide6-Essentials==6.12.0", "Pillow==12.3.0", "mss==10.2.0",
+  "httpx==0.28.1", "keyring==25.7.0", "rapidocr==3.9.2", "onnxruntime==1.30.0", "packaging==26.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "ruff==0.16.10", "mypy==2.4.0", "build==1.6.1"]
+build = ["pyinstaller==6.22.3", "pip-audit==2.10.1"]
+
+[project.scripts]
+desktranslate = "desktranslate.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+desktranslate = ["assets/*", "py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src"]
+exclude = [".venv", ".deps", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501", "UP031"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src/desktranslate"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true

@@ -1,0 +1,23 @@
+name: Bug report
+description: Capture, recognition, translation or overlay problem
+body:
+  - type: markdown
+    attributes:
+      value: "Please omit private screenshots, dialogue and keys. Copy Diagnostics contains safe metadata."
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and display scaling
+      description: Use Diagnostics → Copy diagnostics; add windowed/borderless/fullscreen and DPI details.

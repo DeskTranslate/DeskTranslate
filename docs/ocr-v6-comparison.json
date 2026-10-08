@@ -1,0 +1,107 @@
+{
+  "startup_ms": 580.9198000933975,
+  "models": {
+    "det": {
+      "filename": "PP-OCRv6_det_small.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv6/det/PP-OCRv6_det_small.onnx",
+      "sha256": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+    },
+    "cls": {
+      "filename": "ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/cls/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c"
+    },
+    "ch": {
+      "filename": "PP-OCRv6_rec_small.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv6/rec/PP-OCRv6_rec_small.onnx",
+      "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884"
+    },
+    "japan": {
+      "filename": "japan_PP-OCRv4_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/japan_PP-OCRv4_rec_mobile.onnx",
+      "sha256": "e1075a67dba758ecfc7ebc78a10ae61c95ac8fb66a9c86fab5541e33f085cb7a"
+    },
+    "korean": {
+      "filename": "korean_PP-OCRv5_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv5/rec/korean_PP-OCRv5_rec_mobile.onnx",
+      "sha256": "cd6e2ea50f6943ca7271eb8c56a877a5a90720b7047fe9c41a2e541a25773c9b"
+    },
+    "en": {
+      "filename": "en_PP-OCRv4_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/en_PP-OCRv4_rec_mobile.onnx",
+      "sha256": "e8770c967605983d1570cdf5352041dfb68fa0c21664f49f47b155abd3e0e318"
+    },
+    "latin": {
+      "filename": "latin_PP-OCRv3_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/latin_PP-OCRv3_rec_mobile.onnx",
+      "sha256": "e9d7a33667e8aaa702862975186adf2012e3f390cc0f9422865957125f8071cf"
+    },
+    "chinese_cht": {
+      "filename": "chinese_cht_PP-OCRv3_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/chinese_cht_PP-OCRv3_rec_mobile.onnx",
+      "sha256": "779656d044ce388045e02ea9244724616194e63928606436cdfc6dc3c9528cc6"
+    },
+    "cyrillic": {
+      "filename": "cyrillic_PP-OCRv3_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/cyrillic_PP-OCRv3_rec_mobile.onnx",
+      "sha256": "1efb65bdc460af1c0e8733d005b20952b17ca5aac10ddb56c968333791c5eaa3"
+    },
+    "arabic": {
+      "filename": "arabic_PP-OCRv4_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/arabic_PP-OCRv4_rec_mobile.onnx",
+      "sha256": "4a9011bef71687bb84288dc86ad2471bd5d37b717ddf672dd156f9e7a5601bac"
+    },
+    "devanagari": {
+      "filename": "devanagari_PP-OCRv4_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/devanagari_PP-OCRv4_rec_mobile.onnx",
+      "sha256": "a62b6148303187907aa0b0d3a0125bdc62557d07966468cab9056949e36035e8"
+    }
+  },
+  "fixtures": [
+    {
+      "id": "ja-game",
+      "text": "明日、またここで会おう。",
+      "ms": 1244.1936999093741
+    },
+    {
+      "id": "ja-multiline",
+      "text": "この町の名前を覚えている？\nもう一度、教えて。",
+      "ms": 1042.9636999033391
+    },
+    {
+      "id": "ko-subtitle",
+      "text": "H\n.",
+      "ms": 974.1223000455648
+    },
+    {
+      "id": "zh-dialogue",
+      "text": "明天我们在这里见面",
+      "ms": 960.6518999207765
+    },
+    {
+      "id": "zh-traditional",
+      "text": "明天我們在這裡見面",
+      "ms": 1031.9048000965267
+    },
+    {
+      "id": "en-ui",
+      "text": "Select a region to translate.",
+      "ms": 1045.4818999860436
+    },
+    {
+      "id": "en-small",
+      "text": "The door is locked. Find another way.",
+      "ms": 1048.2099999208003
+    },
+    {
+      "id": "en-outlined",
+      "text": "Where did you \n hide\nthe\nkey?",
+      "ms": 1152.3752002976835
+    },
+    {
+      "id": "es-ui",
+      "text": "Selecciona una región para traducir.",
+      "ms": 1011.3869998604059
+    }
+  ]
+}

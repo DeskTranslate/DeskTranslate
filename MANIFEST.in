@@ -1,0 +1,7 @@
+include README.md LICENSE SECURITY.md CONTRIBUTING.md CHANGELOG.md main.py requirements*.lock requirements.txt
+recursive-include docs *.md *.json *.png
+recursive-include tests *.py *.json *.png
+recursive-include tools *.py *.ps1
+recursive-include packaging *.iss *.manifest
+recursive-include .github *.yml
+recursive-include packaging *.json *.txt

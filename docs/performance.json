@@ -1,0 +1,21 @@
+{
+  "duration_s": 30,
+  "synthetic_inference": true,
+  "overlay_cached_paint_median_ms": 1.0784500045701861,
+  "overlay_cached_paint_p95_ms": 1.9841999746859074,
+  "accepted": 40,
+  "counters": {
+    "captures": 170,
+    "ocr": 40,
+    "translations": 40,
+    "stale": 0,
+    "cache_hits": 0
+  },
+  "max_event_queue": 2,
+  "frame_queue": 0,
+  "text_queue": 0,
+  "context_pairs": 8,
+  "cache_entries": 40,
+  "python_memory_bytes": 107950,
+  "python_peak_bytes": 114302
+}

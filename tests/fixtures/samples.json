@@ -1,0 +1,85 @@
+[
+  {
+    "id": "ja-game",
+    "language": "ja",
+    "text": "明日、またここで会おう。",
+    "font": "YuGothM.ttc",
+    "size": 32,
+    "bg": "#14262e",
+    "fg": "white"
+  },
+  {
+    "id": "ja-multiline",
+    "language": "ja",
+    "text": "この町の名前を覚えている？\nもう一度、教えて。",
+    "font": "YuGothM.ttc",
+    "size": 30,
+    "bg": "#fff4db",
+    "fg": "#17252e"
+  },
+  {
+    "id": "ko-subtitle",
+    "language": "ko",
+    "text": "내일 다시 만나요.",
+    "font": "malgun.ttf",
+    "size": 30,
+    "bg": "#172736",
+    "fg": "white",
+    "outline": true
+  },
+  {
+    "id": "zh-dialogue",
+    "language": "zh-CN",
+    "text": "明天我们在这里见面。",
+    "font": "msjh.ttc",
+    "size": 32,
+    "bg": "#f6f7f1",
+    "fg": "#111e25"
+  },
+  {
+    "id": "zh-traditional",
+    "language": "zh-TW",
+    "text": "明天我們在這裡見面。",
+    "font": "msjh.ttc",
+    "size": 32,
+    "bg": "#111e25",
+    "fg": "white"
+  },
+  {
+    "id": "en-ui",
+    "language": "en",
+    "text": "Select a region to translate.",
+    "font": "segoeui.ttf",
+    "size": 26,
+    "bg": "#f5f8f6",
+    "fg": "#111e25"
+  },
+  {
+    "id": "en-small",
+    "language": "en",
+    "text": "The door is locked. Find another way.",
+    "font": "segoeui.ttf",
+    "size": 13,
+    "bg": "#17252e",
+    "fg": "white"
+  },
+  {
+    "id": "en-outlined",
+    "language": "en",
+    "text": "Where did you hide the key?",
+    "font": "segoeui.ttf",
+    "size": 28,
+    "bg": "#87a29b",
+    "fg": "white",
+    "outline": true
+  },
+  {
+    "id": "es-ui",
+    "language": "es",
+    "text": "Selecciona una región para traducir.",
+    "font": "segoeui.ttf",
+    "size": 28,
+    "bg": "white",
+    "fg": "black"
+  }
+]

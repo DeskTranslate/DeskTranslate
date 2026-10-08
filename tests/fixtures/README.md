@@ -1,0 +1,3 @@
+These images contain original synthetic dialogue and UI text created for DeskTranslate's evaluation suite. They contain no game artwork, real screenshots, personal data, or copyrighted dialogue. The generator uses fonts available on the machine; no font files are redistributed.
+
+`tools/evaluate.py --generate --install` creates fixtures and benchmarks the managed engine. Use the same PNG files with `--engine tesseract` to compare an installed Tesseract engine. Character error rate ignores whitespace, so the separate reconstruction tests cover line breaks. Translation is assessed with mock contracts and semantic review; an exact English sentence is not a translation quality metric.

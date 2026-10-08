@@ -1,0 +1,57 @@
+{
+  "det": {
+    "filename": "ch_PP-OCRv4_det_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/det/ch_PP-OCRv4_det_mobile.onnx",
+    "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9"
+  },
+  "cls": {
+    "filename": "ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/cls/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+    "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c"
+  },
+  "ch": {
+    "filename": "ch_PP-OCRv4_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile.onnx",
+    "sha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b"
+  },
+  "japan": {
+    "filename": "japan_PP-OCRv4_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/japan_PP-OCRv4_rec_mobile.onnx",
+    "sha256": "e1075a67dba758ecfc7ebc78a10ae61c95ac8fb66a9c86fab5541e33f085cb7a"
+  },
+  "korean": {
+    "filename": "korean_PP-OCRv5_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv5/rec/korean_PP-OCRv5_rec_mobile.onnx",
+    "sha256": "cd6e2ea50f6943ca7271eb8c56a877a5a90720b7047fe9c41a2e541a25773c9b"
+  },
+  "en": {
+    "filename": "en_PP-OCRv4_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/en_PP-OCRv4_rec_mobile.onnx",
+    "sha256": "e8770c967605983d1570cdf5352041dfb68fa0c21664f49f47b155abd3e0e318"
+  },
+  "latin": {
+    "filename": "latin_PP-OCRv3_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/latin_PP-OCRv3_rec_mobile.onnx",
+    "sha256": "e9d7a33667e8aaa702862975186adf2012e3f390cc0f9422865957125f8071cf"
+  },
+  "chinese_cht": {
+    "filename": "chinese_cht_PP-OCRv3_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/chinese_cht_PP-OCRv3_rec_mobile.onnx",
+    "sha256": "779656d044ce388045e02ea9244724616194e63928606436cdfc6dc3c9528cc6"
+  },
+  "cyrillic": {
+    "filename": "cyrillic_PP-OCRv3_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/cyrillic_PP-OCRv3_rec_mobile.onnx",
+    "sha256": "1efb65bdc460af1c0e8733d005b20952b17ca5aac10ddb56c968333791c5eaa3"
+  },
+  "arabic": {
+    "filename": "arabic_PP-OCRv4_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/arabic_PP-OCRv4_rec_mobile.onnx",
+    "sha256": "4a9011bef71687bb84288dc86ad2471bd5d37b717ddf672dd156f9e7a5601bac"
+  },
+  "devanagari": {
+    "filename": "devanagari_PP-OCRv4_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/devanagari_PP-OCRv4_rec_mobile.onnx",
+    "sha256": "a62b6148303187907aa0b0d3a0125bdc62557d07966468cab9056949e36035e8"
+  }
+}

@@ -1,0 +1,230 @@
+{
+  "engine": "rapidocr",
+  "fixtures": [
+    {
+      "id": "ja-game",
+      "language": "ja",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1080.816299887374,
+          "text": "明日、またここで会おう。"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1028.7746000103652,
+          "text": "明日、またここで会おう。"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1014.2671999055892,
+          "text": "明日、またここで会おう。"
+        }
+      ]
+    },
+    {
+      "id": "ja-multiline",
+      "language": "ja",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1075.7110000122339,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1073.3380999881774,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1109.086399897933,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        }
+      ]
+    },
+    {
+      "id": "ko-subtitle",
+      "language": "ko",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 1.0,
+          "latency_ms_median": 1117.2421998344362,
+          "text": "'허컴Y"
+        },
+        {
+          "mode": "contrast",
+          "cer": 1.0,
+          "latency_ms_median": 1060.5513001792133,
+          "text": "'어컴Y"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 1.0,
+          "latency_ms_median": 1091.6567000094801,
+          "text": "'어금Y"
+        }
+      ]
+    },
+    {
+      "id": "zh-dialogue",
+      "language": "zh-CN",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.1,
+          "latency_ms_median": 1068.8104000873864,
+          "text": "明天我们在这里见面"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.1,
+          "latency_ms_median": 1027.1743000485003,
+          "text": "明天我们在这里见面"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.1,
+          "latency_ms_median": 1081.242199987173,
+          "text": "明天我们在这里见面"
+        }
+      ]
+    },
+    {
+      "id": "zh-traditional",
+      "language": "zh-TW",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.2,
+          "latency_ms_median": 1059.8198999650776,
+          "text": "明天我們在這裸見面"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.2,
+          "latency_ms_median": 1078.398099867627,
+          "text": "明天我們在這裸見面"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.2,
+          "latency_ms_median": 1085.3405999951065,
+          "text": "明天我們在這裸見面"
+        }
+      ]
+    },
+    {
+      "id": "en-ui",
+      "language": "en",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1068.2114001829177,
+          "text": "Select a region to translate."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1059.5817998982966,
+          "text": "Select a region to translate."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1092.0735001564026,
+          "text": "Select a region to translate."
+        }
+      ]
+    },
+    {
+      "id": "en-small",
+      "language": "en",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1086.6976999677718,
+          "text": "The door is locked. Find another way."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1057.9156000167131,
+          "text": "The door is locked. Find another way."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1097.8513997979462,
+          "text": "The door is locked. Find another way."
+        }
+      ]
+    },
+    {
+      "id": "en-outlined",
+      "language": "en",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1094.625499797985,
+          "text": "Where did you hide the key?"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1104.564999928698,
+          "text": "Where did you hide the key?"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1110.3759999386966,
+          "text": "Where did you hide the key?"
+        }
+      ]
+    },
+    {
+      "id": "es-ui",
+      "language": "es",
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1015.533700119704,
+          "text": "Selecciona una región para traducir."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1039.209899958223,
+          "text": "Selecciona una región para traducir."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1035.733100026846,
+          "text": "Selecciona una región para traducir."
+        }
+      ]
+    }
+  ],
+  "startup_ms": {
+    "ja": 1868.7670999206603,
+    "ko": 1311.962499981746,
+    "zh-CN": 944.0534000750631,
+    "zh-TW": 611.6947999689728,
+    "en": 958.2644000183791,
+    "es": 731.0098998714238
+  },
+  "static_gate_ms_per_frame": 1.272663899930194
+}
