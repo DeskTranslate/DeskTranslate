@@ -44,16 +44,23 @@ def main() -> int:
     if args.verify_runtime:
         from threading import Thread
 
+        verification: dict[str, object] = {}
+
         def verify() -> None:
             import json
             import uuid
 
+            from desktranslate.runtime_verification import verify_http_provider
             from desktranslate.security import CredentialStore
 
             report: dict[str, object] = {
                 "qt": True,
                 "assets": (Path(__file__).parent / "assets/models.json").is_file(),
             }
+            try:
+                report["http_provider_roundtrip"] = verify_http_provider()
+            except Exception as error:
+                report["http_provider_error"] = type(error).__name__
             account = "release-probe-" + uuid.uuid4().hex
             credentials = CredentialStore()
             try:
@@ -82,13 +89,24 @@ def main() -> int:
                 finally:
                     if engine:
                         engine.close()
+                        engine.reap()
             args.verify_runtime.parent.mkdir(parents=True, exist_ok=True)
             args.verify_runtime.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            verification.update(report)
 
         thread = Thread(target=verify, daemon=True)
         thread.start()
         timer = QTimer(window)
-        timer.timeout.connect(lambda: window.quit() if not thread.is_alive() else None)
+
+        def finish_verification() -> None:
+            if not thread.is_alive():
+                required = ["qt", "assets", "credential_roundtrip", "http_provider_roundtrip"] + (
+                    ["ocr_exact"] if args.ocr_fixture else []
+                )
+                window.exit_code = int(not all(verification.get(key) is True for key in required))
+                window.quit()
+
+        timer.timeout.connect(finish_verification)
         timer.start(100)
     elif args.render_preview:
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import csv
 import hashlib
 import io
@@ -26,7 +27,11 @@ from desktranslate.errors import (
 )
 from desktranslate.languages import REGISTRY
 from desktranslate.models import OCRLine, OCRResult, Rect
+from desktranslate.network import identity_chunks, run_cancellable
 from desktranslate.settings import data_dir
+
+INSTALL_LOCK = Lock()
+MODEL_TIMEOUT = 180.0
 
 
 def manifest() -> dict[str, dict[str, Any]]:
@@ -62,8 +67,45 @@ class ModelManager:
     def install(
         self, language: str, cancel: Event, progress: Callable[[str, int, int], None]
     ) -> None:
+        while not INSTALL_LOCK.acquire(timeout=0.1):
+            if cancel.is_set():
+                raise Cancelled()
+        try:
+            self._install(language, cancel, progress)
+        except OSError:
+            raise OCRInitializationError(
+                "The language pack could not be written. Check free disk space and folder permissions, then retry."
+            ) from None
+        finally:
+            INSTALL_LOCK.release()
+
+    def _install(
+        self, language: str, cancel: Event, progress: Callable[[str, int, int], None]
+    ) -> None:
+        try:
+            run_cancellable(
+                lambda: self._install_async(language, cancel, progress),
+                cancel,
+                MODEL_TIMEOUT * len(self.required(language)),
+            )
+        except TimeoutError:
+            raise OCRInitializationError(
+                "The language pack download took too long. Retry on a stable connection."
+            ) from None
+        except (httpx.HTTPError, ValueError):
+            raise OCRInitializationError(
+                "Cannot download recognition models. Check your connection, then retry."
+            ) from None
+
+    async def _install_async(
+        self, language: str, cancel: Event, progress: Callable[[str, int, int], None]
+    ) -> None:
         self.directory.mkdir(parents=True, exist_ok=True)
-        with httpx.Client(timeout=httpx.Timeout(15.0, connect=5), follow_redirects=False) as client:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(15.0, connect=5),
+            follow_redirects=False,
+            headers={"Accept-Encoding": "identity"},
+        ) as client:
             for model in self.required(language):
                 if self.valid(model):
                     continue
@@ -72,44 +114,52 @@ class ModelManager:
                 partial = target.with_suffix(".part")
                 url = info["url"]
                 try:
-                    for _ in range(6):
-                        if cancel.is_set():
-                            raise Cancelled()
-                        with client.stream("GET", url) as response:
-                            if response.is_redirect:
-                                next_url = str(response.url.join(response.headers["location"]))
-                                if not next_url.startswith("https://"):
-                                    raise OCRInitializationError("Model download requires HTTPS.")
-                                url = next_url
-                                continue
-                            response.raise_for_status()
-                            total = int(response.headers.get("Content-Length", 0))
-                            digest = hashlib.sha256()
-                            downloaded = 0
-                            with partial.open("wb") as stream:
-                                for chunk in response.iter_bytes(65536):
-                                    if cancel.is_set():
-                                        raise Cancelled()
-                                    downloaded += len(chunk)
-                                    if downloaded > 100_000_000:
+                    async with asyncio.timeout(MODEL_TIMEOUT):
+                        for _ in range(6):
+                            if cancel.is_set():
+                                raise Cancelled()
+                            async with client.stream("GET", url) as response:
+                                if response.is_redirect:
+                                    next_url = str(response.url.join(response.headers["location"]))
+                                    if not next_url.startswith("https://"):
                                         raise OCRInitializationError(
-                                            "Model download exceeded the size limit."
+                                            "Model download requires HTTPS."
                                         )
-                                    stream.write(chunk)
-                                    digest.update(chunk)
-                                    progress(model, downloaded, total)
-                            if digest.hexdigest() != info["sha256"]:
-                                raise OCRInitializationError(
-                                    "Model verification failed. Retry the download."
-                                )
-                            os.replace(partial, target)
-                            break
-                    else:
-                        raise OCRInitializationError("Too many model download redirects.")
-                except httpx.HTTPError:
-                    raise OCRInitializationError(
-                        "Cannot download recognition models. Check your connection, then retry."
-                    ) from None
+                                    url = next_url
+                                    continue
+                                response.raise_for_status()
+                                try:
+                                    total = int(response.headers.get("Content-Length", 0))
+                                except ValueError:
+                                    total = 0
+                                if not 0 <= total <= 100_000_000:
+                                    raise OCRInitializationError(
+                                        "Invalid language pack download size."
+                                    )
+                                digest = hashlib.sha256()
+                                downloaded = 0
+                                with partial.open("wb") as stream:
+                                    async for chunk in identity_chunks(response):
+                                        if cancel.is_set():
+                                            raise Cancelled()
+                                        downloaded += len(chunk)
+                                        if downloaded > 100_000_000:
+                                            raise OCRInitializationError(
+                                                "Model download exceeded the size limit."
+                                            )
+                                        stream.write(chunk)
+                                        digest.update(chunk)
+                                        progress(model, downloaded, total)
+                                progress("verifying:" + model, downloaded, downloaded)
+                                if digest.hexdigest() != info["sha256"]:
+                                    raise OCRInitializationError(
+                                        "Model verification failed. Retry the download."
+                                    )
+                                os.replace(partial, target)
+                                progress("installed:" + model, downloaded, downloaded)
+                                break
+                        else:
+                            raise OCRInitializationError("Too many model download redirects.")
                 finally:
                     partial.unlink(missing_ok=True)
 
@@ -281,6 +331,7 @@ class IsolatedOCR:
         child.close()
         self.ready = False
         self.closed = Event()
+        self.reaped = False
 
     def receive(self, cancel: Event, timeout: float = 25.0) -> tuple[str, Any]:
         start = time.monotonic()
@@ -311,7 +362,12 @@ class IsolatedOCR:
             self.ready = True
         if self.closed.is_set() or cancel.is_set():
             raise Cancelled()
-        self.connection.send((image.size, image.tobytes(), vertical))
+        try:
+            self.connection.send((image.size, image.tobytes(), vertical))
+        except (OSError, EOFError):
+            if self.closed.is_set():
+                raise Cancelled() from None
+            raise OCRInferenceError() from None
         status, value = self.receive(cancel)
         if status != "result":
             raise OCRInferenceError()
@@ -324,3 +380,17 @@ class IsolatedOCR:
                 if self.process.is_alive():
                     self.process.terminate()
                 self.connection.close()
+
+    def reap(self) -> None:
+        """Called from the recognition worker, after cancellation has ended IPC."""
+        self.close()
+        with self.lock:
+            if self.reaped:
+                return
+            self.process.join(2.0)
+            if self.process.is_alive():
+                self.process.kill()
+                self.process.join(2.0)
+            if not self.process.is_alive():
+                self.process.close()
+                self.reaped = True

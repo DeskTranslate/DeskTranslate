@@ -17,10 +17,10 @@ def main() -> None:
         store = SettingsStore(Path(".test-data/previews") / theme)
         store.save(Settings(theme=theme))
         window = MainWindow(store, demo=True)
+        window.resize(1000, 800)
         window.show()
-        for index, name in enumerate(
-            ("translate", "providers", "recognition", "appearance", "preferences", "diagnostics")
-        ):
+        for index in range(window.navigation.count()):
+            name = window.navigation.item(index).text().lower()
             window.navigation.setCurrentRow(index)
             app.processEvents()
             window.grab().save(str(directory / f"{name}-{theme}.png"))
@@ -28,7 +28,7 @@ def main() -> None:
         app.processEvents()
         window.overlay.grab().save(str(directory / f"overlay-{theme}.png"))
         window.quit()
-    montage = Image.new("RGB", (1500, 1200), "#263b3c")
+    montage = Image.new("RGB", (1500, 1600), "#263b3c")
     for index, file in enumerate(sorted(directory.glob("*-dark.png"))):
         image = Image.open(file)
         image.thumbnail((495, 395))

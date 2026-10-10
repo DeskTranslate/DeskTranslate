@@ -13,7 +13,7 @@ class Language:
 
 # Recognition families refer to the managed RapidOCR models, not translation language IDs.
 LANGUAGES = (
-    Language("auto", "Detect automatically", "", "ch", "Auto"),
+    Language("auto", "Auto · Chinese / Latin recognition", "", "ch", "Auto"),
     Language("ja", "Japanese", "jpn", "japan", "Japanese"),
     Language("en", "English", "eng", "en"),
     Language("ko", "Korean", "kor", "korean", "Hangul"),

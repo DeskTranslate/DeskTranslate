@@ -1,21 +1,43 @@
 name: Build release candidate
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Exact canonical release tag (optional for unsigned beta builds)
+        type: string
+        default: ''
+      signed:
+        description: Require the configured publisher certificate and trusted timestamp
+        type: boolean
+        default: false
+      stable:
+        description: Require every documented stable qualification gate
+        type: boolean
+        default: false
+      endurance:
+        description: Run a two-hour source-matched native-resource soak on the pinned release runtime
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
   candidate:
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     runs-on: windows-2022
-    timeout-minutes: 40
+    timeout-minutes: 180
     env:
       QT_QPA_PLATFORM: offscreen
       DESKTRANSLATE_DATA_DIR: ${{ github.workspace }}/.test-data
+      RELEASE_TAG: ${{ inputs.tag }}
+      RELEASE_SIGNED: ${{ inputs.signed }}
+      RELEASE_STABLE: ${{ inputs.stable }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: '3.12'
-          architecture: x64
+      - name: Prepare pinned Python security runtime
+        run: ./tools/install_python.ps1
       - name: Install and check
         shell: pwsh
         run: |
@@ -34,17 +56,70 @@ jobs:
           python -m pytest -q --basetemp=.test-tmp
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m pip_audit --require-hashes --disable-pip -r requirements-windows.lock
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -c "from pathlib import Path; import os; from tools.release_support import version_gate,stable_gate; version_gate(Path.cwd(),os.getenv('RELEASE_TAG','')); stable_gate(Path.cwd(),os.getenv('RELEASE_TAG','')) if os.getenv('RELEASE_STABLE') == 'true' else None"
+      - name: Import publisher certificate
+        if: inputs.signed
+        env:
+          SIGNING_PFX_BASE64: ${{ secrets.DESKTRANSLATE_SIGNING_PFX_BASE64 }}
+          SIGNING_PFX_PASSWORD: ${{ secrets.DESKTRANSLATE_SIGNING_PFX_PASSWORD }}
+        run: |
+          if (-not $env:SIGNING_PFX_BASE64 -or -not $env:SIGNING_PFX_PASSWORD) { throw 'Publisher signing secrets are not configured' }
+          $file = Join-Path $env:RUNNER_TEMP 'DeskTranslate-signing.pfx'
+          try {
+            [IO.File]::WriteAllBytes($file, [Convert]::FromBase64String($env:SIGNING_PFX_BASE64))
+            $password = ConvertTo-SecureString $env:SIGNING_PFX_PASSWORD -AsPlainText -Force
+            $certificate = Import-PfxCertificate -FilePath $file -CertStoreLocation Cert:\CurrentUser\My -Password $password
+            "DESKTRANSLATE_SIGNING_THUMBPRINT=$($certificate.Thumbprint)" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          } finally { Remove-Item -LiteralPath $file -Force -ErrorAction SilentlyContinue }
       - name: Prepare verified installer compiler
         run: ./tools/install_inno.ps1
       - name: Prepare matching LGPL library sources
         run: python tools/library_sources.py
       - name: Compile installer and portable app
-        run: python tools/build.py --installer
+        run: |
+          $changes = git status --porcelain
+          if ($changes) { $changes; throw 'Release candidate requires a clean tracked source tree' }
+          $options = @('tools/build.py', '--installer')
+          if ($env:RELEASE_TAG) { $options += @('--tag', $env:RELEASE_TAG) }
+          if ($env:RELEASE_SIGNED -eq 'true') { $options += '--signed' }
+          if ($env:RELEASE_STABLE -eq 'true') { $options += '--stable' }
+          & python @options
       - name: Smoke packaged runtime
         run: |
           $process = Start-Process -FilePath "$PWD/dist/DeskTranslate/DeskTranslate.exe" -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw 'Packaged startup failed' }
+      - name: Prepare verified synthetic OCR qualification
+        run: |
+          python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('ja',Event(),lambda *args: None); assert ModelManager().installed('ja',verify=True)"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Installer lifecycle and artifact privacy
+        run: |
+          $probe = @{OcrFixture="$PWD/tests/fixtures/ja-game.png"; ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"}
+          if ($env:RELEASE_SIGNED -eq 'true') { $probe.Signed = $true }
+          ./tools/qualify_installer.ps1 @probe
+          python tools/privacy_scan.py --artifacts --history --output docs/privacy-scan.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Attest hosted build artifacts
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
+        with:
+          subject-path: |
+            dist/*.exe
+            dist/*.zip
+      - name: Qualify two-hour endurance on the release runtime
+        if: inputs.endurance
+        run: |
+          python tools/soak.py --duration 7200 --output docs/soak-2h-hosted.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-2h-hosted.json').read_text()); assert r['elapsed_s'] >= 7200 and r['workload_passed'] and r['resource_qualification']['qualified'] and r['source_hashes'] == runtime_source_hashes(Path.cwd()) and r['python_version'] == '3.12.15'"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Remove publisher certificate
+        if: always() && inputs.signed
+        run: |
+          if ($env:DESKTRANSLATE_SIGNING_THUMBPRINT -match '^[A-Fa-f0-9]{40}$') {
+            Remove-Item -LiteralPath "Cert:\CurrentUser\My\$env:DESKTRANSLATE_SIGNING_THUMBPRINT" -Force -ErrorAction SilentlyContinue
+          }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: desktranslate-release-candidate
@@ -52,5 +127,9 @@ jobs:
             dist/*.exe
             dist/*.zip
             dist/*sbom.json
+            dist/*provenance.json
             dist/SHA256SUMS.txt
+            docs/installer-qualification.json
+            docs/privacy-scan.json
+            docs/soak-2h-hosted.json
           retention-days: 30

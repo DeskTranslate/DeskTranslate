@@ -1,0 +1,15 @@
+{
+  "qt": true,
+  "assets": true,
+  "http_provider_roundtrip": true,
+  "credential_roundtrip": true,
+  "ocr_exact": true,
+  "ocr_ms": 2277.892699930817,
+  "version": "2.0.0b2",
+  "git_commit": "5c5dd617ec0c25bd84b4e527e9e9e21dfc4b3df2",
+  "source_sha256": "a92732e4fe14f7951ace1405dd40896a5176263a531844f04313f45f5185c3b2",
+  "system_only_path": true,
+  "empty_non_ascii_working_directory": true,
+  "native_windows": true,
+  "publisher_signed": false
+}

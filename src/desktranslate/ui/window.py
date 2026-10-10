@@ -2,12 +2,8 @@ from __future__ import annotations
 
 import copy
 import hashlib
-import json
-import platform
-import sys
 import time
 from collections.abc import Callable
-from dataclasses import asdict, fields
 from typing import Any
 
 from PySide6.QtCore import QSize, Qt, QTimer, QUrl
@@ -17,7 +13,6 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDialog,
-    QDialogButtonBox,
     QFormLayout,
     QFrame,
     QHBoxLayout,
@@ -39,22 +34,30 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from desktranslate import __version__
 from desktranslate.capture import MSSCapture, physical_monitors, topology_signature
 from desktranslate.errors import DeskTranslateError
 from desktranslate.hotkeys import Hotkeys, validate_hotkeys
 from desktranslate.languages import LANGUAGES
-from desktranslate.models import Rect, SessionState, Stamp, TranslationRequest
+from desktranslate.metrics import LatencyMetrics
+from desktranslate.models import PipelineEvent, Rect, SessionState, Stamp, TranslationRequest
 from desktranslate.ocr import IsolatedOCR, ModelManager
 from desktranslate.pipeline import Pipeline
 from desktranslate.providers import SPECS, create_provider
 from desktranslate.security import CredentialStore, validate_endpoint
 from desktranslate.settings import Settings, SettingsStore
+from desktranslate.ui.glossary import editor_content, exchange_controls, parse_editor
 from desktranslate.ui.jobs import Jobs
+from desktranslate.ui.onboarding import Onboarding
 from desktranslate.ui.overlay import Overlay
 from desktranslate.ui.overlay_editor import OverlayEditor
 from desktranslate.ui.selection import RegionSelector
 from desktranslate.ui.theme import apply_theme, icon
+from desktranslate.window_capture import (
+    Win32Windows,
+    WindowCapture,
+    normalized_region,
+    project_region,
+)
 
 
 def label(text: str, kind: str = "") -> QLabel:
@@ -76,10 +79,11 @@ def button(text: str, callback: Callable[[], object], primary: bool = False) -> 
 
 def combo(options: list[tuple[str, str]], current: str) -> QComboBox:
     widget = QComboBox()
+    widget.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon)
+    widget.setMinimumContentsLength(12)
     for name, value in options:
         widget.addItem(name, value)
     widget.setCurrentIndex(max(0, widget.findData(current)))
-    widget.setAccessibleName("Choose an option")
     return widget
 
 
@@ -119,22 +123,29 @@ class MainWindow(QMainWindow):
         self.settings = store.load()
         self.credentials = CredentialStore()
         self.pipeline: Pipeline | None = None
+        self.retiring: list[Pipeline] = []
+        self.presentation_serial = 0
         self.selector: RegionSelector | None = None
         self.latest = ""
         self.errors: list[str] = []
         self.timings: dict[str, float] = {}
+        self.metrics = LatencyMetrics()
         self.closing = False
+        self.exit_code = 0
+        self.setup_dialog: Onboarding
         self.command_serial = 0
         self.selected_action = "select"
+        self.relative_selection = False
         self.last_provider = self.settings.provider
         self.jobs = Jobs()
         self.callbacks: dict[int, Callable[[object, str], None]] = {}
-        self.jobs.done.connect(self.job_done)
-        self.jobs.progress.connect(self.download_progress)
+        self.jobs.done.connect(self.job_done, Qt.ConnectionType.QueuedConnection)
+        self.jobs.progress.connect(self.download_progress, Qt.ConnectionType.QueuedConnection)
         self.setWindowTitle("DeskTranslate 2")
         self.setWindowIcon(icon())
-        self.resize(1000, 800)
-        self.setMinimumSize(820, 640)
+        available = QApplication.primaryScreen().availableGeometry()
+        self.resize(min(1000, available.width() - 40), min(800, available.height() - 40))
+        self.setMinimumSize(min(720, available.width() - 40), min(420, available.height() - 40))
         app = QApplication.instance()
         apply_theme(app, self.settings.theme)  # type: ignore[arg-type]
         root = QWidget()
@@ -148,7 +159,16 @@ class MainWindow(QMainWindow):
         self.navigation = QListWidget()
         self.navigation.setFixedWidth(200)
         self.navigation.addItems(
-            ["Translate", "Providers", "Recognition", "Appearance", "Preferences", "Diagnostics"]
+            [
+                "Translate",
+                "Providers",
+                "Recognition",
+                "Appearance",
+                "Profiles",
+                "Preferences",
+                "Session",
+                "Diagnostics",
+            ]
         )
         self.navigation.setAccessibleName("Navigation")
         for index in range(self.navigation.count()):
@@ -165,8 +185,15 @@ class MainWindow(QMainWindow):
         self.build_providers()
         self.build_recognition()
         self.build_appearance()
+        self.build_profiles()
         self.build_preferences()
+        self.build_transcript()
         self.build_diagnostics()
+        for control in self.findChildren(QComboBox):
+            control.setSizeAdjustPolicy(
+                QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
+            )
+            control.setMinimumContentsLength(12)
         self.navigation.currentRowChanged.connect(self.pages.setCurrentIndex)
         self.navigation.setCurrentRow(0)
         self.overlay = Overlay(self.settings)
@@ -182,11 +209,12 @@ class MainWindow(QMainWindow):
                 "live": lambda: self.select("live"),
                 "pause": self.pause,
                 "stop": self.stop,
-                "select": lambda: self.select("select"),
+                "select": lambda: self.select("select", self.settings.capture_mode == "window"),
                 "overlay": self.toggle_overlay,
                 "copy": self.copy_latest,
                 "edit": self.edit_overlay,
-            }
+            },
+            self.suspend,
         )
         app.installNativeEventFilter(self.hotkeys)  # type: ignore[union-attr]
         conflicts: list[str] = []
@@ -226,7 +254,7 @@ class MainWindow(QMainWindow):
                 else None
             )
         )
-        if QSystemTrayIcon.isSystemTrayAvailable():
+        if not demo and QSystemTrayIcon.isSystemTrayAvailable():
             self.tray.show()
         self.update_region()
         self.update_provider_info()
@@ -234,6 +262,7 @@ class MainWindow(QMainWindow):
         for screen in QApplication.screens():
             screen.geometryChanged.connect(self.display_changed)
             screen.logicalDotsPerInchChanged.connect(self.display_changed)
+            screen.setProperty("desktranslate_connected", True)
         app.screenRemoved.connect(self.display_changed)  # type: ignore[union-attr]
         app.screenAdded.connect(self.display_changed)  # type: ignore[union-attr]
         if conflicts:
@@ -274,9 +303,19 @@ class MainWindow(QMainWindow):
         self.source_combo = language_combo(self.settings.source, True)
         self.target_combo = language_combo(self.settings.target)
         row.addWidget(self.source_combo, 1)
-        row.addWidget(button("⇄", self.swap_languages))
+        swap = button("⇄", self.swap_languages)
+        swap.setAccessibleName("Swap source and translation languages")
+        row.addWidget(swap)
         row.addWidget(self.target_combo, 1)
         layout.addLayout(row)
+        targets = QHBoxLayout()
+        targets.addWidget(button("Choose application", self.choose_window))
+        targets.addWidget(button("Choose monitor", self.choose_monitor))
+        layout.addLayout(targets)
+        self.window_crop_button = button(
+            "Region inside application", lambda: self.select("select", True)
+        )
+        layout.addWidget(self.window_crop_button)
         self.source_combo.currentIndexChanged.connect(self.language_changed)
         self.target_combo.currentIndexChanged.connect(self.language_changed)
         page.addWidget(frame)
@@ -329,13 +368,31 @@ class MainWindow(QMainWindow):
         self.provider_combo = combo(
             [(spec.name, key) for key, spec in SPECS.items()], self.settings.provider
         )
+        self.provider_combo.setAccessibleName("Translation provider")
         layout.addWidget(self.provider_combo)
         self.provider_info = label("", "muted")
         layout.addWidget(self.provider_info)
         self.endpoint_edit = QLineEdit(self.settings.endpoint)
         self.endpoint_edit.setPlaceholderText("API base URL · HTTPS or localhost")
         self.endpoint_edit.setAccessibleName("API endpoint")
-        layout.addWidget(self.endpoint_edit)
+        self.provider_advanced = QCheckBox("Advanced connection settings")
+        layout.addWidget(self.provider_advanced)
+        self.advanced_box = QWidget()
+        advanced_layout = QVBoxLayout(self.advanced_box)
+        advanced_layout.setContentsMargins(0, 0, 0, 0)
+        advanced_layout.addWidget(self.endpoint_edit)
+        self.openai_api_combo = combo(
+            [
+                ("Responses · recommended", "responses"),
+                ("Chat Completions · compatibility", "chat"),
+            ],
+            self.settings.openai_api,
+        )
+        self.openai_api_combo.setAccessibleName("OpenAI API mode")
+        advanced_layout.addWidget(self.openai_api_combo)
+        layout.addWidget(self.advanced_box)
+        self.advanced_box.hide()
+        self.provider_advanced.toggled.connect(self.advanced_box.setVisible)
         self.key_edit = QLineEdit()
         self.key_edit.setEchoMode(QLineEdit.EchoMode.Password)
         self.key_edit.setPlaceholderText("New API key · leave blank to keep the saved key")
@@ -378,15 +435,16 @@ class MainWindow(QMainWindow):
             "Optional style instructions, used only with Custom instructions. Maximum 1500 characters."
         )
         self.instructions_edit.setMaximumHeight(85)
+        self.instructions_edit.setAccessibleName("Optional custom translation style instructions")
         layout.addWidget(self.instructions_edit)
-        self.glossary_edit = QPlainTextEdit(
-            "\n".join(f"{key} = {value}" for key, value in self.settings.glossary.items())
-        )
+        self.glossary_edit = QPlainTextEdit(editor_content(self.settings.glossary))
         self.glossary_edit.setPlaceholderText(
             "Optional glossary · one source = translation per line"
         )
         self.glossary_edit.setMaximumHeight(100)
+        self.glossary_edit.setAccessibleName("Optional dialogue glossary")
         layout.addWidget(self.glossary_edit)
+        layout.addLayout(exchange_controls(self.glossary_edit, self.notice))
         layout.addWidget(button("Apply translation settings", self.save_provider))
         page.addWidget(frame)
         page.addStretch()
@@ -405,6 +463,8 @@ class MainWindow(QMainWindow):
             ],
             self.settings.ocr,
         )
+        self.ocr_combo.setAccessibleName("Recognition engine")
+        self.style_combo.setAccessibleName("Dialogue translation style")
         layout.addWidget(self.ocr_combo)
         self.ocr_status = label("", "muted")
         layout.addWidget(self.ocr_status)
@@ -541,39 +601,84 @@ class MainWindow(QMainWindow):
         self.tray_check = QCheckBox("Closing the window keeps DeskTranslate in the system tray")
         self.tray_check.setChecked(self.settings.close_to_tray)
         layout.addWidget(self.tray_check)
+        self.update_channel_combo = combo(
+            [("Stable releases", "stable"), ("Beta and release candidates", "beta")],
+            self.settings.update_channel,
+        )
+        self.update_channel_combo.setAccessibleName("Update channel")
+        layout.addWidget(self.update_channel_combo)
+        self.restart_target_check = QCheckBox(
+            "Reconnect to the same application after it restarts · exact unique window match required"
+        )
+        self.restart_target_check.setChecked(self.settings.window_follow_restart)
+        layout.addWidget(self.restart_target_check)
+        layout.addWidget(button("Guide me through a first translation", self.onboarding))
         layout.addWidget(button("Apply preferences", self.save_preferences, True))
         page.addWidget(frame)
-        frame, layout = card("PROFILES")
-        self.profile_combo = QComboBox()
-        self.profile_combo.addItems(list(self.settings.profiles))
-        layout.addWidget(self.profile_combo)
-        row = QHBoxLayout()
-        row.addWidget(button("Save current profile", self.save_profile))
-        row.addWidget(button("Load profile", self.load_profile))
-        row.addWidget(button("Delete profile", self.delete_profile))
-        layout.addLayout(row)
-        layout.addWidget(button("Reset settings to defaults", self.reset))
-        page.addWidget(frame)
+        page.addWidget(button("Reset settings to defaults", self.reset))
         page.addStretch()
 
+    def build_profiles(self) -> None:
+        from desktranslate.ui.profiles import ProfilePage
+
+        page = self.page(
+            "A setup for every story.",
+            "Keep each game's languages, dialogue style, capture target and overlay together.",
+        )
+        self.profile_page = ProfilePage(lambda: self.settings, self.commit_settings, self.notice)
+        page.addWidget(self.profile_page)
+
+    def commit_settings(self, updated: Settings, activate: bool = True) -> bool:
+        try:
+            self.store.save(updated)
+        except (OSError, ValueError, TypeError, RecursionError):
+            self.notice("Settings could not be saved. Check their size and file permissions.")
+            return False
+        if activate:
+            self.stop()
+        self.settings = updated
+        if activate:
+            self.sync_controls()
+        return True
+
     def build_diagnostics(self) -> None:
+        from desktranslate.ui.support import SupportPage
+
         page = self.page(
             "A clear view of the app.",
-            "Support details include versions and timings. Never API keys, screenshots, or dialogue.",
+            "Preview privacy-safe support details before copying or exporting.",
         )
-        self.diagnostics_text = QPlainTextEdit()
-        self.diagnostics_text.setReadOnly(True)
-        page.addWidget(self.diagnostics_text, 1)
-        row = QHBoxLayout()
-        row.addWidget(button("Refresh", self.refresh_diagnostics))
-        row.addWidget(button("Copy diagnostics", self.copy_diagnostics, True))
-        row.addWidget(button("Check for updates", self.check_updates))
-        page.addLayout(row)
-        page.addWidget(
-            label(
-                "DeskTranslate 2 beta · built for Windows 10 / 11. Translation history stays in memory and is cleared with the session.",
-                "muted",
-            )
+        self.support_page = SupportPage(self.diagnostic_metadata, self.check_updates, self.notice)
+        self.diagnostics_text = self.support_page.preview
+        page.addWidget(self.support_page)
+
+    def build_transcript(self) -> None:
+        from desktranslate.ui.transcript import TranscriptPage
+
+        page = self.page(
+            "Keep this conversation close.", "An optional, temporary transcript that you control."
+        )
+        self.transcript_page = TranscriptPage()
+        page.addWidget(self.transcript_page)
+
+    def diagnostic_metadata(self, include_model: bool = False) -> dict[str, Any]:
+        from desktranslate.diagnostics import diagnostic_metadata
+
+        displays = [
+            {
+                "name": screen.name(),
+                "dpi": screen.logicalDotsPerInch(),
+                "scale": screen.devicePixelRatio(),
+            }
+            for screen in QApplication.screens()
+        ]
+        return diagnostic_metadata(
+            self.settings,
+            self.metrics,
+            self.errors,
+            self.pipeline.counters if self.pipeline else {},
+            displays,
+            include_model,
         )
 
     def notice(self, text: str) -> None:
@@ -616,17 +721,79 @@ class MainWindow(QMainWindow):
             self.target_combo.setCurrentIndex(self.target_combo.findData(source))
 
     def update_region(self) -> None:
+        self.window_crop_button.setVisible(self.settings.capture_mode == "window")
         region = self.settings.region
-        self.region_label.setText(
+        description = (
             f"Locked region · {region.width} × {region.height} px at ({region.x}, {region.y})"
             if region
             else "Select an area to translate."
         )
+        if self.settings.capture_mode == "window":
+            description = (
+                "Following application · "
+                + self.settings.window_target.get("executable", "")
+                + (
+                    " · selected client region"
+                    if self.settings.window_region
+                    else " · entire client area"
+                )
+            )
+        elif self.settings.capture_mode == "monitor":
+            description = "Entire monitor · " + self.settings.monitor_name
+        self.region_label.setText(description)
 
-    def select(self, action: str = "select") -> None:
+    def choose_window(self) -> None:
+        from desktranslate.ui.capture_picker import WindowPicker
+
+        self.stop()
+        try:
+            windows = Win32Windows().windows()
+            picker = WindowPicker(windows, self)
+            if picker.exec() == QDialog.DialogCode.Accepted and (target := picker.chosen()):
+                self.settings.capture_mode = "window"
+                self.settings.window_target = target.binding()
+                self.settings.window_region = None
+                self.settings.recent_region = [
+                    target.client.x,
+                    target.client.y,
+                    target.client.width,
+                    target.client.height,
+                ]
+                self.settings.display_signature = ""
+                self.persist()
+                self.update_region()
+                self.notice(
+                    "Application selected. Choose a region inside it for faster subtitle recognition."
+                )
+        except DeskTranslateError as error:
+            self.notice(str(error))
+
+    def choose_monitor(self) -> None:
+        monitors = physical_monitors()
+        name, accepted = QInputDialog.getItem(
+            self, "Choose monitor", "Capture the entire display", list(monitors), editable=False
+        )
+        if accepted and name in monitors:
+            self.stop()
+            region = monitors[name]
+            self.settings.capture_mode = "monitor"
+            self.settings.monitor_name = name
+            self.settings.recent_region = [region.x, region.y, region.width, region.height]
+            self.settings.display_signature = topology_signature()
+            self.persist()
+            self.update_region()
+            self.notice(
+                "Monitor selected. One-shot results appear in the main window when no safe overlay space remains."
+            )
+
+    def select(self, action: str = "select", relative: bool = False) -> None:
         if self.selector:
             return
+        if relative and not self.settings.window_target:
+            self.notice("Choose an application first, then select a region inside it.")
+            return
         self.stop()
+        self.relative_selection = relative
         self.selected_action = action
         self.hide()
         self.overlay.hide()
@@ -638,8 +805,26 @@ class MainWindow(QMainWindow):
 
     def region_selected(self, region: Rect) -> None:
         self.selector = None
+        if self.relative_selection:
+            probe = None
+            try:
+                probe = WindowCapture(self.settings.window_target, None)
+                target = probe.resolve()
+                self.settings.window_region = normalized_region(target.client, region)
+                self.settings.capture_mode = "window"
+            except (DeskTranslateError, ValueError) as error:
+                self.showNormal()
+                self.notice(str(error))
+                return
+            finally:
+                if probe:
+                    probe.close()
+        else:
+            self.settings.capture_mode = "fixed"
         self.settings.recent_region = [region.x, region.y, region.width, region.height]
-        self.settings.display_signature = topology_signature()
+        self.settings.display_signature = (
+            "" if self.settings.capture_mode == "window" else topology_signature()
+        )
         self.persist()
         self.update_region()
         if self.selected_action in {"once", "live"}:
@@ -666,14 +851,17 @@ class MainWindow(QMainWindow):
         else:
             self.select("live")
 
-    def queue_start(self, once: bool) -> None:
+    def queue_start(self, once: bool, focus_on_error: bool = True) -> None:
         serial = self.command_serial
         self.hide()
         self.overlay.hide()
 
         def begin() -> None:
             if not self.closing and serial == self.command_serial:
-                self.start(once)
+                if focus_on_error:
+                    self.start(once)
+                else:
+                    self.start(once, False)
 
         QTimer.singleShot(180, begin)
 
@@ -691,12 +879,17 @@ class MainWindow(QMainWindow):
             "libre",
         }:
             key = self.credentials.get(self.credential_account(settings.provider, endpoint))
-        return lambda: create_provider(settings.provider, key, endpoint, settings.timeout)
+        return lambda: create_provider(
+            settings.provider, key, endpoint, settings.timeout, openai_api=settings.openai_api
+        )
 
-    def start(self, once: bool) -> None:
+    def start(self, once: bool, focus_on_error: bool = True) -> None:
         if self.closing:
             return
         self.stop()
+        if len(self.retiring) >= 4:
+            self.notice("Previous requests are still stopping. Wait a moment, then start again.")
+            return
         try:
             if (
                 self.settings.display_signature
@@ -707,19 +900,31 @@ class MainWindow(QMainWindow):
             if self.settings.ocr == "rapidocr" and not ModelManager().installed(
                 self.settings.source
             ):
-                self.showNormal()
+                if focus_on_error:
+                    self.showNormal()
                 self.navigation.setCurrentRow(2)
                 self.notice("Install recognition for your source language, then start again.")
                 return
             spec = SPECS[self.settings.provider]
             if spec.capabilities.context and not self.settings.model:
-                self.showNormal()
+                if focus_on_error:
+                    self.showNormal()
                 self.navigation.setCurrentRow(1)
                 self.notice("Test your provider and choose a model first.")
                 return
             snapshot = copy.deepcopy(self.settings)
+            if snapshot.capture_mode == "window":
+                probe = WindowCapture(
+                    snapshot.window_target, snapshot.window_region, snapshot.window_follow_restart
+                )
+                try:
+                    actual = project_region(probe.resolve().client, snapshot.window_region)
+                    snapshot.recent_region = [actual.x, actual.y, actual.width, actual.height]
+                finally:
+                    probe.close()
             if snapshot.region and not self.overlay.avoid_capture(snapshot.region) and not once:
-                self.showNormal()
+                if focus_on_error:
+                    self.showNormal()
                 self.notice(
                     "The region leaves no room for the overlay. Select a smaller area or use one-shot translation."
                 )
@@ -727,7 +932,15 @@ class MainWindow(QMainWindow):
             provider_factory = self.provider_factory(snapshot)
             self.pipeline = Pipeline(
                 snapshot,
-                lambda: MSSCapture(snapshot.display_signature),
+                lambda: (
+                    WindowCapture(
+                        snapshot.window_target,
+                        snapshot.window_region,
+                        snapshot.window_follow_restart,
+                    )
+                    if snapshot.capture_mode == "window"
+                    else MSSCapture(snapshot.display_signature)
+                ),
                 lambda: IsolatedOCR(snapshot.ocr, snapshot.source),
                 provider_factory,
                 once,
@@ -737,14 +950,20 @@ class MainWindow(QMainWindow):
             if not self.overlay.suppressed:
                 self.overlay.show()
         except (DeskTranslateError, ValueError) as error:
-            self.showNormal()
+            if focus_on_error:
+                self.showNormal()
             self.notice(str(error))
 
     def stop(self) -> None:
         self.command_serial += 1
+        self.presentation_serial += 1
+        if hasattr(self, "transcript_page"):
+            self.transcript_page.clear()
         if self.pipeline:
             self.pipeline.stop()
+            self.retiring.append(self.pipeline)
             self.pipeline = None
+        self.retiring = [p for p in self.retiring if any(t.is_alive() for t in p.threads)]
         if hasattr(self, "status_label"):
             self.status_label.setText("Ready when you are.")
         if hasattr(self, "overlay"):
@@ -767,59 +986,119 @@ class MainWindow(QMainWindow):
         self.notice("Dialogue context cleared.")
 
     def poll_pipeline(self) -> None:
-        if not self.pipeline:
+        self.retiring = [p for p in self.retiring if any(t.is_alive() for t in p.threads)]
+        pipeline = self.pipeline
+        if pipeline is None:
             return
-        for event in self.pipeline.poll():
-            self.status_label.setText(event.error or event.state.value.capitalize())
-            self.overlay.status.setText("DESKTRANSLATE  /  " + event.state.value.upper())
-            self.overlay.pause_button.setText(
-                "Resume" if event.state in {SessionState.PAUSED, SessionState.ERROR} else "Pause"
-            )
-            if event.clear:
+        for event in pipeline.poll():
+            with pipeline.session.lock:
+                if event.stamp != Stamp(pipeline.session.serial, pipeline.session.generation):
+                    continue
+                self.handle_pipeline_event(event)
 
-                def clear_if_current(stamp: Stamp = event.stamp) -> None:
-                    if self.pipeline and self.pipeline.session.current(stamp):
-                        self.overlay.hide()
+    def handle_pipeline_event(self, event: PipelineEvent) -> None:
+        if event.region:
+            self.overlay.avoid_capture(event.region)
+        self.status_label.setText(event.error or event.state.value.capitalize())
+        self.overlay.status.setText("DESKTRANSLATE  /  " + event.state.value.upper())
+        self.overlay.pause_button.setText(
+            "Resume" if event.state in {SessionState.PAUSED, SessionState.ERROR} else "Pause"
+        )
+        if event.clear:
+            revision = self.presentation_serial
 
-                QTimer.singleShot(1000, clear_if_current)
-            if event.result:
-                start = time.perf_counter()
-                self.latest = event.result.text
-                self.result_source.setText(event.source)
-                self.result_translation.setText(event.result.text)
-                self.overlay.display(event.source, event.result.text)
-                if self.overlay.suppressed:
-                    self.showNormal()
-                self.timings = {**event.timings, "overlay_ms": (time.perf_counter() - start) * 1000}
-                self.status_label.setText(
-                    f"Translated · {event.timings.get('total_ms', 0):.0f} ms"
-                    + (" · cached" if event.result.cached else "")
-                )
-            if event.category:
-                self.errors = (self.errors + [event.category])[-10:]
+            def clear_if_current(stamp: Stamp = event.stamp, expected: int = revision) -> None:
+                if (
+                    self.pipeline
+                    and self.pipeline.session.current(stamp)
+                    and self.presentation_serial == expected
+                ):
+                    self.overlay.hide()
+
+            QTimer.singleShot(1000, clear_if_current)
+        if event.result:
+            one_shot = self.pipeline is not None and self.pipeline.once
+            self.presentation_serial += 1
+            start = time.perf_counter()
+            self.latest = event.result.text
+            self.result_source.setText(event.source)
+            self.result_translation.setText(event.result.text)
+            self.transcript_page.append(event.source, event.result.text)
+            self.overlay.display(event.source, event.result.text)
+            if self.overlay.suppressed and one_shot:
                 self.showNormal()
-                self.notice(event.error)
+            self.timings = {
+                **event.timings,
+                "gui_delivery_ms": (time.monotonic() - event.created) * 1000,
+                "overlay_schedule_ms": (time.perf_counter() - start) * 1000,
+            }
+            self.metrics.observe(self.timings)
+            if not self.settings.onboarding_done:
+                self.settings.onboarding_done = True
+                self.persist()
+            self.status_label.setText(
+                f"Translated · {event.timings.get('total_ms', 0):.0f} ms"
+                + (" · cached" if event.result.cached else "")
+                + (
+                    " · overlay cannot fit; reselect a smaller region"
+                    if self.overlay.suppressed and not one_shot
+                    else ""
+                )
+            )
+        if event.category:
+            self.errors = (self.errors + [event.category])[-10:]
+            self.notice(event.error)
+            self.overlay.status.setText("DESKTRANSLATE  /  PAUSED · " + event.error)
+            if self.tray.isVisible():
+                self.tray.showMessage(
+                    "Translation paused", event.error, QSystemTrayIcon.MessageIcon.Warning, 5000
+                )
 
     def display_changed(self, *args: object) -> None:
+        follow_window = self.settings.capture_mode == "window"
+        was_running = self.pipeline is not None and not self.pipeline.paused.is_set()
+        once = self.pipeline.once if self.pipeline else False
         self.stop()
         if self.selector:
             self.selector.cancel()
-        self.settings.recent_region = None
+        if not follow_window:
+            self.settings.recent_region = None
         self.persist()
         self.update_region()
-        self.notice("Display layout or scaling changed. Select your region again.")
+        self.overlay.place()
+        for screen in QApplication.screens():
+            if not screen.property("desktranslate_connected"):
+                screen.geometryChanged.connect(self.display_changed)
+                screen.logicalDotsPerInchChanged.connect(self.display_changed)
+                screen.setProperty("desktranslate_connected", True)
+        if follow_window and was_running:
+            self.notice("Display changed. Revalidating the chosen application's client area.")
+            self.queue_start(once, False)
+        else:
+            self.notice(
+                "Display layout or scaling changed. Select your region again."
+                if not follow_window
+                else "Display changed. Start again when the chosen window is visible."
+            )
+
+    def suspend(self) -> None:
+        self.stop()
+        self.overlay.hide()
+        self.notice(
+            "Translation stopped while Windows sleeps. Start again after waking; dialogue context has been cleared."
+        )
 
     def toggle_overlay(self) -> None:
         if (
             self.pipeline
-            and self.settings.region
-            and not self.overlay.avoid_capture(self.settings.region)
+            and self.pipeline.capture_region
+            and not self.overlay.avoid_capture(self.pipeline.capture_region)
         ):
             self.notice(
                 "The overlay cannot fit outside this region. Use a smaller region or stop first."
             )
             return
-        self.overlay.setVisible(not self.overlay.isVisible())
+        self.overlay.toggle_visibility()
 
     def copy_latest(self) -> None:
         QApplication.clipboard().setText(self.latest)
@@ -842,6 +1121,7 @@ class MainWindow(QMainWindow):
         spec = SPECS[selected]
         custom = selected in {"custom", "libre", "deepl"}
         self.endpoint_edit.setVisible(custom)
+        self.openai_api_combo.setVisible(selected == "openai")
         self.key_edit.setVisible(spec.capabilities.requires_key or selected in {"custom", "libre"})
         self.model_combo.setVisible(spec.capabilities.model_discovery)
         if spec.capabilities.local:
@@ -880,17 +1160,12 @@ class MainWindow(QMainWindow):
                 or spec.endpoint,
                 spec.capabilities.local,
             )
-            glossary = {}
-            for line in self.glossary_edit.toPlainText().splitlines():
-                if line.strip():
-                    key, sep, value = line.partition("=")
-                    if not sep or not key.strip() or not value.strip():
-                        raise ValueError("Use source = translation on each glossary line.")
-                    glossary[key.strip()] = value.strip()
+            glossary = parse_editor(self.glossary_edit.toPlainText())
             updated = copy.deepcopy(self.settings)
             updated.provider = selected
             updated.endpoint = endpoint
             updated.model = self.model_combo.currentText().strip()
+            updated.openai_api = self.openai_api_combo.currentData()
             updated.provider_models[selected] = updated.model
             updated.provider_endpoints[selected] = endpoint
             updated.style = self.style_combo.currentData()
@@ -997,13 +1272,26 @@ class MainWindow(QMainWindow):
         )
 
     def update_ocr_status(self) -> None:
-        installed = ModelManager().installed(self.settings.source)
+        manager = ModelManager()
+        required = manager.required(self.settings.source)
+        installed = manager.installed(self.settings.source)
+        estimated = sum(manager.catalog[model].get("bytes", 0) for model in required)
+        size = (
+            f" · {estimated / 1e6:.1f} MB full pack"
+            if all(manager.catalog[model].get("bytes") for model in required)
+            else " · download sizes shown during preparation"
+        )
         self.ocr_status.setText(
             f"{self.source_combo.currentText()} recognition · "
-            + ("installed" if installed else "ready to install")
+            + ("installed · checked again on startup" if installed else "language pack needed")
+            + size
+            + " · CPU compatibility mode"
         )
 
     def install_models(self) -> None:
+        if self.jobs.busy:
+            self.notice("Wait for the current setup task, or cancel its download first.")
+            return
         self.stop()
         language = self.settings.source
         manager = ModelManager()
@@ -1016,7 +1304,14 @@ class MainWindow(QMainWindow):
             self.update_ocr_status()
             if error:
                 self.ocr_status.setText(error)
-            self.notice(error or "Recognition is ready. Select a region and translate.")
+            self.notice(
+                error
+                or (
+                    "Recognition is ready. Select a region and translate."
+                    if language == self.settings.source
+                    else "The previously selected language pack is ready. Your current language has not changed."
+                )
+            )
 
         self.job(
             lambda: manager.install(language, self.jobs.cancel, self.jobs.progress.emit), complete
@@ -1026,6 +1321,12 @@ class MainWindow(QMainWindow):
         self.progress.setRange(0, 100 if total else 0)
         if total:
             self.progress.setValue(int(downloaded / total * 100))
+        if model.startswith("verifying:"):
+            self.ocr_status.setText("Verifying the downloaded language pack…")
+            return
+        if model.startswith("installed:"):
+            self.ocr_status.setText("Language pack verified. Finishing preparation…")
+            return
         self.ocr_status.setText(
             f"Preparing {model} · {downloaded / 1e6:.1f} MB"
             + (f" / {total / 1e6:.1f} MB" if total else "")
@@ -1086,6 +1387,8 @@ class MainWindow(QMainWindow):
             conflicts = self.hotkeys.register(values)
             self.settings.hotkeys = values
             self.settings.close_to_tray = self.tray_check.isChecked()
+            self.settings.update_channel = self.update_channel_combo.currentData()
+            self.settings.window_follow_restart = self.restart_target_check.isChecked()
             self.persist()
             self.notice(
                 "Unavailable shortcuts: " + ", ".join(conflicts)
@@ -1097,80 +1400,6 @@ class MainWindow(QMainWindow):
             )
         except ValueError as error:
             self.notice(str(error))
-
-    def save_profile(self) -> None:
-        name, accepted = QInputDialog.getText(self, "Save profile", "Profile name")
-        if accepted and name.strip():
-            keys = (
-                "source",
-                "target",
-                "provider",
-                "endpoint",
-                "model",
-                "ocr",
-                "quality",
-                "style",
-                "instructions",
-                "glossary",
-                "preprocessing",
-                "vertical",
-                "recent_region",
-                "display_signature",
-                "overlay_mode",
-                "overlay_size",
-                "overlay_opacity",
-            )
-            self.settings.profiles[name.strip()[:60]] = {
-                key: copy.deepcopy(getattr(self.settings, key))
-                for key in set(keys)
-                | {f.name for f in fields(Settings) if f.name.startswith("overlay_")}
-            }
-            self.persist()
-            self.profile_combo.clear()
-            self.profile_combo.addItems(list(self.settings.profiles))
-
-    def load_profile(self) -> None:
-        values = self.settings.profiles.get(self.profile_combo.currentText())
-        if values:
-            updated = copy.deepcopy(self.settings)
-            allowed = {
-                "source",
-                "target",
-                "provider",
-                "endpoint",
-                "model",
-                "ocr",
-                "quality",
-                "style",
-                "instructions",
-                "glossary",
-                "preprocessing",
-                "vertical",
-                "recent_region",
-                "display_signature",
-                "overlay_mode",
-                "overlay_size",
-                "overlay_opacity",
-            }
-            allowed |= {f.name for f in fields(Settings) if f.name.startswith("overlay_")}
-            try:
-                for key, value in values.items():
-                    if key in allowed:
-                        setattr(updated, key, copy.deepcopy(value))
-                updated.validate()
-                self.settings = updated
-                self.stop()
-                self.persist()
-                self.sync_controls()
-                self.notice("Profile loaded.")
-            except (ValueError, TypeError, AttributeError):
-                self.notice("This profile is invalid. Delete it and save a new one.")
-
-    def delete_profile(self) -> None:
-        self.settings.profiles.pop(self.profile_combo.currentText(), None)
-        self.persist()
-        self.profile_combo.clear()
-        self.profile_combo.addItems(list(self.settings.profiles))
 
     def sync_controls(self) -> None:
         pairs = [
@@ -1190,15 +1419,20 @@ class MainWindow(QMainWindow):
             widget.blockSignals(False)
         self.endpoint_edit.setText(self.settings.endpoint)
         self.model_combo.setCurrentText(self.settings.model)
-        self.glossary_edit.setPlainText(
-            "\n".join(f"{key} = {value}" for key, value in self.settings.glossary.items())
-        )
+        self.glossary_edit.setPlainText(editor_content(self.settings.glossary))
         self.instructions_edit.setPlainText(self.settings.instructions)
         self.vertical_check.setChecked(self.settings.vertical)
         self.click_check.setChecked(self.settings.overlay_click_through)
         self.font_spin.setValue(self.settings.overlay_size)
         self.opacity_spin.setValue(self.settings.overlay_opacity)
         self.tray_check.setChecked(self.settings.close_to_tray)
+        self.restart_target_check.setChecked(self.settings.window_follow_restart)
+        self.update_channel_combo.setCurrentIndex(
+            self.update_channel_combo.findData(self.settings.update_channel)
+        )
+        self.openai_api_combo.setCurrentIndex(
+            self.openai_api_combo.findData(self.settings.openai_api)
+        )
         for key, edit in self.hotkey_edits.items():
             edit.setText(self.settings.hotkeys[key])
         self.hotkeys.register(self.settings.hotkeys)
@@ -1224,34 +1458,10 @@ class MainWindow(QMainWindow):
             self.sync_controls()
 
     def refresh_diagnostics(self) -> None:
-        monitors = {name: asdict(region) for name, region in physical_monitors().items()}
-        data = {
-            "version": __version__,
-            "os": platform.system(),
-            "os_release": platform.release(),
-            "python": platform.python_version(),
-            "packaged": bool(getattr(sys, "frozen", False)),
-            "capture": "mss",
-            "displays_physical": monitors,
-            "displays_qt": [
-                {"name": s.name(), "dpi": s.logicalDotsPerInch(), "scale": s.devicePixelRatio()}
-                for s in QApplication.screens()
-            ],
-            "ocr": self.settings.ocr,
-            "ocr_installed": [
-                lang.code for lang in LANGUAGES if ModelManager().installed(lang.code)
-            ],
-            "provider": self.settings.provider,
-            "model": self.settings.model,
-            "timings_ms": self.timings,
-            "recent_error_categories": self.errors,
-            "counters": self.pipeline.counters if self.pipeline else {},
-        }
-        self.diagnostics_text.setPlainText(json.dumps(data, indent=2, ensure_ascii=False))
+        self.support_page.refresh()
 
     def copy_diagnostics(self) -> None:
-        self.refresh_diagnostics()
-        QApplication.clipboard().setText(self.diagnostics_text.toPlainText())
+        self.support_page.copy()
 
     def check_updates(self) -> None:
         from desktranslate.updates import check_release
@@ -1261,83 +1471,71 @@ class MainWindow(QMainWindow):
                 self.notice(error)
             elif isinstance(result, tuple) and len(result) == 2:
                 tag, url = result
-                self.notice(f"Latest stable release: {tag}. Opening its release notes.")
-                QDesktopServices.openUrl(QUrl(url))
+                self.notice(f"Update available: {tag}. Open release notes when ready.")
+                self.support_page.update_url = url
+                self.support_page.release_notes.setEnabled(True)
             else:
-                self.notice("No newer stable release was found.")
+                self.notice("No newer compatible release was found in your chosen channel.")
 
-        self.job(check_release, complete)
+        self.job(lambda: check_release(self.settings.update_channel, self.jobs.cancel), complete)
 
     def onboarding(self) -> None:
-        dialog = QDialog(self)
-        dialog.setWindowTitle("Welcome to DeskTranslate 2")
-        dialog.setMinimumWidth(560)
-        layout = QVBoxLayout(dialog)
-        layout.setContentsMargins(32, 28, 32, 28)
-        layout.setSpacing(18)
-        layout.addWidget(label("A world of words.\nOne simple shortcut.", "title"))
-        layout.addWidget(
-            label(
-                "Select the dialogue, subtitle, menu, or image you want to understand. DeskTranslate reads it on your machine and puts the translation in a quiet overlay.",
-                "muted",
-            )
+        if hasattr(self, "setup_dialog"):
+            if self.setup_dialog.isVisible():
+                self.setup_dialog.raise_()
+                self.setup_dialog.activateWindow()
+                return
+            if self.setup_dialog.jobs.busy:
+                self.notice(
+                    "Setup is finishing its cancelled task. Reopen the guide when it has closed."
+                )
+                return
+            self.setup_dialog.deleteLater()
+        self.setup_dialog = Onboarding(
+            lambda: self.settings, self.commit_settings, self.provider_factory, self
         )
-        source = language_combo(self.settings.source, True)
-        target = language_combo(self.settings.target)
-        form = QFormLayout()
-        form.addRow("Read", source)
-        form.addRow("Translate into", target)
-        layout.addLayout(form)
-        method = combo(
-            [
-                ("Quick translation · cloud · no API key", "google"),
-                ("Local AI · configure Ollama / LM Studio next", "ollama"),
-                ("Cloud AI · choose a provider next", "openai"),
-            ],
-            "google",
-        )
-        layout.addWidget(method)
-        from desktranslate.hardware import recommendation
-
-        layout.addWidget(label(recommendation(), "muted"))
-        layout.addWidget(
-            label(
-                "Cloud translation sends recognized text to your chosen provider. Screenshots are never uploaded. Local AI keeps text on this machine. Nothing is saved to history and there is no telemetry.",
-                "muted",
-            )
-        )
-        layout.addWidget(
-            label(
-                f"Next: install small recognition models, then press {self.settings.hotkeys['once']}. Drag a region and press Enter. Escape cancels.",
-                "muted",
-            )
-        )
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        buttons.button(QDialogButtonBox.StandardButton.Ok).setText("Set up recognition")
-        buttons.accepted.connect(dialog.accept)
-        buttons.rejected.connect(dialog.reject)
-        layout.addWidget(buttons)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            self.settings.source = source.currentData() or "ja"
-            self.settings.target = target.currentData() or "en"
-            self.settings.provider = method.currentData()
-            self.settings.onboarding_done = True
-            self.persist()
-            self.sync_controls()
-            self.navigation.setCurrentRow(2)
+        self.setup_dialog.show()
 
     def quit(self) -> None:
+        if self.closing:
+            return
         self.closing = True
         self.stop()
+        self.timer.stop()
         self.jobs.cancel.set()
+        if hasattr(self, "setup_dialog"):
+            self.setup_dialog.reject()
+        app = QApplication.instance()
+        if app is not None:
+            app.removeNativeEventFilter(self.hotkeys)
         self.hotkeys.close()
         if self.selector:
             self.selector.cleanup()
         self.overlay.close()
         self.tray.hide()
-        QApplication.instance().quit()  # type: ignore[union-attr]
+        # Keep the event loop responsive until native process handles are reaped.
+        from threading import Thread
+
+        def finish_workers() -> None:
+            deadline = time.monotonic() + 35
+            for pipeline in self.retiring:
+                pipeline.wait_closed(max(0, deadline - time.monotonic()))
+            self.jobs.wait_closed(max(0, deadline - time.monotonic()))
+            if hasattr(self, "setup_dialog"):
+                self.setup_dialog.jobs.wait_closed(max(0, deadline - time.monotonic()))
+
+        worker = Thread(target=finish_workers, name="desktranslate-shutdown", daemon=True)
+        worker.start()
+        self.shutdown_timer = QTimer(self)
+
+        def finish_shutdown() -> None:
+            app = QApplication.instance()
+            if app is not None and not worker.is_alive():
+                self.shutdown_timer.stop()
+                app.exit(self.exit_code)
+
+        self.shutdown_timer.timeout.connect(finish_shutdown)
+        self.shutdown_timer.start(50)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         if self.settings.close_to_tray and self.tray.isVisible() and not self.closing:

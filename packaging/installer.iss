@@ -1,8 +1,11 @@
-#define AppVersion "2.0.0b1"
+#ifndef AppVersion
+  #error AppVersion must be supplied by tools/build.py
+#endif
 [Setup]
 AppId={{BA24C20E-62C5-4C3B-80B4-19B02C0DBBDB}
 AppName=DeskTranslate 2
 AppVersion={#AppVersion}
+VersionInfoVersion={#FileVersion}
 AppPublisher=DeskTranslate
 AppPublisherURL=https://github.com/DeskTranslate/DeskTranslate
 DefaultDirName={localappdata}\Programs\DeskTranslate
@@ -12,7 +15,7 @@ MinVersion=10.0.19041
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 OutputDir=..\dist
-OutputBaseFilename=DeskTranslate-2.0.0b1-Setup-x64
+OutputBaseFilename=DeskTranslate-{#AppVersion}-Setup-x64
 SetupIconFile=..\build\icon.ico
 UninstallDisplayIcon={app}\DeskTranslate.exe
 Compression=lzma2
@@ -20,6 +23,10 @@ SolidCompression=yes
 WizardStyle=modern
 DisableProgramGroupPage=yes
 CloseApplications=yes
+#ifdef SignedBuild
+SignTool=DeskTranslate
+SignedUninstaller=yes
+#endif
 [Files]
 Source: "..\dist\DeskTranslate\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 [Icons]

@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0b2",
+  "authored_samples_only": true,
+  "live_provider": "Google public web endpoint",
+  "paid_provider_or_local_llm_qualification": false,
+  "samples": [
+    {
+      "source": "ja",
+      "target": "en",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 1938.38,
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "ko",
+      "target": "en",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2033.45,
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "en",
+      "target": "es",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2134.93,
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "es",
+      "target": "en",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 1929.19,
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "zh-CN",
+      "target": "en",
+      "recognition_fidelity": 0.947,
+      "ocr_ms": 1771.06,
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "zh-TW",
+      "target": "en",
+      "recognition_fidelity": 0.842,
+      "ocr_ms": 1675.45,
+      "translation_nonempty": true,
+      "translation_changed": true
+    }
+  ],
+  "passed": true
+}

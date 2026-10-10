@@ -15,6 +15,7 @@ class Jobs(QObject):
         self.serial = 0
         self.busy = False
         self.cancel = Event()
+        self.worker_thread: Thread | None = None
 
     def run(self, operation: Callable[[], object]) -> int:
         if self.busy:
@@ -36,5 +37,13 @@ class Jobs(QObject):
                 )
                 self.done.emit(serial, None, message)
 
-        Thread(target=worker, name="desktranslate-setup", daemon=True).start()
+        self.worker_thread = Thread(target=worker, name="desktranslate-setup", daemon=True)
+        self.worker_thread.start()
         return serial
+
+    def wait_closed(self, timeout: float = 20.0) -> bool:
+        self.cancel.set()
+        if self.worker_thread:
+            self.worker_thread.join(timeout)
+            return not self.worker_thread.is_alive()
+        return True

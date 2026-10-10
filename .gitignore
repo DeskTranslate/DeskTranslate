@@ -7,6 +7,7 @@ __pycache__/
 .upstream.git/
 .test-data/
 .test-tmp/
+.test-tmp-network/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
@@ -16,6 +17,8 @@ dist/
 *.egg-info/
 *.log
 *.jsonl
+*.progress.json
+dist-python/
 *.part
 .env
 .env.*

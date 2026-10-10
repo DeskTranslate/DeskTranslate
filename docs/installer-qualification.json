@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0b2",
+  "setup_sha256": "616e167120c4c2bb8a1303765fab13039ab423b3cf548ab581d44c9f28d7f3ab",
+  "synthetic_data_only": true,
+  "non_ascii_path": true,
+  "non_ascii_data_path": true,
+  "system_only_path": true,
+  "empty_non_ascii_working_directory": true,
+  "previous_version_upgrade": true,
+  "installed_ocr_http_credentials_tested": true,
+  "install": true,
+  "startup": true,
+  "settings_preserved_on_upgrade": true,
+  "reinstall": true,
+  "uninstall": true,
+  "settings_retained_on_uninstall": true,
+  "registry_removed": true,
+  "passed": true
+}

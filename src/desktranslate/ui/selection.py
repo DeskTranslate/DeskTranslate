@@ -141,6 +141,11 @@ class RegionSelector(QObject):
             logical = Rect(geometry.x(), geometry.y(), geometry.width(), geometry.height())
             pixels = physical.get(screen.name())
             if pixels is None:
+                import os
+
+                if os.name == "nt":
+                    self.cancel()
+                    return
                 ratio = screen.devicePixelRatio()
                 pixels = Rect(
                     round(logical.x * ratio),

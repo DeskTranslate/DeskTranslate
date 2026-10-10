@@ -1,0 +1,125 @@
+{
+  "version": "2.0.0b2",
+  "device_pixel_ratios": [
+    2.0
+  ],
+  "logical_window_size": [
+    920,
+    470
+  ],
+  "pages": [
+    {
+      "page": "Translate",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Providers",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Recognition",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Appearance",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Profiles",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Preferences",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Session",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    },
+    {
+      "page": "Diagnostics",
+      "horizontal_scroll_max": 0,
+      "viewport_width": 637
+    }
+  ],
+  "keyboard_focus_targets": 15,
+  "combobox_accessible_names": {
+    "named": 19,
+    "total": 19
+  },
+  "screen_reader_tested": false,
+  "physical_mixed_dpi_tested": false,
+  "setup_layout_only": {
+    "initial_size": [
+      640,
+      470
+    ],
+    "initial_frame_fits": true,
+    "pages": [
+      {
+        "page": 0,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      },
+      {
+        "page": 1,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      },
+      {
+        "page": 2,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      },
+      {
+        "page": 3,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      },
+      {
+        "page": 4,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      },
+      {
+        "page": 5,
+        "logical_size": [
+          560,
+          320
+        ],
+        "horizontal_scroll_max": 0,
+        "buttons_fit": true
+      }
+    ],
+    "successful_translation_tested": false
+  },
+  "high_contrast_native_style_branch": true,
+  "passed": true
+}

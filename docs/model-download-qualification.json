@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0b2",
+  "language": "ja",
+  "fresh_download": true,
+  "elapsed_s": 5.61,
+  "all_hashes_verified": true,
+  "partial_files_remaining": 0,
+  "verification_progress": true,
+  "completion_progress": true,
+  "assets": [
+    {
+      "id": "det",
+      "bytes": 4745517,
+      "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9"
+    },
+    {
+      "id": "cls",
+      "bytes": 585532,
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c"
+    },
+    {
+      "id": "japan",
+      "bytes": 9753335,
+      "sha256": "e1075a67dba758ecfc7ebc78a10ae61c95ac8fb66a9c86fab5541e33f085cb7a"
+    }
+  ]
+}

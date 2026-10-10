@@ -10,6 +10,8 @@ from pathlib import Path
 
 import httpx
 
+from desktranslate import __version__
+
 
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
@@ -46,11 +48,13 @@ def main() -> None:
                     content = archive.extractfile(member)
                     if content:
                         target.write_bytes(content.read())
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     dist = root / "dist"
     dist.mkdir(exist_ok=True)
     with zipfile.ZipFile(
-        dist / "DeskTranslate-2.0.0b1-LibrarySources.zip", "w", compression=zipfile.ZIP_STORED
+        dist / f"DeskTranslate-{__version__}-LibrarySources.zip",
+        "w",
+        compression=zipfile.ZIP_STORED,
     ) as output:
         for file in cache.glob("*.tar.gz"):
             output.write(file, file.name)

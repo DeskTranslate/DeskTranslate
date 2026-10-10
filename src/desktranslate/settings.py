@@ -40,6 +40,8 @@ class Settings:
     provider: str = "google"
     model: str = ""
     endpoint: str = ""
+    openai_api: str = "responses"
+    update_channel: str = "stable"
     provider_models: dict[str, str] = field(default_factory=dict)
     provider_endpoints: dict[str, str] = field(default_factory=dict)
     ocr: str = "rapidocr"
@@ -53,6 +55,11 @@ class Settings:
     onboarding_done: bool = False
     recent_region: list[int] | None = None
     display_signature: str = ""
+    capture_mode: str = "fixed"
+    monitor_name: str = ""
+    window_target: dict[str, str] = field(default_factory=dict)
+    window_region: list[float] | None = None
+    window_follow_restart: bool = False
     overlay_geometry: list[int] | None = None
     overlay_size: int = 22
     overlay_opacity: int = 92
@@ -106,6 +113,9 @@ class Settings:
         ):
             raise ValueError("Invalid language or schema")
         enums = {
+            "capture_mode": {"fixed", "monitor", "window"},
+            "openai_api": {"responses", "chat"},
+            "update_channel": {"stable", "beta"},
             "provider": {
                 "google",
                 "deepl",
@@ -165,6 +175,7 @@ class Settings:
             "overlay_locked",
             "overlay_fade",
             "reduced_motion",
+            "window_follow_restart",
         ):
             if type(getattr(self, name)) is not bool:
                 raise ValueError("Invalid boolean")
@@ -194,6 +205,11 @@ class Settings:
             ):
                 raise ValueError("Invalid mapping")
         self.hotkeys = {**DEFAULT_HOTKEYS, **self.hotkeys}
+        if set(self.hotkeys) != set(DEFAULT_HOTKEYS):
+            raise ValueError("Unknown shortcut action")
+        from desktranslate.shortcuts import validate_hotkeys
+
+        validate_hotkeys(self.hotkeys)
         for name in ("recent_region", "overlay_geometry"):
             value = getattr(self, name)
             if value is not None:
@@ -206,8 +222,41 @@ class Settings:
                 Rect(*value)
         if not isinstance(self.profiles, dict) or len(self.profiles) > 30:
             raise ValueError("Invalid profiles")
+        if self.profiles:
+            from desktranslate.profiles import valid_name, validate_profile
+
+            self.profiles = {
+                valid_name(name): validate_profile(profile)
+                for name, profile in self.profiles.items()
+            }
         if len(self.instructions) > 1500:
             raise ValueError("Instructions too long")
+        if not isinstance(self.monitor_name, str) or len(self.monitor_name) > 128:
+            raise ValueError("Invalid monitor identity")
+        if not isinstance(self.window_target, dict):
+            raise ValueError("Invalid application target")
+        if self.window_target:
+            if set(self.window_target) != {"executable", "executable_hash", "title"} or any(
+                not isinstance(v, str) for v in self.window_target.values()
+            ):
+                raise ValueError("Invalid application identity")
+            if (
+                not re.fullmatch(
+                    r"[\w .()-]{1,200}\.exe", self.window_target["executable"], re.IGNORECASE
+                )
+                or not re.fullmatch(r"[a-f0-9]{64}", self.window_target["executable_hash"])
+                or len(self.window_target["title"]) > 512
+                or "\0" in self.window_target["title"]
+            ):
+                raise ValueError("Invalid application identity")
+        if self.capture_mode == "window" and not self.window_target:
+            raise ValueError("Choose an application window first")
+        if self.window_region is not None:
+            from desktranslate.window_capture import project_region
+
+            if not isinstance(self.window_region, list):
+                raise ValueError("Invalid window region")
+            project_region(Rect(0, 0, 10000, 10000), self.window_region)
 
 
 class SettingsStore:
@@ -233,20 +282,25 @@ class SettingsStore:
                     "version": 2,
                 }
             allowed = {f.name for f in fields(Settings)}
+            if "openai_api" not in raw and raw.get("provider") == "openai":
+                raw["openai_api"] = "chat"  # Preserve beta 1 behavior until explicitly changed.
             settings = Settings(**{k: v for k, v in raw.items() if k in allowed})
             settings.validate()
             return settings
-        except (OSError, ValueError, TypeError):
+        except (OSError, ValueError, TypeError, RecursionError):
             self.recovered = True
             return Settings()
 
     def save(self, settings: Settings) -> None:
         settings.validate()
+        encoded = json.dumps(asdict(settings), ensure_ascii=False, indent=2)
+        if len(encoded.encode("utf-8")) > 200_000:
+            raise ValueError("Settings are too large. Export or remove unused profiles.")
         self.directory.mkdir(parents=True, exist_ok=True)
         fd, temporary = tempfile.mkstemp(prefix="settings-", suffix=".tmp", dir=self.directory)
         try:
             with os.fdopen(fd, "w", encoding="utf-8") as stream:
-                json.dump(asdict(settings), stream, ensure_ascii=False, indent=2)
+                stream.write(encoded)
                 stream.flush()
                 os.fsync(stream.fileno())
             os.replace(temporary, self.path)

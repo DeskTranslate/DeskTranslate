@@ -18,8 +18,15 @@ from desktranslate.providers import create_provider, prompts
         (
             "openai",
             {
-                "choices": [{"message": {"content": "Translation"}, "finish_reason": "stop"}],
-                "usage": {"prompt_tokens": 10},
+                "status": "completed",
+                "output": [
+                    {
+                        "type": "message",
+                        "role": "assistant",
+                        "content": [{"type": "output_text", "text": "Translation"}],
+                    }
+                ],
+                "usage": {"input_tokens": 10},
             },
         ),
         ("openrouter", {"choices": [{"message": {"content": "Translation"}}]}),
@@ -46,6 +53,10 @@ from desktranslate.providers import create_provider, prompts
 def test_native_translation_contracts(name, response):
     def handler(request):
         assert request.url.scheme in {"https", "http"}
+        if name == "openai":
+            body = json.loads(request.content)
+            assert request.url.path == "/v1/responses"
+            assert body["store"] is False and body["stream"] is False
         if name == "anthropic":
             body = json.loads(request.content)
             assert "system" in body
@@ -146,3 +157,55 @@ def test_prompt_translates_questions_and_bounds_context():
     assert "untrusted" in system
     assert json.loads(user)["current_text"] == request.text
     assert json.loads(user)["glossary"]["Mika"] == "ミカ"
+
+
+def test_native_openai_chat_retains_compatibility_and_disables_storage():
+    def handler(request):
+        assert request.url.path == "/v1/chat/completions"
+        assert json.loads(request.content)["store"] is False
+        return httpx.Response(200, json={"choices": [{"message": {"content": "Translation"}}]})
+
+    provider = create_provider(
+        "openai", "test", openai_api="chat", transport=httpx.MockTransport(handler)
+    )
+    assert provider.translate(TranslationRequest("text", "ja", "en", "model")).text == "Translation"
+    provider.close()
+
+
+def test_gzip_response_limit_is_enforced_before_unbounded_expansion():
+    import gzip
+
+    compressed = gzip.compress(b"x" * 8_000_100)
+    provider = create_provider(
+        "custom",
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200, headers={"Content-Encoding": "gzip"}, stream=httpx.ByteStream(compressed)
+            )
+        ),
+    )
+    with pytest.raises(TranslationError, match="too large"):
+        provider.translate(TranslationRequest("text", "ja", "en", "model"))
+    provider.close()
+
+
+def test_catalog_filters_known_non_text_models_and_keeps_unknown_compatibility_ids():
+    provider = create_provider(
+        "openrouter",
+        "test",
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                json={
+                    "data": [
+                        {"id": "text-embedding-3-small"},
+                        {"id": "gpt-image-1"},
+                        {"id": "mystery-text-model"},
+                        {"id": "vision-only", "architecture": {"output_modalities": ["image"]}},
+                    ]
+                },
+            )
+        ),
+    )
+    assert [model.id for model in provider.models()] == ["mystery-text-model"]
+    provider.close()

@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "native_qt_platform": "windows",
+  "synthetic_event_not_game_capture": true,
+  "physical_single_monitor": true,
+  "live_main_stays_hidden": true,
+  "live_foreground_unchanged": true,
+  "live_result_retained": true,
+  "passive_overlay_fit_status": true,
+  "explicit_one_shot_opens_main": true,
+  "passed": true
+}
