@@ -1,0 +1,44 @@
+{
+  "runtime_version": "1.24.4",
+  "mode": "directml",
+  "available_providers": [
+    "DmlExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "primary_environment_unchanged": true,
+  "fixtures": [
+    {
+      "language": "ja",
+      "startup_ms": 1747.57,
+      "warm_median_ms": 587.17,
+      "warm_max_ms": 642.13,
+      "exact": true,
+      "providers": [
+        "DmlExecutionProvider",
+        "CPUExecutionProvider"
+      ]
+    },
+    {
+      "language": "ko",
+      "startup_ms": 1729.54,
+      "warm_median_ms": 555.44,
+      "warm_max_ms": 577.13,
+      "exact": true,
+      "providers": [
+        "DmlExecutionProvider",
+        "CPUExecutionProvider"
+      ]
+    },
+    {
+      "language": "en",
+      "startup_ms": 1704.02,
+      "warm_median_ms": 558.94,
+      "warm_max_ms": 733.27,
+      "exact": true,
+      "providers": [
+        "DmlExecutionProvider",
+        "CPUExecutionProvider"
+      ]
+    }
+  ]
+}

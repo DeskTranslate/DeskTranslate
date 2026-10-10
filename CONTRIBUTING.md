@@ -8,6 +8,8 @@ Tests use synthetic text only. Put runtime data in an isolated `DESKTRANSLATE_DA
 
 For opt-in OCR measurements: `python tools/evaluate.py --generate --install`. These flags generate fixtures from installed OS fonts and explicitly download verified OCR models. `python tools/e2e_desktop.py` displays a temporary synthetic window and contacts the quick translation endpoint only after the recognized fixture matches exactly. `QT_QPA_PLATFORM=offscreen python tools/render_ui.py` renders synthetic UI previews; on PowerShell set the environment variable separately.
 
+The [release checklist](docs/release-checklist.md) lists native window/UI/sample/installer probes and the two-hour or optional overnight soak. Windows asyncio uses a loopback socket internally; restricted sandboxes must allow it to run network deadline/cancellation tests. Keep a single Qt application in UI tests, destroy test windows on the GUI thread, and detach native event filters before their owner is released. Never hide a failing native lifecycle test by merely excluding it.
+
 Source assets resolve from the package; do not depend on the current directory in runtime code. Keep endpoints validated, redirects disabled, model downloads verified, keys out of JSON, and logs/diagnostics allowlisted. Cap input, response size and context. Features with new privacy implications require an explicit user choice.
 
 Update documentation and the validation report when behavior changes. Run the [release checklist](docs/release-checklist.md) before promotion. Dependency changes require a lock refresh, vulnerability scan and packaged smoke test. Publishing workflows use least privilege and pinned action commits. Do not add unsigned download-and-execute helpers to user flows.

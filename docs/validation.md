@@ -1,4 +1,16 @@
-# DeskTranslate 2 beta validation
+# DeskTranslate 2 beta2 validation
+
+## Current hardening pass
+
+The full suite now passes **190 tests**, with Ruff lint/format and mypy over **39 application modules**. New regression coverage includes atomic state interleavings (ten seeded sequences of 300 actions), bounded OCR recovery, stale failure rejection, window binding/crop safety, profile/glossary schemas, semantic update ordering, total request deadlines through slow headers, immediate network cancellation, gzip expansion bounds, malformed/deep JSON, setup retry/completion, transcript privacy, persistent overlay hiding and passive recovery without focus theft. Native UI teardown now detaches its application event filter before destroying its owner; repeated UI lifecycle tests pass. Theme application is idempotent and demo/tests do not create real tray notifications.
+
+[Native window qualification](window-qualification.json) passed ten authored-window checks at physical 125% scale, including movement, resize, minimize, restore, occlusion and replacement/ambiguous-reconnection guards. [Native UI qualification](ui-qualification.json) ran at an effective 200% Qt scale: eight pages have no horizontal overflow, 15 Tab focus targets were reached and all 16 combo boxes expose accessible names. The Windows high-contrast native-style branch was exercised; an actual screen reader, physical mixed-DPI setup and OS preference changes remain manual gates.
+
+[Six bundled sample checks](sample-qualification.json) use actual isolated OCR and Google's live translation endpoint, with no user content. Recognition fidelity is 1.0 for Japanese/Korean/English/Spanish, 0.947 for Simplified Chinese and 0.842 for Traditional Chinese; every translation is nonempty and differs from the authored source. Paid APIs and loaded local LLMs remain unqualified.
+
+The final two-hour native-resource soak, final binary/installer lifecycle, artifact privacy scan and hosted CI results are recorded after completion in the production report. Partial/interrupted runs do not count. **Stable verdict remains NOT READY:** publisher signing is unavailable and the manual matrix is incomplete. The following beta1 evidence is retained as the baseline, not substituted for beta2 qualification.
+
+## Beta1 baseline
 
 This report distinguishes repeatable checks from unqualified scenarios. It does not certify every game, display layout or model.
 
@@ -27,7 +39,7 @@ The frozen Qt startup initially failed because an unrelated Poppler ICU DLL on P
 
 The [OCR report](ocr-benchmark.json) contains every fixture and preprocessing result; [the earlier model baseline](ocr-v4-benchmark.json) and [multilingual comparison](ocr-v6-comparison.json) retain unsuccessful alternatives. Seven of nine original-color fixtures have zero whitespace-normalized character error. Korean initially failed because the document angle classifier rotated upright subtitles; disabling classification and selecting its dedicated recognizer corrected it. Simplified Chinese loses punctuation (CER 0.1); Traditional Chinese also confuses a character (CER 0.2). These remaining failures are not hidden.
 
-Warm recognition medians on this host are roughly 0.9â€“1.4 seconds for the 660Ã—160 fixture corpus. Original RGB remains the default because contrast/upscaling did not consistently improve this sample. A high-confidence settled frame needs one inference; uncertain/accuracy-mode text is confirmed from a fresh captured frame, not by repeating OCR on identical pixels. Idle capture cadence backs off after three unchanged seconds while static OCR remains suppressed.
+Warm recognition medians on this host are roughly 0.9–1.4 seconds for the 660×160 fixture corpus. Original RGB remains the default because contrast/upscaling did not consistently improve this sample. A high-confidence settled frame needs one inference; uncertain/accuracy-mode text is confirmed from a fresh captured frame, not by repeating OCR on identical pixels. Idle capture cadence backs off after three unchanged seconds while static OCR remains suppressed.
 
 The [30-second synthetic soak](performance.json) accepted 40 changing lines, retained eight context pairs and 40 cache entries, and observed event queue occupancy at most two, with no pending frames/text at completion. Cached overlay paints measured about 1.1 ms median and 2.0 ms p95. The report's memory values cover Python allocations only, not native Qt/ONNX buffers. Synthetic inference and a brief soak do not validate several hours of real media or native memory growth.
 

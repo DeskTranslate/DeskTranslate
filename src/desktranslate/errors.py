@@ -16,6 +16,10 @@ class DisplayChangedError(CaptureError):
     message = "Your display layout changed. Select the region again."
 
 
+class TargetUnavailableError(CaptureError):
+    message = "Waiting for the chosen application. Restore it or select its window again."
+
+
 class OCRInitializationError(DeskTranslateError):
     message = "Recognition is not ready. Open Recognition and prepare the models."
 

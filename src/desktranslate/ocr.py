@@ -28,6 +28,8 @@ from desktranslate.languages import REGISTRY
 from desktranslate.models import OCRLine, OCRResult, Rect
 from desktranslate.settings import data_dir
 
+INSTALL_LOCK = Lock()
+
 
 def manifest() -> dict[str, dict[str, Any]]:
     return json.loads((Path(__file__).parent / "assets/models.json").read_text(encoding="utf-8"))
@@ -62,6 +64,21 @@ class ModelManager:
     def install(
         self, language: str, cancel: Event, progress: Callable[[str, int, int], None]
     ) -> None:
+        while not INSTALL_LOCK.acquire(timeout=0.1):
+            if cancel.is_set():
+                raise Cancelled()
+        try:
+            self._install(language, cancel, progress)
+        except OSError:
+            raise OCRInitializationError(
+                "The language pack could not be written. Check free disk space and folder permissions, then retry."
+            ) from None
+        finally:
+            INSTALL_LOCK.release()
+
+    def _install(
+        self, language: str, cancel: Event, progress: Callable[[str, int, int], None]
+    ) -> None:
         self.directory.mkdir(parents=True, exist_ok=True)
         with httpx.Client(timeout=httpx.Timeout(15.0, connect=5), follow_redirects=False) as client:
             for model in self.required(language):
@@ -71,6 +88,7 @@ class ModelManager:
                 target = self.path(model)
                 partial = target.with_suffix(".part")
                 url = info["url"]
+                deadline = time.monotonic() + 180
                 try:
                     for _ in range(6):
                         if cancel.is_set():
@@ -83,13 +101,22 @@ class ModelManager:
                                 url = next_url
                                 continue
                             response.raise_for_status()
-                            total = int(response.headers.get("Content-Length", 0))
+                            try:
+                                total = int(response.headers.get("Content-Length", 0))
+                            except ValueError:
+                                total = 0
+                            if not 0 <= total <= 100_000_000:
+                                raise OCRInitializationError("Invalid language pack download size.")
                             digest = hashlib.sha256()
                             downloaded = 0
                             with partial.open("wb") as stream:
                                 for chunk in response.iter_bytes(65536):
                                     if cancel.is_set():
                                         raise Cancelled()
+                                    if time.monotonic() > deadline:
+                                        raise OCRInitializationError(
+                                            "The language pack download took too long. Retry on a stable connection."
+                                        )
                                     downloaded += len(chunk)
                                     if downloaded > 100_000_000:
                                         raise OCRInitializationError(
@@ -98,11 +125,13 @@ class ModelManager:
                                     stream.write(chunk)
                                     digest.update(chunk)
                                     progress(model, downloaded, total)
+                            progress("verifying:" + model, downloaded, downloaded)
                             if digest.hexdigest() != info["sha256"]:
                                 raise OCRInitializationError(
                                     "Model verification failed. Retry the download."
                                 )
                             os.replace(partial, target)
+                            progress("installed:" + model, downloaded, downloaded)
                             break
                     else:
                         raise OCRInitializationError("Too many model download redirects.")
@@ -281,6 +310,7 @@ class IsolatedOCR:
         child.close()
         self.ready = False
         self.closed = Event()
+        self.reaped = False
 
     def receive(self, cancel: Event, timeout: float = 25.0) -> tuple[str, Any]:
         start = time.monotonic()
@@ -311,7 +341,12 @@ class IsolatedOCR:
             self.ready = True
         if self.closed.is_set() or cancel.is_set():
             raise Cancelled()
-        self.connection.send((image.size, image.tobytes(), vertical))
+        try:
+            self.connection.send((image.size, image.tobytes(), vertical))
+        except (OSError, EOFError):
+            if self.closed.is_set():
+                raise Cancelled() from None
+            raise OCRInferenceError() from None
         status, value = self.receive(cancel)
         if status != "result":
             raise OCRInferenceError()
@@ -324,3 +359,17 @@ class IsolatedOCR:
                 if self.process.is_alive():
                     self.process.terminate()
                 self.connection.close()
+
+    def reap(self) -> None:
+        """Called from the recognition worker, after cancellation has ended IPC."""
+        self.close()
+        with self.lock:
+            if self.reaped:
+                return
+            self.process.join(2.0)
+            if self.process.is_alive():
+                self.process.kill()
+                self.process.join(2.0)
+            if not self.process.is_alive():
+                self.process.close()
+                self.reaped = True

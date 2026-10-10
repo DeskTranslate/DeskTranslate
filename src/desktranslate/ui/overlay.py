@@ -30,6 +30,7 @@ class Overlay(QWidget):
         self.latest = ""
         self.capture_region: Rect | None = None
         self.suppressed = False
+        self.user_hidden = False
         self.editing = False
         self.presentation = ""
         self.setWindowTitle("DeskTranslate · translation")
@@ -42,6 +43,8 @@ class Overlay(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.resize(720, 210)
+        self.setMinimumSize(280, 110)
+        self.setMaximumSize(3840, 2160)
         layout = QVBoxLayout(self)
         self.layout_box = layout
         layout.setContentsMargins(22, 14, 22, 14)
@@ -56,7 +59,7 @@ class Overlay(QWidget):
         copy.clicked.connect(self.copy)
         row.addWidget(copy)
         hide = QPushButton("Hide")
-        hide.clicked.connect(self.hide)
+        hide.clicked.connect(self.hide_by_user)
         row.addWidget(hide)
         edit = QPushButton("Edit")
         edit.clicked.connect(self.edit_requested)
@@ -91,6 +94,7 @@ class Overlay(QWidget):
         self.move(screen.center().x() - self.width() // 2, screen.bottom() - self.height() - 40)
 
     def configure(self, settings: Settings) -> None:
+        was_visible = self.isVisible()
         if settings.overlay_mode != self.presentation:
             if settings.overlay_mode == "compact":
                 self.resize(480, 130)
@@ -121,13 +125,15 @@ class Overlay(QWidget):
         self.translation.configure(settings)
         self.source.configure(settings)
         self.status.setStyleSheet("color: #68d8b4; font-size: 10px; font-weight: 600;")
+        if was_visible and not self.user_hidden and not self.suppressed:
+            self.show()
 
     def display(self, source: str, translation: str) -> None:
         changed = translation != self.latest
         self.source.setText(source)
         self.translation.setText(translation)
         self.latest = translation
-        if not self.suppressed:
+        if not self.suppressed and not self.user_hidden:
             appearing = not self.isVisible()
             self.show()
             if (
@@ -172,6 +178,19 @@ class Overlay(QWidget):
             "DESKTRANSLATE  /  EDIT OVERLAY" if self.editing else "DESKTRANSLATE  /  READY"
         )
         self.show()
+        self.user_hidden = False
+
+    def hide_by_user(self) -> None:
+        self.user_hidden = True
+        self.fade.stop()
+        self.hide()
+
+    def toggle_visibility(self) -> None:
+        self.user_hidden = self.isVisible()
+        if self.user_hidden:
+            self.hide()
+        elif not self.suppressed:
+            self.show()
 
     def anchor(self, position: str) -> None:
         bounds = (self.screen() or QApplication.primaryScreen()).availableGeometry()
@@ -194,6 +213,11 @@ class Overlay(QWidget):
             bounds = screen.geometry()
             pixels = physical.get(screen.name())
             if pixels is None:
+                import os
+
+                if os.name == "nt":
+                    # A mismatched monitor origin is unsafe, especially at mixed DPI.
+                    continue
                 ratio = screen.devicePixelRatio()
                 pixels = Rect(
                     round(bounds.x() * ratio),

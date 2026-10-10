@@ -1,0 +1,13 @@
+{
+  "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
+  "counts": {
+    "tree_files": 207,
+    "history_blobs": 229,
+    "artifact_members": 0,
+    "release_files": 0,
+    "release_archive_members": 0,
+    "frozen_modules": 0
+  },
+  "findings": [],
+  "passed": true
+}

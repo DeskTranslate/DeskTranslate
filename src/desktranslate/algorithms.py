@@ -7,6 +7,7 @@ from difflib import SequenceMatcher
 
 from PIL import Image, ImageChops, ImageEnhance, ImageStat
 
+from desktranslate.errors import ConfigurationError
 from desktranslate.models import OCRLine, OCRResult
 
 
@@ -50,6 +51,10 @@ def preprocess(image: Image.Image, mode: str) -> Image.Image:
     # User-selectable variants: thresholding is deliberately absent from the default path.
     enhanced = ImageEnhance.Contrast(image).enhance(1.5)
     if mode == "subtitle":
+        if image.width * image.height > 10_000_000 or max(image.size) > 8192:
+            raise ConfigurationError(
+                "This area is too large for subtitle enlargement. Select a tighter region or use Original colors."
+            )
         enhanced = enhanced.resize((image.width * 2, image.height * 2), Image.Resampling.LANCZOS)
     return enhanced
 

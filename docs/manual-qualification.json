@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0b2",
+  "verdict": "NOT READY",
+  "gates": {
+    "clean_windows": false,
+    "mixed_dpi_displays": false,
+    "fullscreen_media": false,
+    "accessibility_screen_reader": false,
+    "real_provider_models": false,
+    "installer_upgrade": false,
+    "prolonged_media": false
+  },
+  "publisher_signing_available": false,
+  "notes": "Maintainer confirmed no publisher signing certificate. Do not promote to stable without actual manual qualification and trusted Authenticode signing. Automated fixtures do not substitute for physical display, screen-reader or real-provider testing."
+}

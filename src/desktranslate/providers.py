@@ -1,13 +1,22 @@
 from __future__ import annotations
 
+import asyncio
+import contextlib
+import ipaddress
 import json
+import re
+import time
+import zlib
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from typing import Any
-from urllib.parse import quote
+from threading import Event
+from typing import Any, NoReturn, cast
+from urllib.parse import quote, urlsplit
 
 import httpx
 
 from desktranslate.errors import (
+    Cancelled,
     ConfigurationError,
     LocalServerUnavailableError,
     ModelNotFoundError,
@@ -114,6 +123,14 @@ def prompts(request: TranslationRequest) -> tuple[str, str]:
     return system, json.dumps(payload, ensure_ascii=False)
 
 
+async def buffered_bytes(content: bytes) -> AsyncIterator[bytes]:
+    yield content
+
+
+def invalid_json_constant(value: str) -> NoReturn:
+    raise ValueError("Non-finite values are not JSON")
+
+
 class HTTPProvider:
     def __init__(
         self,
@@ -130,16 +147,45 @@ class HTTPProvider:
         if spec.capabilities.requires_key and not key:
             raise ProviderAuthenticationError("Add an API key in Providers first.")
         self.key = key
-        self.client = httpx.Client(
+        self.cancelled = Event()
+        self.pending: asyncio.Task[Any] | None = None
+        self.timeout = timeout
+        host = urlsplit(self.endpoint).hostname or ""
+        try:
+            loopback = ipaddress.ip_address(host).is_loopback
+        except ValueError:
+            loopback = host.lower() == "localhost"
+        self.client = httpx.AsyncClient(
             timeout=httpx.Timeout(timeout, connect=4.0),
             follow_redirects=False,
-            transport=transport,
+            transport=cast(httpx.AsyncBaseTransport | None, transport),
             limits=httpx.Limits(max_connections=2),
+            trust_env=not loopback,
+            headers={"Accept-Encoding": "identity"},
         )
+        self.loop = cast(asyncio.BaseEventLoop, asyncio.new_event_loop())
 
     def call(self, method: str, path: str, **kwargs: Any) -> Any:
+        async def bounded() -> Any:
+            self.pending = asyncio.current_task()
+            try:
+                return await asyncio.wait_for(self._call(method, path, **kwargs), self.timeout)
+            finally:
+                self.pending = None
+
         try:
-            with self.client.stream(method, self.endpoint + path, **kwargs) as response:
+            return self.loop.run_until_complete(bounded())
+        except TimeoutError:
+            raise ProviderTimeoutError() from None
+        except asyncio.CancelledError:
+            raise Cancelled() from None
+
+    async def _call(self, method: str, path: str, **kwargs: Any) -> Any:
+        deadline = time.monotonic() + self.timeout
+        try:
+            if self.cancelled.is_set():
+                raise Cancelled()
+            async with self.client.stream(method, self.endpoint + path, **kwargs) as response:
                 if response.status_code in {401, 403}:
                     raise ProviderAuthenticationError()
                 if response.status_code == 404:
@@ -155,13 +201,39 @@ class HTTPProvider:
                 if not 200 <= response.status_code < 300:
                     raise TranslationError()
                 content = bytearray()
-                for chunk in response.iter_bytes(65536):
-                    content.extend(chunk)
-                    if len(content) > 8_000_000:
+                buffered = response.is_stream_consumed
+                encoding = (
+                    "identity"
+                    if buffered
+                    else response.headers.get("Content-Encoding", "identity").lower()
+                )
+                if encoding not in {"identity", "gzip", "deflate"}:
+                    raise TranslationError("Unsupported provider response compression.")
+                decoder = (
+                    zlib.decompressobj(31 if encoding == "gzip" else 15)
+                    if encoding != "identity"
+                    else None
+                )
+                async for chunk in (
+                    response.aiter_raw() if not buffered else buffered_bytes(response.content)
+                ):
+                    if self.cancelled.is_set():
+                        raise Cancelled()
+                    if time.monotonic() > deadline:
+                        raise ProviderTimeoutError()
+                    if decoder:
+                        try:
+                            chunk = decoder.decompress(chunk, 8_000_001 - len(content))
+                        except zlib.error:
+                            raise TranslationError() from None
+                    if len(content) + len(chunk) > 8_000_000:
                         raise TranslationError("The provider response is too large.")
+                    content.extend(chunk)
+                if decoder and not decoder.eof:
+                    raise TranslationError("The provider response was incomplete.")
                 try:
-                    return json.loads(content)
-                except ValueError:
+                    return json.loads(content, parse_constant=invalid_json_constant)
+                except (ValueError, RecursionError):
                     raise TranslationError() from None
         except httpx.TimeoutException:
             raise ProviderTimeoutError() from None
@@ -175,17 +247,39 @@ class HTTPProvider:
         if not isinstance(text, str) or not text.strip() or len(text) > 30000:
             raise TranslationError()
         usage = usage or {}
+        if not isinstance(usage, dict):
+            raise TranslationError()
+        try:
+            prompt = int(cast(Any, usage.get("prompt_tokens", usage.get("input_tokens", 0))))
+            output = int(cast(Any, usage.get("completion_tokens", usage.get("output_tokens", 0))))
+        except (ValueError, TypeError, OverflowError):
+            raise TranslationError() from None
+        if not 0 <= prompt <= 1_000_000_000 or not 0 <= output <= 1_000_000_000:
+            raise TranslationError()
         return TranslationResult(
             text.strip(),
-            int(usage.get("prompt_tokens", usage.get("input_tokens", 0))),
-            int(usage.get("completion_tokens", usage.get("output_tokens", 0))),
+            prompt,
+            output,
         )
 
     def models(self) -> list[ModelInfo]:
         return []
 
     def close(self) -> None:
-        self.client.close()
+        if not self.loop.is_closed():
+            try:
+                self.loop.run_until_complete(self.client.aclose())
+                self.loop.run_until_complete(self.loop.shutdown_asyncgens())
+                self.loop.run_until_complete(self.loop.shutdown_default_executor(timeout=2))
+            finally:
+                self.loop.close()
+
+    def cancel_pending(self) -> None:
+        self.cancelled.set()
+        pending = self.pending
+        if pending and not pending.done() and not self.loop.is_closed():
+            with contextlib.suppress(RuntimeError):
+                self.loop.call_soon_threadsafe(pending.cancel)
 
 
 class CompatibleProvider(HTTPProvider):
@@ -205,6 +299,7 @@ class CompatibleProvider(HTTPProvider):
                     {"role": "user", "content": user},
                 ],
                 "stream": False,
+                **({"store": False} if self.id == "openai" else {}),
             },
         )
         try:
@@ -229,10 +324,71 @@ class CompatibleProvider(HTTPProvider):
                     m.get("pricing", {}).get("completion"),
                 )
                 for m in data["data"]
-                if isinstance(m.get("id"), str)
+                if isinstance(m, dict)
+                and isinstance(m.get("id"), str)
+                and len(m["id"]) <= 200
+                and usable_model(m)
             ]
         except (KeyError, TypeError, AttributeError):
             raise TranslationError("The model catalog is invalid.") from None
+
+
+def usable_model(model: dict[str, Any]) -> bool:
+    """Exclude known non-text families; unknown compatibility IDs stay selectable."""
+    model_id = model.get("id", "").lower()
+    if re.search(
+        r"embedding|whisper|\btts\b|moderation|dall-e|sora|realtime|transcri|\bimage\b|\baudio\b",
+        model_id,
+    ):
+        return False
+    architecture = model.get("architecture") or {}
+    if not isinstance(architecture, dict):
+        return False
+    outputs = architecture.get("output_modalities")
+    return outputs is None or isinstance(outputs, list) and "text" in outputs
+
+
+class OpenAIProvider(CompatibleProvider):
+    """Native stateless Responses; existing users may explicitly retain Chat Completions."""
+
+    api = "responses"
+
+    def translate(self, request: TranslationRequest) -> TranslationResult:
+        if self.api == "chat":
+            return super().translate(request)
+        system, user = prompts(request)
+        data = self.call(
+            "POST",
+            "/responses",
+            headers=self.headers(),
+            json={
+                "model": request.model,
+                "instructions": system,
+                "input": user,
+                "store": False,
+                "stream": False,
+                "max_output_tokens": 4096,
+            },
+        )
+        try:
+            if (
+                data.get("status") != "completed"
+                or data.get("error")
+                or data.get("incomplete_details")
+            ):
+                raise TranslationError(
+                    "Translation was blocked or incomplete. Try a smaller region or another model."
+                )
+            parts = [
+                part["text"]
+                for item in data["output"]
+                if item.get("type") == "message" and item.get("role") == "assistant"
+                for part in item["content"]
+                if part.get("type") == "output_text"
+            ]
+            return self.result("".join(parts), data.get("usage"))
+        except (KeyError, TypeError, AttributeError, ValueError):
+            raise TranslationError() from None
 
 
 class AnthropicProvider(HTTPProvider):
@@ -438,7 +594,7 @@ PROVIDERS = {
     "google": GoogleProvider,
     "deepl": DeepLProvider,
     "libre": LibreProvider,
-    "openai": CompatibleProvider,
+    "openai": OpenAIProvider,
     "openrouter": CompatibleProvider,
     "lmstudio": CompatibleProvider,
     "custom": CompatibleProvider,
@@ -454,10 +610,16 @@ def create_provider(
     endpoint: str = "",
     timeout: int = 25,
     transport: httpx.BaseTransport | None = None,
+    openai_api: str = "responses",
 ) -> HTTPProvider:
     if provider not in PROVIDERS:
         raise ConfigurationError("Choose a supported translation provider.")
     instance = PROVIDERS[provider](provider, key, endpoint, timeout, transport)
+    if isinstance(instance, OpenAIProvider):
+        if openai_api not in {"responses", "chat"}:
+            instance.close()
+            raise ConfigurationError("Choose a supported OpenAI API mode.")
+        instance.api = openai_api
     # Custom HTTP loopback services are local regardless of the generic protocol.
     if provider in {"custom", "libre"}:
         import ipaddress

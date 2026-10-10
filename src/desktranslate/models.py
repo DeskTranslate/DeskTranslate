@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Protocol
@@ -90,6 +91,7 @@ class ModelInfo:
     input_price: str | None = None
     output_price: str | None = None
     size_bytes: int | None = None
+    text_support: str = "unverified"
 
 
 @dataclass(frozen=True)
@@ -102,6 +104,8 @@ class Capabilities:
     images: bool = False
     streaming: bool = False
     structured_output: bool = False
+    text_generation: bool = True
+    reasoning: bool = False
 
 
 @dataclass(frozen=True)
@@ -153,6 +157,7 @@ class SessionState(StrEnum):
     SELECTING = "selecting"
     STARTING = "starting"
     WATCHING = "watching"
+    WAITING_TARGET = "waiting for window"
     RECOGNIZING = "recognizing"
     TRANSLATING = "translating"
     PAUSED = "paused"
@@ -176,3 +181,5 @@ class PipelineEvent:
     category: str = ""
     timings: dict[str, float] = field(default_factory=dict)
     clear: bool = False
+    region: Rect | None = None
+    created: float = field(default_factory=time.monotonic)
