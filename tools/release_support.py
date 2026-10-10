@@ -7,6 +7,7 @@ import hashlib
 import importlib.metadata
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -207,5 +208,7 @@ def stable_gate(root: Path, tag: str) -> None:
         raise ValueError("Stable requires the completed two-hour workload/resource soak")
     if soak.get("source_hashes") != runtime_source_hashes(root):
         raise ValueError("Application source/assets changed after the recorded soak")
+    if soak.get("python_version") != platform.python_version():
+        raise ValueError("Python runtime changed after the recorded soak")
     if not tag:
         raise ValueError("Stable requires an exact canonical Git tag")

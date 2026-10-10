@@ -1,5 +1,6 @@
 import hashlib
 import json
+import platform
 from pathlib import Path
 
 import pytest
@@ -29,7 +30,7 @@ def test_release_signing_and_stable_fail_closed(monkeypatch: pytest.MonkeyPatch)
         release_support.stable_gate(Path(__file__).resolve().parents[1], "v2.0.0")
 
 
-@pytest.mark.parametrize("failure", ["duration", "resources", "source", "assets"])
+@pytest.mark.parametrize("failure", ["duration", "resources", "source", "assets", "runtime"])
 def test_stable_rejects_incomplete_or_changed_soak(tmp_path, monkeypatch, failure):
     root = Path(__file__).resolve().parents[1]
     for name in ["pyproject.toml", "packaging/installer.iss"]:
@@ -52,6 +53,7 @@ def test_stable_rejects_incomplete_or_changed_soak(tmp_path, monkeypatch, failur
         "source_unchanged": True,
         "resource_qualification": {"qualified": True},
         "source_hashes": {"example.py": hashlib.sha256(source.read_bytes()).hexdigest()},
+        "python_version": platform.python_version(),
     }
     monkeypatch.setattr(release_support, "__version__", "2.0.0")
     (docs / "soak-2h.json").write_text(json.dumps(evidence))
@@ -62,8 +64,10 @@ def test_stable_rejects_incomplete_or_changed_soak(tmp_path, monkeypatch, failur
         evidence["resource_qualification"]["qualified"] = False
     elif failure == "source":
         source.write_bytes(b"qualified = False\n")
-    else:
+    elif failure == "assets":
         (source.parent / "new-asset.bin").write_bytes(b"unqualified")
+    else:
+        evidence["python_version"] = "0.0.0"
     (docs / "soak-2h.json").write_text(json.dumps(evidence))
-    with pytest.raises(ValueError, match="soak|source/assets"):
+    with pytest.raises(ValueError, match="soak|source/assets|runtime"):
         release_support.stable_gate(tmp_path, "v2.0.0")

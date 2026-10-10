@@ -6,6 +6,7 @@ import argparse
 import json
 import multiprocessing
 import os
+import platform
 import statistics
 import threading
 import time
@@ -240,6 +241,7 @@ def run(duration: float, output: Path) -> None:
         elapsed = time.monotonic() - started
         report = {
             "version": __version__,
+            "python_version": platform.python_version(),
             "requested_duration_s": duration,
             "elapsed_s": round(elapsed, 2),
             "completed": not cancelled and elapsed >= duration and closed,

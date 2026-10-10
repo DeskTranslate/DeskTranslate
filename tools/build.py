@@ -7,7 +7,9 @@ import hashlib
 import importlib.metadata
 import json
 import os
+import platform
 import shutil
+import ssl
 import subprocess
 import sys
 from pathlib import Path
@@ -174,6 +176,7 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
                     {"name": "scope", "value": scope + " dependency inventory"},
                     {"name": "git_commit", "value": str(trace["git_commit"])},
                     {"name": "source_sha256", "value": str(trace["source_sha256"])},
+                    {"name": "python_version", "value": platform.python_version()},
                 ],
             },
             "components": [
@@ -186,6 +189,24 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
                 for d in inventory
             ],
         }
+        sbom["components"].extend(
+            [
+                {
+                    "type": "framework",
+                    "name": "CPython",
+                    "version": platform.python_version(),
+                    "purl": "pkg:generic/cpython@" + platform.python_version(),
+                    "licenses": [{"license": {"id": "Python-2.0"}}],
+                },
+                {
+                    "type": "library",
+                    "name": "OpenSSL",
+                    "version": ssl.OPENSSL_VERSION.split()[1],
+                    "purl": "pkg:generic/openssl@" + ssl.OPENSSL_VERSION.split()[1],
+                    "licenses": [{"license": {"id": "Apache-2.0"}}],
+                },
+            ]
+        )
         path = dist / f"DeskTranslate-{__version__}-{scope}-sbom.json"
         path.write_text(json.dumps(sbom, indent=2), encoding="utf-8")
         artifacts.append(path)
@@ -194,6 +215,12 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
         "windows_version": windows_version(),
         **trace,
         "publisher_signed": bool(signer),
+        "python_version": platform.python_version(),
+        "openssl_version": ssl.OPENSSL_VERSION,
+        "python_distribution": os.environ.get(
+            "DESKTRANSLATE_PYTHON_DISTRIBUTION", "local interpreter"
+        ),
+        "python_archive_sha256": os.environ.get("DESKTRANSLATE_PYTHON_ARCHIVE_SHA256", ""),
         "ocr_backend": "CPUExecutionProvider",
     }
     (dist / "DeskTranslate/build-info.json").write_text(
@@ -225,7 +252,7 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
                     shutil.copyfile(source, target)
     if (ROOT / "packaging/licenses").is_dir():
         shutil.copytree(
-            ROOT / "packaging/licenses", notices / "Qt-source-licenses", dirs_exist_ok=True
+            ROOT / "packaging/licenses", notices / "Library-source-licenses", dirs_exist_ok=True
         )
     shutil.copyfile(ROOT / "docs/third-party.md", dist / "DeskTranslate" / "THIRD_PARTY.md")
     executable = dist / "DeskTranslate/DeskTranslate.exe"

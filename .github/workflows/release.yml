@@ -14,6 +14,10 @@ on:
         description: Require every documented stable qualification gate
         type: boolean
         default: false
+      endurance:
+        description: Run a two-hour source-matched native-resource soak on the pinned release runtime
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -23,7 +27,7 @@ jobs:
       id-token: write
       attestations: write
     runs-on: windows-2022
-    timeout-minutes: 40
+    timeout-minutes: 180
     env:
       QT_QPA_PLATFORM: offscreen
       DESKTRANSLATE_DATA_DIR: ${{ github.workspace }}/.test-data
@@ -32,10 +36,8 @@ jobs:
       RELEASE_STABLE: ${{ inputs.stable }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: '3.12'
-          architecture: x64
+      - name: Prepare pinned Python security runtime
+        run: ./tools/install_python.ps1
       - name: Install and check
         shell: pwsh
         run: |
@@ -105,6 +107,13 @@ jobs:
           subject-path: |
             dist/*.exe
             dist/*.zip
+      - name: Qualify two-hour endurance on the release runtime
+        if: inputs.endurance
+        run: |
+          python tools/soak.py --duration 7200 --output docs/soak-2h-hosted.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-2h-hosted.json').read_text()); assert r['elapsed_s'] >= 7200 and r['workload_passed'] and r['resource_qualification']['qualified'] and r['source_hashes'] == runtime_source_hashes(Path.cwd()) and r['python_version'] == '3.12.15'"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Remove publisher certificate
         if: always() && inputs.signed
         run: |
@@ -122,4 +131,5 @@ jobs:
             dist/SHA256SUMS.txt
             docs/installer-qualification.json
             docs/privacy-scan.json
+            docs/soak-2h-hosted.json
           retention-days: 30

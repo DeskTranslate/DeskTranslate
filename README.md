@@ -105,10 +105,11 @@ The [production audit](docs/production-audit.md), [validation report](docs/valid
 
 ## Develop and build
 
-Use **Python 3.12 x64 on Windows** for the qualified build. Application source accepts Python 3.12–3.14; those other interpreters need their own release qualification.
+Use the hash-pinned **CPython 3.12.15 Windows x64** runtime prepared by `tools/install_python.ps1` for release builds. Application source accepts Python 3.12–3.14; other interpreters need their own release qualification.
 
 ```powershell
-py -3.12 -m venv .venv
+./tools/install_python.ps1
+.tools/python-3.12.15/python/python.exe -m venv .venv
 .\.venv\Scripts\python -m pip install --require-hashes -r requirements-bootstrap.lock
 .\.venv\Scripts\python -m pip install --require-hashes --no-build-isolation -r requirements-windows.lock
 .\.venv\Scripts\python -m pip install --no-deps --no-build-isolation -e .

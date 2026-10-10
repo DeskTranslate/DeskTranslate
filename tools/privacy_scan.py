@@ -126,7 +126,7 @@ def vendor_metadata(location: str, digest: str, data: bytes | None) -> dict[str,
     return {"package": package, "version": version, "source_sha256": source_digest}
 
 
-def run(artifacts: bool, history: bool) -> dict[str, object]:
+def run(artifacts: bool, history: bool, artifact_root: Path | None = None) -> dict[str, object]:
     import io
 
     patterns = signatures()
@@ -198,7 +198,8 @@ def run(artifacts: bool, history: bool) -> dict[str, object]:
     if artifacts:
         from PyInstaller.archive.readers import CArchiveReader
 
-        directory = ROOT / "dist/DeskTranslate"
+        release_directory = artifact_root or ROOT / "dist"
+        directory = release_directory / "DeskTranslate"
         for path in directory.rglob("*"):
             if path.is_file():
                 with path.open("rb") as stream:
@@ -220,12 +221,12 @@ def run(artifacts: bool, history: bool) -> dict[str, object]:
                         counts["frozen_modules"] += 1
             elif entry[-1] in {"s", "m", "M"}:
                 checked("frozen/" + name, io.BytesIO(archive.extract(name)))
-        sums = ROOT / "dist/SHA256SUMS.txt"
+        sums = release_directory / "SHA256SUMS.txt"
         names = [line.split("  ", 1)[1] for line in sums.read_text().splitlines()]
         for name in [*names, sums.name]:
             if Path(name).name != name:
                 raise ValueError("Release checksum paths must be plain filenames")
-            path = ROOT / "dist" / name
+            path = release_directory / name
             with path.open("rb") as stream:
                 checked("release/" + name, stream)
             counts["release_files"] += 1
@@ -250,9 +251,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifacts", action="store_true")
     parser.add_argument("--history", action="store_true")
+    parser.add_argument(
+        "--artifact-root", type=Path, help="Extracted hosted dist directory to inspect"
+    )
     parser.add_argument("--output", type=Path, default=Path("docs/privacy-scan.json"))
     args = parser.parse_args()
-    report = run(args.artifacts, args.history)
+    report = run(args.artifacts, args.history, args.artifact_root)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report))
