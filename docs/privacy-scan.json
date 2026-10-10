@@ -1,13 +1,63 @@
 {
   "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
   "counts": {
-    "tree_files": 209,
-    "history_blobs": 292,
-    "artifact_members": 0,
-    "release_files": 0,
-    "release_archive_members": 0,
-    "frozen_modules": 0
+    "tree_files": 211,
+    "history_blobs": 307,
+    "artifact_members": 444,
+    "release_files": 7,
+    "release_archive_members": 449,
+    "frozen_modules": 1681
   },
-  "findings": [],
-  "passed": true
+  "findings": [
+    {
+      "location": "app/THIRD_PARTY_NOTICES/packaging/packaging/licenses/__pycache__/_spdx.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "app/THIRD_PARTY_NOTICES/packaging/packaging/licenses/__pycache__/__init__.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "app/THIRD_PARTY_NOTICES/setuptools/setuptools/_vendor/packaging/licenses/__pycache__/_spdx.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "app/THIRD_PARTY_NOTICES/setuptools/setuptools/_vendor/packaging/licenses/__pycache__/__init__.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/THIRD_PARTY_NOTICES/packaging/packaging/licenses/__pycache__/_spdx.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/THIRD_PARTY_NOTICES/packaging/packaging/licenses/__pycache__/__init__.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/THIRD_PARTY_NOTICES/setuptools/setuptools/_vendor/packaging/licenses/__pycache__/_spdx.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    },
+    {
+      "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/THIRD_PARTY_NOTICES/setuptools/setuptools/_vendor/packaging/licenses/__pycache__/__init__.cpython-312.pyc",
+      "categories": [
+        "private_build_home"
+      ]
+    }
+  ],
+  "verified_upstream_metadata": [],
+  "passed": false
 }

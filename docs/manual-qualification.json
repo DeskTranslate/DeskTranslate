@@ -7,9 +7,9 @@
     "fullscreen_media": false,
     "accessibility_screen_reader": false,
     "real_provider_models": false,
-    "installer_upgrade": false,
+    "installer_upgrade": true,
     "prolonged_media": false
   },
   "publisher_signing_available": false,
-  "notes": "Maintainer confirmed no publisher signing certificate. Do not promote to stable without actual manual qualification and trusted Authenticode signing. Automated fixtures do not substitute for physical display, screen-reader or real-provider testing."
+  "notes": "Maintainer confirmed no publisher signing certificate. Do not promote to stable without actual manual qualification and trusted Authenticode signing. Automated fixtures do not substitute for physical display, screen-reader or real-provider testing. Same-host beta1-to-beta2 upgrade, reinstall and uninstall passed in a path containing spaces/CJK with isolated settings preserved. This does not complete clean consumer-Windows qualification."
 }

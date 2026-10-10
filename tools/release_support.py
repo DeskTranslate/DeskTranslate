@@ -78,11 +78,18 @@ def shipped_distributions(root: Path) -> list[importlib.metadata.Distribution]:
     inputs: set[str] = set()
 
     def visit(value: Any) -> None:
-        if isinstance(value, (list, tuple)):
+        if (
+            isinstance(value, tuple)
+            and len(value) == 3
+            and isinstance(value[2], str)
+            and value[2] in {"PYMODULE", "PYSOURCE", "BINARY", "EXTENSION", "DATA"}
+            and isinstance(value[1], str)
+            and "site-packages" in value[1]
+        ):
+            inputs.add(os.path.normcase(str(Path(value[1]).resolve())))
+        elif isinstance(value, (list, tuple)):
             for item in value:
                 visit(item)
-        elif isinstance(value, str) and "site-packages" in value:
-            inputs.add(os.path.normcase(str(Path(value).resolve())))
 
     visit(analysis)
     result = []

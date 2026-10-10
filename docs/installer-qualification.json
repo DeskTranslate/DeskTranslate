@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0b2",
+  "synthetic_data_only": true,
+  "non_ascii_path": true,
+  "previous_version_upgrade": true,
+  "install": true,
+  "startup": true,
+  "settings_preserved_on_upgrade": true,
+  "reinstall": true,
+  "uninstall": true,
+  "settings_retained_on_uninstall": true,
+  "registry_removed": true,
+  "passed": true
+}

@@ -111,6 +111,22 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
         "torch",
         "--exclude-module",
         "paddle",
+        "--exclude-module",
+        "pytest",
+        "--exclude-module",
+        "_pytest",
+        "--exclude-module",
+        "numpy.testing",
+        "--exclude-module",
+        "numpy.f2py",
+        "--exclude-module",
+        "setuptools",
+        "--exclude-module",
+        "wheel",
+        "--exclude-module",
+        "pip",
+        "--exclude-module",
+        "build",
         str(ROOT / "tools/launcher.py"),
     ]
     # Model provisioning belongs to the managed application-data cache. Never
@@ -188,8 +204,15 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
         for file in distribution.files or []:
             if (
                 file.name.lower().startswith(("license", "copying", "notice"))
-                or "licenses" in file.parts
-            ) and ".." not in file.parts:
+                or (
+                    "licenses" in file.parts
+                    and file.suffix.lower() in {"", ".txt", ".md", ".rst", ".html"}
+                )
+            ) and (
+                ".." not in file.parts
+                and "__pycache__" not in file.parts
+                and file.suffix.lower() not in {".py", ".pyc", ".pyo", ".pyd", ".dll", ".exe"}
+            ):
                 source = distribution.locate_file(file)
                 if source.is_file():
                     target = notices / distribution.metadata["Name"] / Path(*file.parts)
