@@ -10,7 +10,7 @@ import zlib
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from threading import Event
-from typing import Any, NoReturn, cast
+from typing import Any, cast
 from urllib.parse import quote, urlsplit
 
 import httpx
@@ -28,6 +28,7 @@ from desktranslate.errors import (
 )
 from desktranslate.languages import language_name
 from desktranslate.models import Capabilities, ModelInfo, TranslationRequest, TranslationResult
+from desktranslate.network import strict_json
 from desktranslate.security import validate_endpoint
 
 
@@ -125,10 +126,6 @@ def prompts(request: TranslationRequest) -> tuple[str, str]:
 
 async def buffered_bytes(content: bytes) -> AsyncIterator[bytes]:
     yield content
-
-
-def invalid_json_constant(value: str) -> NoReturn:
-    raise ValueError("Non-finite values are not JSON")
 
 
 class HTTPProvider:
@@ -232,7 +229,7 @@ class HTTPProvider:
                 if decoder and not decoder.eof:
                     raise TranslationError("The provider response was incomplete.")
                 try:
-                    return json.loads(content, parse_constant=invalid_json_constant)
+                    return strict_json(content)
                 except (ValueError, RecursionError):
                     raise TranslationError() from None
         except httpx.TimeoutException:

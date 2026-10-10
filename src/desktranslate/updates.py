@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-import json
 import re
-import time
 from threading import Event
-from typing import Any
+from typing import Any, cast
 from urllib.parse import urlsplit
 
 import httpx
-from packaging.version import InvalidVersion, Version
+from packaging.version import Version
 
 from desktranslate import __version__
 from desktranslate.errors import Cancelled, ProviderUnavailableError
+from desktranslate.network import identity_chunks, run_cancellable, strict_json
 
+UPDATE_TIMEOUT = 12.0
 RELEASES = "https://api.github.com/repos/DeskTranslate/DeskTranslate/releases"
 
 
@@ -69,16 +69,19 @@ def check_release(
     transport: httpx.BaseTransport | None = None,
 ) -> tuple[str, str] | None:
     cancel = cancel or Event()
-    deadline = time.monotonic() + 12
-    try:
-        with httpx.Client(
-            timeout=httpx.Timeout(6, connect=4), follow_redirects=False, transport=transport
+
+    async def fetch() -> tuple[str, str] | None:
+        async with httpx.AsyncClient(
+            timeout=httpx.Timeout(6, connect=4),
+            follow_redirects=False,
+            transport=cast(httpx.AsyncBaseTransport | None, transport),
+            headers={"Accept-Encoding": "identity"},
         ) as client:
             releases: list[dict[str, Any]] = []
             for page in range(1, 4):
                 if cancel.is_set():
                     raise Cancelled()
-                with client.stream(
+                async with client.stream(
                     "GET",
                     RELEASES,
                     params={"per_page": 30, "page": page},
@@ -86,20 +89,23 @@ def check_release(
                 ) as response:
                     response.raise_for_status()
                     content = bytearray()
-                    for chunk in response.iter_bytes():
+                    async for chunk in identity_chunks(response):
                         if cancel.is_set():
                             raise Cancelled()
-                        if time.monotonic() > deadline or len(content) + len(chunk) > 1_000_000:
+                        if len(content) + len(chunk) > 1_000_000:
                             raise ValueError("Release metadata limit")
                         content.extend(chunk)
-                    payload = json.loads(content)
+                    payload = strict_json(content)
                 if not isinstance(payload, list) or len(payload) > 30:
                     raise ValueError("Invalid release catalog")
                 releases.extend(payload)
                 if len(payload) < 30:
                     break
             return choose_release(releases, channel)
-    except (httpx.HTTPError, ValueError, KeyError, TypeError, InvalidVersion):
+
+    try:
+        return run_cancellable(fetch, cancel, UPDATE_TIMEOUT)
+    except (httpx.HTTPError, TimeoutError, ValueError, KeyError, TypeError, RecursionError):
         raise ProviderUnavailableError(
             "Cannot check updates. Visit the GitHub releases page later."
         ) from None

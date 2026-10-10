@@ -60,6 +60,15 @@ def git_trace(root: Path) -> dict[str, str | bool]:
     return {"git_commit": commit, "working_tree_dirty": dirty, "source_sha256": digest.hexdigest()}
 
 
+def runtime_source_hashes(root: Path) -> dict[str, str]:
+    directory = root / "src/desktranslate"
+    return {
+        path.relative_to(directory).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(directory.rglob("*"))
+        if path.is_file() and "__pycache__" not in path.parts
+    }
+
+
 def shipped_distributions(root: Path) -> list[importlib.metadata.Distribution]:
     # PyInstaller records the precise analysis input paths. They are only used
     # privately to map owners; no absolute paths enter public inventories.
@@ -189,18 +198,7 @@ def stable_gate(root: Path, tag: str) -> None:
         or not soak.get("resource_qualification", {}).get("qualified")
     ):
         raise ValueError("Stable requires the completed two-hour workload/resource soak")
-    for name in (
-        "pipeline.py",
-        "ocr.py",
-        "providers.py",
-        "algorithms.py",
-        "context.py",
-        "models.py",
-        "ui/overlay.py",
-        "ui/subtitles.py",
-    ):
-        current = hashlib.sha256((root / "src/desktranslate" / name).read_bytes()).hexdigest()
-        if soak.get("source_hashes", {}).get(name) != current:
-            raise ValueError("Pipeline or overlay source changed after the recorded soak")
+    if soak.get("source_hashes") != runtime_source_hashes(root):
+        raise ValueError("Application source/assets changed after the recorded soak")
     if not tag:
         raise ValueError("Stable requires an exact canonical Git tag")

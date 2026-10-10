@@ -6,9 +6,18 @@ from threading import Event, Thread
 import httpx
 import pytest
 
-from desktranslate.errors import Cancelled, ProviderTimeoutError, TranslationError
+from desktranslate.errors import (
+    Cancelled,
+    OCRInitializationError,
+    ProviderTimeoutError,
+    ProviderUnavailableError,
+    TranslationError,
+)
 from desktranslate.models import TranslationRequest
+from desktranslate.network import strict_json
+from desktranslate.ocr import ModelManager
 from desktranslate.providers import create_provider
+from desktranslate.updates import check_release
 
 
 @pytest.fixture
@@ -27,6 +36,8 @@ def slow_headers():
                     time.sleep(0.02)
             except OSError:
                 pass
+
+        do_GET = do_POST
 
     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     server.daemon_threads = True
@@ -92,3 +103,82 @@ def test_hostile_json_and_usage_fail_without_exposing_payload(content):
             provider.translate(TranslationRequest("authored text", "en", "ja", "model"))
     finally:
         provider.close()
+
+
+@pytest.mark.parametrize("operation", ["models", "updates"])
+def test_download_metadata_deadlines_cover_slow_headers(
+    operation, slow_headers, tmp_path, monkeypatch
+):
+    endpoint, _ = slow_headers
+    if operation == "models":
+        monkeypatch.setattr("desktranslate.ocr.MODEL_TIMEOUT", 0.15)
+        manager = ModelManager(tmp_path)
+        manager.catalog = {
+            key: {"filename": key + ".onnx", "url": endpoint, "sha256": "0" * 64}
+            for key in manager.required("ja")
+        }
+
+        def run():
+            return manager.install("ja", Event(), lambda *args: None)
+
+        expected = OCRInitializationError
+    else:
+        monkeypatch.setattr("desktranslate.updates.UPDATE_TIMEOUT", 0.15)
+        monkeypatch.setattr("desktranslate.updates.RELEASES", endpoint)
+        run = check_release
+        expected = ProviderUnavailableError
+    started = time.monotonic()
+    with pytest.raises(expected):
+        run()
+    assert time.monotonic() - started < 1
+    assert not list(tmp_path.glob("*.part"))
+
+
+@pytest.mark.parametrize("operation", ["models", "updates"])
+def test_download_metadata_cancel_during_headers(operation, slow_headers, tmp_path, monkeypatch):
+    endpoint, requested = slow_headers
+    cancel, failures = Event(), []
+    if operation == "models":
+        manager = ModelManager(tmp_path)
+        manager.catalog = {
+            key: {"filename": key + ".onnx", "url": endpoint, "sha256": "0" * 64}
+            for key in manager.required("ja")
+        }
+
+        def run():
+            return manager.install("ja", cancel, lambda *args: None)
+    else:
+        monkeypatch.setattr("desktranslate.updates.RELEASES", endpoint)
+
+        def run():
+            return check_release(cancel=cancel)
+
+    def worker():
+        try:
+            run()
+        except Exception as error:
+            failures.append(type(error))
+
+    thread = Thread(target=worker, daemon=True)
+    thread.start()
+    assert requested.wait(2)
+    cancel.set()
+    thread.join(2)
+    assert not thread.is_alive()
+    assert failures == [Cancelled]
+    assert not list(tmp_path.glob("*.part"))
+
+
+@pytest.mark.parametrize(
+    "content", [b"[NaN]", b"[" * 2000 + b"]" * 2000], ids=["nonfinite", "deep"]
+)
+def test_update_catalog_rejects_hostile_json(content):
+    with pytest.raises(ProviderUnavailableError):
+        check_release(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, content=content))
+        )
+
+
+def test_json_nesting_guard_handles_quoted_braces_and_escapes():
+    value = {"description": "[" * 100 + '\\"' + "]" * 100}
+    assert strict_json(json.dumps(value).encode()) == value

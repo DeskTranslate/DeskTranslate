@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import multiprocessing
 import os
@@ -17,6 +16,7 @@ from pathlib import Path
 
 from PIL import Image
 from PySide6.QtWidgets import QApplication
+from release_support import runtime_source_hashes
 
 from desktranslate import __version__
 from desktranslate.metrics import LatencyMetrics, process_resources
@@ -75,19 +75,7 @@ def resource_gate(samples: list[dict[str, object]], duration: float) -> dict[str
 
 
 def source_hashes() -> dict[str, str]:
-    return {
-        name: hashlib.sha256((ROOT / "src/desktranslate" / name).read_bytes()).hexdigest()
-        for name in (
-            "pipeline.py",
-            "ocr.py",
-            "providers.py",
-            "algorithms.py",
-            "context.py",
-            "models.py",
-            "ui/overlay.py",
-            "ui/subtitles.py",
-        )
-    }
+    return runtime_source_hashes(ROOT)
 
 
 class FixtureServer(ThreadingHTTPServer):
