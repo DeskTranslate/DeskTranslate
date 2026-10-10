@@ -4,6 +4,8 @@
   "synthetic_data_only": true,
   "non_ascii_path": true,
   "non_ascii_data_path": true,
+  "system_only_path": true,
+  "empty_non_ascii_working_directory": true,
   "previous_version_upgrade": true,
   "installed_ocr_http_credentials_tested": true,
   "install": true,

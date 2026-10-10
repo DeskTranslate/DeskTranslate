@@ -48,7 +48,7 @@ def main() -> None:
                     content = archive.extractfile(member)
                     if content:
                         target.write_bytes(content.read())
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     dist = root / "dist"
     dist.mkdir(exist_ok=True)
     with zipfile.ZipFile(
