@@ -267,3 +267,27 @@ def test_onboarding_is_singleton_and_waits_for_cancelled_work(window):
     window.onboarding()
     assert window.setup_dialog is original
     original.jobs.busy = False
+
+
+@pytest.mark.parametrize("once", [False, True])
+def test_suppressed_result_only_opens_main_for_explicit_one_shot(window, monkeypatch, once):
+    from types import SimpleNamespace
+
+    from desktranslate.models import PipelineEvent, SessionState, Stamp, TranslationResult
+
+    calls = []
+    with monkeypatch.context() as patch:
+        patch.setattr(window, "pipeline", SimpleNamespace(once=once))
+        patch.setattr(window, "showNormal", lambda: calls.append("opened"))
+        window.overlay.suppressed = True
+        window.handle_pipeline_event(
+            PipelineEvent(
+                Stamp(1, 1),
+                SessionState.WATCHING,
+                source="Authored source",
+                result=TranslationResult("Authored result"),
+            )
+        )
+        assert calls == (["opened"] if once else [])
+        assert window.result_translation.text() == "Authored result"
+        assert ("overlay cannot fit" in window.status_label.text()) is (not once)

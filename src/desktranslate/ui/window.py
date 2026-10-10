@@ -1017,6 +1017,7 @@ class MainWindow(QMainWindow):
 
             QTimer.singleShot(1000, clear_if_current)
         if event.result:
+            one_shot = self.pipeline is not None and self.pipeline.once
             self.presentation_serial += 1
             start = time.perf_counter()
             self.latest = event.result.text
@@ -1024,7 +1025,7 @@ class MainWindow(QMainWindow):
             self.result_translation.setText(event.result.text)
             self.transcript_page.append(event.source, event.result.text)
             self.overlay.display(event.source, event.result.text)
-            if self.overlay.suppressed:
+            if self.overlay.suppressed and one_shot:
                 self.showNormal()
             self.timings = {
                 **event.timings,
@@ -1038,6 +1039,11 @@ class MainWindow(QMainWindow):
             self.status_label.setText(
                 f"Translated · {event.timings.get('total_ms', 0):.0f} ms"
                 + (" · cached" if event.result.cached else "")
+                + (
+                    " · overlay cannot fit; reselect a smaller region"
+                    if self.overlay.suppressed and not one_shot
+                    else ""
+                )
             )
         if event.category:
             self.errors = (self.errors + [event.category])[-10:]

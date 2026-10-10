@@ -1,5 +1,6 @@
 {
   "version": "2.0.0b2",
+  "python_version": "3.12.15",
   "synthetic_data_only": true,
   "live_provider": "Google public web endpoint",
   "fresh_isolated_model_directory": true,
@@ -13,7 +14,7 @@
   "finish_committed": true,
   "set_up_later_does_not_commit": true,
   "remaining_children": 0,
-  "elapsed_s": 16.49,
+  "elapsed_s": 18.02,
   "effective_device_pixel_ratio": 2.0,
   "passed": true
 }
