@@ -6,8 +6,10 @@ if ($LASTEXITCODE) { throw 'Canonical version lookup failed' }
 $setup = Join-Path $workspace "dist/DeskTranslate-$version-Setup-x64.exe"
 $installRoot = [IO.Path]::GetFullPath((Join-Path $workspace '.audit/installer qualification/翻訳 app'))
 $dataRoot = [IO.Path]::GetFullPath((Join-Path $workspace '.audit/installer qualification/設定 data'))
+$workingRoot = [IO.Path]::GetFullPath((Join-Path $workspace '.audit/installer qualification/空の 作業'))
 if (-not $installRoot.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar) -or
-    -not $dataRoot.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar)) { throw 'Probe paths must stay in the workspace' }
+    -not $dataRoot.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar) -or
+    -not $workingRoot.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar)) { throw 'Probe paths must stay in the workspace' }
 $registry = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{BA24C20E-62C5-4C3B-80B4-19B02C0DBBDB}_is1'
 if (Test-Path -LiteralPath $registry) {
     $existing = (Get-ItemProperty -LiteralPath $registry).InstallLocation
@@ -16,6 +18,8 @@ if (Test-Path -LiteralPath $registry) {
     }
 }
 New-Item -ItemType Directory -Path $dataRoot -Force | Out-Null
+New-Item -ItemType Directory -Path $workingRoot -Force | Out-Null
+if (Get-ChildItem -LiteralPath $workingRoot -Force) { throw 'Probe working directory must be empty' }
 $env:DESKTRANSLATE_DATA_DIR = $dataRoot
 if ($OcrFixture) {
     if (-not $ModelDataDirectory) { throw 'Verified source model directory is required for OCR qualification' }
@@ -26,11 +30,15 @@ if ($OcrFixture) {
 if ($LASTEXITCODE) { throw 'Could not prepare isolated settings' }
 $settingsFile = Join-Path $dataRoot 'settings.json'
 $before = (Get-FileHash -LiteralPath $settingsFile).Hash
-$results = [ordered]@{version=$version; synthetic_data_only=$true; non_ascii_path=$true; non_ascii_data_path=$true; previous_version_upgrade=$false; installed_ocr_http_credentials_tested=$false}
+$results = [ordered]@{version=$version; setup_sha256=(Get-FileHash -LiteralPath $setup -Algorithm SHA256).Hash.ToLowerInvariant(); synthetic_data_only=$true; non_ascii_path=$true; non_ascii_data_path=$true; system_only_path=$true; empty_non_ascii_working_directory=$true; previous_version_upgrade=$false; installed_ocr_http_credentials_tested=$false}
 function Run-Probe([string]$File, [string[]]$Arguments) {
-    $process = Start-Process -FilePath $File -ArgumentList $Arguments -PassThru -WindowStyle Hidden
-    if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Installer/runtime probe timed out' }
-    if ($process.ExitCode) { throw "Installer/runtime probe failed with exit code $($process.ExitCode)" }
+    $previousPath = $env:PATH
+    try {
+        $env:PATH = (Join-Path $env:SystemRoot 'System32') + ';' + $env:SystemRoot
+        $process = Start-Process -FilePath $File -ArgumentList $Arguments -WorkingDirectory $workingRoot -PassThru -WindowStyle Hidden
+        if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Installer/runtime probe timed out' }
+        if ($process.ExitCode) { throw "Installer/runtime probe failed with exit code $($process.ExitCode)" }
+    } finally { $env:PATH = $previousPath }
 }
 $options = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/NOICONS',('/DIR="'+$installRoot+'"'))
 try {

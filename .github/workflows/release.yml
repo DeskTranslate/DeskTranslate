@@ -76,6 +76,8 @@ jobs:
         run: python tools/library_sources.py
       - name: Compile installer and portable app
         run: |
+          $changes = git status --porcelain
+          if ($changes) { $changes; throw 'Release candidate requires a clean tracked source tree' }
           $options = @('tools/build.py', '--installer')
           if ($env:RELEASE_TAG) { $options += @('--tag', $env:RELEASE_TAG) }
           if ($env:RELEASE_SIGNED -eq 'true') { $options += '--signed' }
