@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QListWidget, QVBoxLayout, QWidget
 
+from desktranslate.ui.layout import fit_to_screen
 from desktranslate.window_capture import WindowInfo
 
 
@@ -11,7 +12,7 @@ class WindowPicker(QDialog):
         super().__init__(parent)
         self.windows = windows
         self.setWindowTitle("Choose an application")
-        self.resize(640, 460)
+        fit_to_screen(self, 640, 460)
         layout = QVBoxLayout(self)
         description = QLabel(
             "Choose the exact window to follow. Capture waits while it is minimized or covered. No other application is captured as a fallback."

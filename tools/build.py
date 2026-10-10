@@ -148,7 +148,12 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
     )
     subprocess.run(args, cwd=ROOT, env=build_env, check=True)
     dependencies = sorted(
-        importlib.metadata.distributions(), key=lambda d: d.metadata["Name"].lower()
+        (
+            d
+            for d in importlib.metadata.distributions()
+            if d.metadata["Name"].lower() != "desktranslate"
+        ),
+        key=lambda d: d.metadata["Name"].lower(),
     )
     runtime = shipped_distributions(ROOT)
     trace = git_trace(ROOT)

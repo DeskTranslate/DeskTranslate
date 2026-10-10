@@ -86,9 +86,15 @@ jobs:
           $process = Start-Process -FilePath "$PWD/dist/DeskTranslate/DeskTranslate.exe" -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw 'Packaged startup failed' }
+      - name: Prepare verified synthetic OCR qualification
+        run: |
+          python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('ja',Event(),lambda *args: None); assert ModelManager().installed('ja',verify=True)"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Installer lifecycle and artifact privacy
         run: |
-          if ($env:RELEASE_SIGNED -eq 'true') { ./tools/qualify_installer.ps1 -Signed } else { ./tools/qualify_installer.ps1 }
+          $probe = @{OcrFixture="$PWD/tests/fixtures/ja-game.png"; ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"}
+          if ($env:RELEASE_SIGNED -eq 'true') { $probe.Signed = $true }
+          ./tools/qualify_installer.ps1 @probe
           python tools/privacy_scan.py --artifacts --history --output docs/privacy-scan.json
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Attest hosted build artifacts

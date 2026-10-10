@@ -15,7 +15,7 @@ def main() -> None:
     from PySide6.QtCore import Qt
     from PySide6.QtGui import QAccessible
     from PySide6.QtTest import QTest
-    from PySide6.QtWidgets import QApplication, QComboBox, QScrollArea
+    from PySide6.QtWidgets import QApplication, QComboBox, QScrollArea, QWizard
 
     from desktranslate.settings import Settings, SettingsStore
     from desktranslate.ui import theme
@@ -50,6 +50,43 @@ def main() -> None:
         app.processEvents()
         if widget := app.focusWidget():
             focused.add(id(widget))
+    window.onboarding()
+    wizard = window.setup_dialog
+    app.processEvents()
+    initial_size = [wizard.width(), wizard.height()]
+    available = wizard.screen().availableGeometry()
+    initial_fits = available.contains(wizard.frameGeometry())
+    wizard.resize(560, 320)
+    setup_pages = []
+    for _ in range(6):
+        app.processEvents()
+        page = wizard.currentPage()
+        assert page is not None
+        buttons_fit = all(
+            not wizard.button(identifier).isVisible()
+            or wizard.rect().contains(
+                wizard.button(identifier).mapTo(
+                    wizard, wizard.button(identifier).rect().bottomRight()
+                )
+            )
+            for identifier in (
+                QWizard.WizardButton.NextButton,
+                QWizard.WizardButton.FinishButton,
+                QWizard.WizardButton.CancelButton,
+                QWizard.WizardButton.CustomButton1,
+            )
+        )
+        setup_pages.append(
+            {
+                "page": wizard.currentId(),
+                "logical_size": [wizard.width(), wizard.height()],
+                "horizontal_scroll_max": page.scroll_area.horizontalScrollBar().maximum(),
+                "buttons_fit": buttons_fit,
+            }
+        )
+        # Layout-only inspection; this does not perform or complete onboarding.
+        page.set_ready(True)
+        wizard.next()
     controls = []
     for control in window.findChildren(QComboBox):
         interface = QAccessible.queryAccessibleInterface(control)
@@ -64,6 +101,12 @@ def main() -> None:
         "combobox_accessible_names": {"named": sum(controls), "total": len(controls)},
         "screen_reader_tested": False,
         "physical_mixed_dpi_tested": False,
+        "setup_layout_only": {
+            "initial_size": initial_size,
+            "initial_frame_fits": initial_fits,
+            "pages": setup_pages,
+            "successful_translation_tested": False,
+        },
     }
     high_contrast = theme.high_contrast_enabled
     theme.high_contrast_enabled = lambda: True
@@ -77,9 +120,17 @@ def main() -> None:
         and len(focused) >= 8
         and all(controls)
         and report["high_contrast_native_style_branch"]
+        and initial_fits
+        and all(
+            page["horizontal_scroll_max"] == 0
+            and page["buttons_fit"]
+            and page["logical_size"] == [560, 320]
+            for page in setup_pages
+        )
     )
     output.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report))
+    wizard.reject()
     window.quit()
     app.processEvents()
     if not report["passed"]:

@@ -81,7 +81,9 @@ class TranscriptPage(QWidget):
     def export(self) -> None:
         dialog = QDialog(self)
         dialog.setWindowTitle("Preview transcript export")
-        dialog.resize(650, 500)
+        from desktranslate.ui.layout import fit_to_screen
+
+        fit_to_screen(dialog, 650, 500)
         layout = QVBoxLayout(dialog)
         warning = QLabel(
             "This export contains recognized and translated text from the whole retained session. Review it before saving or sharing. It is never exported automatically."

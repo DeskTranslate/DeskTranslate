@@ -78,7 +78,9 @@ def exchange_controls(editor: QPlainTextEdit, notice: Callable[[str], None]) -> 
             return
         dialog = QDialog(editor)
         dialog.setWindowTitle("Preview glossary export")
-        dialog.resize(620, 480)
+        from desktranslate.ui.layout import fit_to_screen
+
+        fit_to_screen(dialog, 620, 480)
         layout = QVBoxLayout(dialog)
         layout.addWidget(QLabel("Review glossary terms for private content before sharing."))
         preview = QPlainTextEdit(content)

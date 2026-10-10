@@ -10,15 +10,19 @@ from typing import Any
 
 from PIL import Image
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QResizeEvent
 from PySide6.QtWidgets import (
     QComboBox,
     QFormLayout,
+    QFrame,
     QLabel,
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
+    QScrollArea,
+    QSizePolicy,
     QVBoxLayout,
+    QWidget,
     QWizard,
     QWizardPage,
 )
@@ -30,6 +34,7 @@ from desktranslate.models import TranslationRequest
 from desktranslate.ocr import IsolatedOCR, ModelManager
 from desktranslate.settings import Settings
 from desktranslate.ui.jobs import Jobs
+from desktranslate.ui.layout import fit_to_screen
 
 SAMPLES = {
     "ja": ("ja-game.png", "明日、またここで会おう。"),
@@ -48,7 +53,15 @@ class SetupPage(QWizardPage):
         super().__init__()
         self.setTitle(title)
         self.setSubTitle(subtitle)
-        self.content = QVBoxLayout(self)
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        host = QWidget()
+        self.content = QVBoxLayout(host)
+        self.scroll_area.setWidget(host)
+        outer.addWidget(self.scroll_area)
         self.ready = True
 
     def isComplete(self) -> bool:
@@ -57,6 +70,33 @@ class SetupPage(QWizardPage):
     def set_ready(self, ready: bool) -> None:
         self.ready = ready
         self.completeChanged.emit()
+
+
+class SamplePreview(QLabel):
+    def __init__(self) -> None:
+        super().__init__()
+        self.original = QPixmap()
+        self.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        self.setMinimumHeight(70)
+        self.setMaximumHeight(150)
+
+    def sample(self, original: QPixmap) -> None:
+        self.original = original
+        self.refresh()
+
+    def refresh(self) -> None:
+        if self.original.isNull():
+            self.clear()
+        else:
+            self.setPixmap(
+                self.original.scaledToWidth(
+                    max(1, min(540, self.width())), Qt.TransformationMode.SmoothTransformation
+                )
+            )
+
+    def resizeEvent(self, event: QResizeEvent) -> None:
+        super().resizeEvent(event)
+        self.refresh()
 
 
 class Onboarding(QWizard):
@@ -75,7 +115,7 @@ class Onboarding(QWizard):
         )
         self.host = parent
         self.setWindowTitle("Your first translation")
-        self.resize(640, 600)
+        fit_to_screen(self, 640, 600)
         self.setOption(QWizard.WizardOption.HaveCustomButton1)
         self.setButtonText(QWizard.WizardButton.CustomButton1, "Set up later")
         self.customButtonClicked.connect(self.reject)
@@ -101,7 +141,13 @@ class Onboarding(QWizard):
             "Choose the language you are reading and the language you want to read.",
         )
         form = QFormLayout()
+        form.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapLongRows)
         self.source, self.target = QComboBox(), QComboBox()
+        for control in (self.source, self.target):
+            control.setMinimumContentsLength(12)
+            control.setSizeAdjustPolicy(
+                QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
+            )
         for language in LANGUAGES:
             if language.code != "auto":
                 self.source.addItem(language.name, language.code)
@@ -157,7 +203,7 @@ class Onboarding(QWizard):
         )
         self.test_status.setWordWrap(True)
         self.test_page.content.addWidget(self.test_status)
-        self.sample_preview = QLabel()
+        self.sample_preview = SamplePreview()
         self.sample_preview.setAccessibleName("Bundled foreign-language sample image")
         self.test_page.content.addWidget(self.sample_preview)
         self.sample_result = QPlainTextEdit()
@@ -191,11 +237,9 @@ class Onboarding(QWizard):
         sample = SAMPLES.get(self.source.currentData())
         if sample:
             pixmap = QPixmap(str(Path(__file__).parents[1] / "assets/samples" / sample[0]))
-            self.sample_preview.setPixmap(
-                pixmap.scaledToWidth(540, Qt.TransformationMode.SmoothTransformation)
-            )
+            self.sample_preview.sample(pixmap)
         else:
-            self.sample_preview.clear()
+            self.sample_preview.sample(QPixmap())
         self.update_model_status()
 
     def enter_page(self, page: int) -> None:

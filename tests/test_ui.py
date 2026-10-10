@@ -44,6 +44,35 @@ def test_all_pages_open_and_plain_text_is_not_markup(window):
     assert QApplication.clipboard().text() == "<script>literal</script>"
 
 
+def test_setup_small_viewport_keeps_buttons_and_scroll_access(window):
+    from PySide6.QtWidgets import QWizard
+
+    window.onboarding()
+    wizard = window.setup_dialog
+    wizard.resize(560, 320)
+    app = QApplication.instance()
+    assert app is not None
+    for _ in range(6):
+        app.processEvents()
+        page = wizard.currentPage()
+        assert page is not None
+        assert wizard.width() <= 560 and wizard.height() <= 320
+        assert page.scroll_area.horizontalScrollBar().maximum() == 0
+        for identifier in (
+            QWizard.WizardButton.NextButton,
+            QWizard.WizardButton.FinishButton,
+            QWizard.WizardButton.CancelButton,
+            QWizard.WizardButton.CustomButton1,
+        ):
+            button = wizard.button(identifier)
+            if button.isVisible():
+                assert wizard.rect().contains(button.mapTo(wizard, button.rect().bottomRight()))
+        page.set_ready(True)
+        wizard.next()
+    assert not window.settings.onboarding_done
+    wizard.reject()
+
+
 def test_invalid_endpoint_does_not_start_test_or_change_saved_settings(window):
     window.provider_combo.setCurrentIndex(window.provider_combo.findData("custom"))
     window.endpoint_edit.setText("http://remote.example/v1")

@@ -166,7 +166,9 @@ class ProfilePage(QWidget):
             return
         dialog = QDialog(self)
         dialog.setWindowTitle("Preview profile export")
-        dialog.resize(640, 520)
+        from desktranslate.ui.layout import fit_to_screen
+
+        fit_to_screen(dialog, 640, 520)
         layout = QVBoxLayout(dialog)
         description = QLabel(
             "This file includes your glossary and style instructions. Review them for sensitive content. It excludes API keys. Capture coordinates and window identity are excluded unless you choose to include them."

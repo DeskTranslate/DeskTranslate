@@ -17,6 +17,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import BinaryIO
 
+from desktranslate import __version__
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -235,6 +237,7 @@ def run(artifacts: bool, history: bool) -> dict[str, object]:
                                 checked("release/" + name + "/" + member.filename, stream)
                             counts["release_archive_members"] += 1
     return {
+        "version": __version__,
         "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
         "counts": counts,
         "findings": findings,

@@ -37,10 +37,12 @@ Checks below are tracked against implementation and measured evidence, not previ
 
 ## Release policy
 
-Implementation has addressed the source P0 findings above: atomic failure/pause/stop and stale guards, bounded global pipeline resources and OCR recovery/reaping, full-request network deadlines/cancellation, focus-safe runtime/display recovery, persistent overlay hiding, fail-closed monitor mapping, validated portable profiles, real first-success onboarding, strict semantic release selection and canonical package/PE/installer versions. Final regression has 202 passing tests. The final review also found an installed native event filter surviving its owner during repeated GUI lifecycles; shutdown now detaches it on the GUI thread. Demo avoids native tray side effects and themes apply idempotently.
+Implementation has addressed the source P0 findings above: atomic failure/pause/stop and stale guards, bounded global pipeline resources and OCR recovery/reaping, full-request network deadlines/cancellation, focus-safe runtime/display recovery, persistent overlay hiding, fail-closed monitor mapping, validated portable profiles, real first-success onboarding, strict semantic release selection and canonical package/PE/installer versions. Final regression has 207 passing tests. The final review also found an installed native event filter surviving its owner during repeated GUI lifecycles; shutdown now detaches it on the GUI thread. Demo avoids native tray side effects and themes apply idempotently.
 
 The manual/signing findings remain unresolved release gates. Window/UI/sample probes have specific, limited evidence; the two-hour resource soak and final packaging/CI are documented when complete. P1 implementations include dedicated profile/setup/transcript/support/glossary controllers, visible application capture, explicit update channels and numeric latency/resource diagnostics. P2 acceleration/WGC/universal routing decisions are recorded in [the investigation](acceleration-and-dependencies.md), without pretending they shipped.
 
 Stable promotion is prohibited until signing and the documented manual qualification gates pass.
 Unsigned development/candidate artifacts remain available and clearly identified. No self-signed certificate
 is substituted for trusted publisher signing. Deferred features are recorded separately from failed P0 gates.
+
+The final UI review found fixed-height setup/export dialogs exceeding a 200% desktop. Dialog sizes now use available Qt logical geometry, setup pages scroll independently of navigation buttons, and sample previews adapt to width. Native inspection checks all six pages at 560×320, while completion still requires an actual translated result.
