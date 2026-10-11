@@ -144,6 +144,58 @@ def test_pixel_change_retries_identical_text_after_invalidated_translation():
         assert pipeline.wait_closed()
 
 
+def test_context_reset_during_stabilizer_reset_cannot_suppress_redisplay():
+    class SameTextOCR(OCR):
+        def recognize(self, *args, **kwargs):
+            return OCRResult("A", confidence=0.99)
+
+    class BlockedReset(Event):
+        def __init__(self):
+            super().__init__()
+            self.entered, self.release = Event(), Event()
+            self.blocked = False
+
+        def clear(self):
+            if not self.blocked:
+                self.blocked = True
+                self.entered.set()
+                self.release.wait(5)
+            super().clear()
+
+    capture, provider = Capture(), SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        SameTextOCR,
+        lambda: provider,
+    )
+    flag = BlockedReset()
+    pipeline.reset_text = flag
+    pipeline.delivered_source = "A"
+    pipeline.start()
+    try:
+        until(flag.entered.is_set)
+        captures = pipeline.counters["captures"]
+        pipeline.clear_context()
+        until(lambda: pipeline.counters["captures"] >= captures + 4)
+        until(lambda: not pipeline.frames.queue.empty())
+        flag.release.set()
+        events = []
+
+        def redisplayed():
+            events.extend(event for event in pipeline.poll() if event.result)
+            return bool(events)
+
+        until(redisplayed)
+        assert events[-1].source == "A"
+        assert pipeline.session.current(events[-1].stamp)
+    finally:
+        flag.release.set()
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
 def test_static_region_avoids_repeated_ocr():
     capture = Capture()
     provider = SlowProvider()

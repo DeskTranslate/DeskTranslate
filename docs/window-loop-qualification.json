@@ -1,7 +1,7 @@
 {
   "version": "2.0.0b2",
   "python_version": "3.12.15",
-  "source_sha256": "62a1d28cf1711ffb48aa774392e9047a772c5b90cf7f8cbab0e158d513de61a1",
+  "source_sha256": "cea4d7a536c852f78a105e4283a85a538080886232516cd1f449d80f150fe894",
   "native_qt_platform": "windows",
   "device_pixel_ratios": [
     1.25
@@ -19,7 +19,7 @@
     "uncover_translates_again": true
   },
   "accepted_results": 5,
-  "elapsed_s": 18.06,
+  "elapsed_s": 13.05,
   "remaining_ocr_children": 0,
   "owned_target_closed": true,
   "passed": true

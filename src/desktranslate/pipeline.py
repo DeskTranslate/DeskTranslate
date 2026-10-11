@@ -289,9 +289,10 @@ class Pipeline:
             self.emit(SessionState.WATCHING)
 
     def clear_context(self) -> None:
-        with self.context_lock:
+        with self.context_lock, self.session.lock:
             self.context.clear()
-            self.session.changed()
+            # Invalidate work and its presentation receipt in one transition.
+            self.session.generation += 1
             self.delivered_source = ""
             self.reset_text.set()
             self.reset_frames.set()
@@ -423,6 +424,7 @@ class Pipeline:
             return
         try:
             stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
+            stabilizer_stamp: Stamp | None = None
             recoveries: list[float] = []
             while not self.cancel.is_set():
                 try:
@@ -431,10 +433,15 @@ class Pipeline:
                     continue
                 if not self.session.current(work.stamp):
                     continue
-                if self.reset_text.is_set():
-                    stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
+                if work.stamp != stabilizer_stamp or self.reset_text.is_set():
                     with self.session.lock:
+                        if work.stamp != Stamp(self.session.serial, self.session.generation):
+                            continue
+                        stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
                         stabilizer.accepted = self.delivered_source
+                        stabilizer_stamp = work.stamp
+                    # A concurrent reset cannot be lost: its newer stamp also
+                    # requires fresh stabilization when that work is consumed.
                     self.reset_text.clear()
                 if self.ocr is None:
                     self.ocr = self.ocr_factory()
