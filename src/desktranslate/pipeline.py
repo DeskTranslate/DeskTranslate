@@ -214,6 +214,8 @@ class Pipeline:
         self.ocr: OCREngine | None = None
         self.provider: TranslationProvider | None = None
         self.capture_region = settings.region
+        # OCR acceptance is provisional until the current result reaches the UI.
+        self.delivered_source = ""
         self.threads: list[Thread] = []
         self.counters = {
             "captures": 0,
@@ -290,6 +292,7 @@ class Pipeline:
         with self.context_lock:
             self.context.clear()
             self.session.changed()
+            self.delivered_source = ""
             self.reset_text.set()
             self.reset_frames.set()
 
@@ -388,6 +391,7 @@ class Pipeline:
                 change_ms = (time.perf_counter() - start) * 1000
                 if decision.changed:
                     self.session.changed()
+                    self.reset_text.set()
                 if decision.ready or self.once or (self.confirm_frame.is_set() and gate.emitted):
                     self.confirm_frame.clear()
                     self.frames.put(
@@ -429,6 +433,8 @@ class Pipeline:
                     continue
                 if self.reset_text.is_set():
                     stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
+                    with self.session.lock:
+                        stabilizer.accepted = self.delivered_source
                     self.reset_text.clear()
                 if self.ocr is None:
                     self.ocr = self.ocr_factory()
@@ -478,6 +484,10 @@ class Pipeline:
                 if not self.session.current(work.stamp):
                     self.counters["stale"] += 1
                     continue
+                if not result.text.strip():
+                    with self.session.lock:
+                        if work.stamp == Stamp(self.session.serial, self.session.generation):
+                            self.delivered_source = ""
                 if text and len(text) <= 5000:
                     now = time.monotonic()
                     self.texts.put(

@@ -1005,6 +1005,8 @@ class MainWindow(QMainWindow):
             "Resume" if event.state in {SessionState.PAUSED, SessionState.ERROR} else "Pause"
         )
         if event.clear:
+            if self.pipeline:
+                self.pipeline.delivered_source = ""
             revision = self.presentation_serial
 
             def clear_if_current(stamp: Stamp = event.stamp, expected: int = revision) -> None:
@@ -1025,6 +1027,8 @@ class MainWindow(QMainWindow):
             self.result_translation.setText(event.result.text)
             self.transcript_page.append(event.source, event.result.text)
             self.overlay.display(event.source, event.result.text)
+            if self.pipeline:
+                self.pipeline.delivered_source = event.source
             if self.overlay.suppressed and one_shot:
                 self.showNormal()
             self.timings = {

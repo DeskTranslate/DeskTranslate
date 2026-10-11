@@ -139,6 +139,102 @@ def test_runtime_errors_do_not_reopen_main_window(window, monkeypatch):
     assert "key" in window.status_label.text().lower()
 
 
+@pytest.mark.parametrize("change", ["pixels", "blank", "context"])
+def test_identical_text_delivery_follows_visible_dialogue(window, monkeypatch, change):
+    from test_pipeline import OCR, Capture, SlowProvider, until
+
+    from desktranslate.models import OCRResult
+    from desktranslate.pipeline import Pipeline
+
+    class DialogueOCR(OCR):
+        def recognize(self, image, *args, **kwargs):
+            return OCRResult("" if image.getpixel((0, 0))[0] == 100 else "A", confidence=0.99)
+
+    capture, provider = Capture(), SlowProvider()
+    provider.release.set()
+    window.settings.quality = "fast"
+    window.settings.recent_region = [0, 0, 120, 80]
+    pipeline = Pipeline(window.settings, lambda: capture, DialogueOCR, lambda: provider)
+    window.pipeline = pipeline
+    displayed = []
+    monkeypatch.setattr(window.overlay, "display", lambda source, text: displayed.append(source))
+    pipeline.start()
+
+    def received(count):
+        window.poll_pipeline()
+        return len(displayed) >= count
+
+    try:
+        until(lambda: received(1))
+        assert pipeline.delivered_source == "A"
+        initial_ocr = pipeline.counters["ocr"]
+        if change == "context":
+            pipeline.clear_context()
+        else:
+            capture.color = 100 if change == "blank" else 200
+        until(lambda: pipeline.counters["ocr"] > initial_ocr)
+        if change == "pixels":
+            time.sleep(0.3)
+            window.poll_pipeline()
+            assert displayed == ["A"]
+            assert provider.calls == ["A"]
+        else:
+            if change == "blank":
+                until(lambda: pipeline.delivered_source == "")
+                window.poll_pipeline()
+                capture.color = 200
+            until(lambda: received(2))
+            assert displayed == ["A", "A"]
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
+def test_polled_result_discarded_before_gui_delivery_can_retry(window, monkeypatch):
+    from test_pipeline import OCR, Capture, SlowProvider, until
+
+    from desktranslate.models import OCRResult
+    from desktranslate.pipeline import Pipeline
+
+    class SameTextOCR(OCR):
+        def recognize(self, *args, **kwargs):
+            return OCRResult("A", confidence=0.99)
+
+    capture, provider = Capture(), SlowProvider()
+    provider.release.set()
+    window.settings.quality = "fast"
+    window.settings.recent_region = [0, 0, 120, 80]
+    pipeline = Pipeline(window.settings, lambda: capture, SameTextOCR, lambda: provider)
+    window.pipeline = pipeline
+    displayed = []
+    monkeypatch.setattr(window.overlay, "display", lambda source, text: displayed.append(source))
+    pipeline.start()
+    polled = []
+
+    def awaiting_delivery():
+        polled.extend(event for event in pipeline.poll() if event.result)
+        return bool(polled)
+
+    try:
+        until(awaiting_delivery)
+        assert pipeline.delivered_source == ""
+        initial = pipeline.session.stamp()
+        capture.color = 200
+        until(lambda: pipeline.session.stamp() != initial)
+
+        def delivered():
+            window.poll_pipeline()
+            return bool(displayed)
+
+        until(delivered)
+        assert displayed == ["A"]
+        assert pipeline.delivered_source == "A"
+        assert not pipeline.session.current(polled[-1].stamp)
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
 def test_user_hidden_overlay_stays_hidden_and_explicit_show_recovers(window):
     window.overlay.display("A", "Translated A")
     window.overlay.hide_by_user()

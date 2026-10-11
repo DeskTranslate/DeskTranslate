@@ -108,6 +108,42 @@ def test_screen_changes_discard_stale_network_result_and_context():
         pipeline.stop()
 
 
+def test_pixel_change_retries_identical_text_after_invalidated_translation():
+    class SameTextOCR(OCR):
+        def recognize(self, *args, **kwargs):
+            return OCRResult("A", confidence=0.99)
+
+    capture, provider = Capture(), SlowProvider()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        SameTextOCR,
+        lambda: provider,
+    )
+    pipeline.start()
+    try:
+        until(provider.started.is_set)
+        initial = pipeline.session.stamp()
+        capture.color = 200
+        until(lambda: pipeline.session.stamp() != initial)
+        until(lambda: pipeline.counters["ocr"] >= 2)
+        provider.release.set()
+        results = []
+
+        def delivered():
+            results.extend(event for event in pipeline.poll() if event.result)
+            return bool(results)
+
+        until(delivered)
+        assert results[-1].source == "A"
+        assert results[-1].stamp != initial
+        assert pipeline.session.current(results[-1].stamp)
+        assert pipeline.counters["stale"] >= 1
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
 def test_static_region_avoids_repeated_ocr():
     capture = Capture()
     provider = SlowProvider()

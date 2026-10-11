@@ -21,7 +21,7 @@ from release_support import runtime_source_hashes
 
 from desktranslate import __version__
 from desktranslate.metrics import LatencyMetrics, process_resources
-from desktranslate.models import Rect, SessionState
+from desktranslate.models import Rect, SessionState, Stamp
 from desktranslate.ocr import IsolatedOCR, ModelManager
 from desktranslate.pipeline import Pipeline
 from desktranslate.providers import create_provider
@@ -177,9 +177,15 @@ def run(duration: float, output: Path) -> None:
                 if event.category:
                     errors[event.category] += 1
                 if event.result:
-                    accepted += 1
                     before = time.perf_counter()
-                    overlay.display(event.source, event.result.text)
+                    with pipeline.session.lock:
+                        if event.stamp != Stamp(
+                            pipeline.session.serial, pipeline.session.generation
+                        ):
+                            continue
+                        overlay.display(event.source, event.result.text)
+                        pipeline.delivered_source = event.source
+                        accepted += 1
                     app.processEvents()
                     overlay.grab()
                     latencies.observe(
