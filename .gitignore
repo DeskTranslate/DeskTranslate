@@ -8,6 +8,7 @@ __pycache__/
 .test-data/
 .test-tmp/
 .test-tmp-network/
+.test-tmp-*/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/

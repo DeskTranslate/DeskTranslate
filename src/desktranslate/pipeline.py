@@ -24,6 +24,7 @@ from desktranslate.models import (
     CaptureProvider,
     OCREngine,
     PipelineEvent,
+    Rect,
     SessionState,
     Stamp,
     TranslationProvider,
@@ -170,6 +171,7 @@ class CapturedWork:
     image: Image.Image
     captured: float
     timings: dict[str, float]
+    region: Rect | None = None
 
 
 @dataclass(frozen=True)
@@ -179,6 +181,7 @@ class TextWork:
     captured: float
     queued: float
     timings: dict[str, float]
+    region: Rect | None = None
 
 
 class Pipeline:
@@ -393,6 +396,7 @@ class Pipeline:
                             image,
                             captured,
                             {"capture_ms": capture_ms, "change_ms": change_ms},
+                            actual,
                         )
                     )
                     if self.once:
@@ -431,7 +435,7 @@ class Pipeline:
                     if self.cancel.is_set():
                         self.ocr.close()
                         return
-                self.emit(SessionState.RECOGNIZING, work.stamp)
+                self.emit(SessionState.RECOGNIZING, work.stamp, region=work.region)
                 start = time.perf_counter()
                 image = preprocess(work.image, self.settings.preprocessing)
                 timings = {**work.timings, "preprocess_ms": (time.perf_counter() - start) * 1000}
@@ -476,7 +480,9 @@ class Pipeline:
                     continue
                 if text and len(text) <= 5000:
                     now = time.monotonic()
-                    self.texts.put(TextWork(work.stamp, text, work.captured, now, timings))
+                    self.texts.put(
+                        TextWork(work.stamp, text, work.captured, now, timings, work.region)
+                    )
                 else:
                     if result.text and stabilizer.candidate != stabilizer.accepted:
                         # Confirmation must use a fresh captured frame, not run the
@@ -516,7 +522,7 @@ class Pipeline:
                     continue
                 if not self.session.current(work.stamp):
                     continue
-                self.emit(SessionState.TRANSLATING, work.stamp)
+                self.emit(SessionState.TRANSLATING, work.stamp, region=work.region)
                 with self.context_lock:
                     context = self.context.snapshot() if provider.capabilities.context else ()
                 request = TranslationRequest(
@@ -565,7 +571,12 @@ class Pipeline:
                     }
                     # Use the work stamp, never the current stamp: capture can change during enqueue.
                     event = PipelineEvent(
-                        work.stamp, SessionState.WATCHING, work.text, result, timings=timings
+                        work.stamp,
+                        SessionState.WATCHING,
+                        work.text,
+                        result,
+                        timings=timings,
+                        region=work.region,
                     )
                     self.session.activity(SessionState.WATCHING, work.stamp)
                     self.enqueue(event)

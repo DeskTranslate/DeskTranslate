@@ -252,11 +252,11 @@ class Settings:
         if self.capture_mode == "window" and not self.window_target:
             raise ValueError("Choose an application window first")
         if self.window_region is not None:
-            from desktranslate.window_capture import project_region
+            from desktranslate.window_capture import validate_relative_region
 
             if not isinstance(self.window_region, list):
                 raise ValueError("Invalid window region")
-            project_region(Rect(0, 0, 10000, 10000), self.window_region)
+            validate_relative_region(self.window_region)
 
 
 class SettingsStore:

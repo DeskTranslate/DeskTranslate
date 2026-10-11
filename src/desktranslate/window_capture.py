@@ -52,9 +52,8 @@ def normalized_region(client: Rect, region: Rect) -> list[float]:
     ]
 
 
-def project_region(client: Rect, relative: list[float] | None) -> Rect:
-    if relative is None:
-        return client
+def validate_relative_region(relative: list[float]) -> None:
+    """Validate normalized fractions independently of physical capture limits."""
     if len(relative) != 4 or any(
         type(v) not in {float, int} or not math.isfinite(v) for v in relative
     ):
@@ -63,12 +62,21 @@ def project_region(client: Rect, relative: list[float] | None) -> Rect:
     if (
         x < 0
         or y < 0
+        or x >= 1
+        or y >= 1
         or width <= 0
         or height <= 0
         or x + width > 1.00000001
         or y + height > 1.00000001
     ):
         raise ValueError("Window-relative region is outside its client area")
+
+
+def project_region(client: Rect, relative: list[float] | None) -> Rect:
+    if relative is None:
+        return client
+    validate_relative_region(relative)
+    x, y, width, height = relative
     left, top = round(x * client.width), round(y * client.height)
     right, bottom = (
         min(client.width, round((x + width) * client.width)),

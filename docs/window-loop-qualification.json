@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "source_sha256": "ba98b7e56d77a8e53a3f2d2118a776b206dc950249d2a9df8ab57fc0e6492308",
+  "native_qt_platform": "windows",
+  "device_pixel_ratios": [
+    1.25
+  ],
+  "scope": "Authored separate-process window; real MainWindow, Win32/MSS capture, isolated CPU OCR and live Google; no region-picker interaction or real-game/fullscreen qualification",
+  "checks": {
+    "actual_ocr_exact": true,
+    "live_google_result_visible": true,
+    "main_remains_hidden": true,
+    "actual_loop_follows_move": true,
+    "actual_loop_follows_resize": true,
+    "minimize_waits_without_main": true,
+    "restore_translates_again": true,
+    "occlusion_waits_without_main": true,
+    "uncover_translates_again": true
+  },
+  "accepted_results": 5,
+  "elapsed_s": 12.08,
+  "remaining_ocr_children": 0,
+  "owned_target_closed": true,
+  "passed": true
+}

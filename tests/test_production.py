@@ -147,6 +147,84 @@ def test_profiles_reject_invalid_nested_values_and_unsafe_endpoints(tmp_path):
     assert import_glossary("source,translation\nMika,ミカ\n", True) == {"Mika": "ミカ"}
 
 
+@pytest.mark.parametrize("relative", [[0, 0, 1, 1], [0.2, 0.3, 0.5, 0.2]])
+def test_window_settings_and_local_profiles_survive_reload(tmp_path, relative):
+    settings = Settings(
+        capture_mode="window",
+        window_target={"executable": "game.exe", "executable_hash": "a" * 64, "title": "Game"},
+        window_region=relative,
+        recent_region=[-1200, 50, 800, 200],
+    )
+    settings.profiles["Game"] = profile_values(settings)
+    store = SettingsStore(tmp_path)
+    store.save(settings)
+    loaded = store.load()
+    assert not store.recovered
+    assert loaded.capture_mode == "window"
+    assert loaded.window_target == settings.window_target
+    assert loaded.window_region == relative
+    restored = apply_profile(Settings(), loaded.profiles["Game"])
+    assert restored.window_region == relative
+    assert restored.recent_region == settings.recent_region
+    _, imported = import_profile(export_profile("Game", loaded.profiles["Game"]))
+    assert imported["capture_mode"] == "fixed"
+    assert imported["window_region"] is None
+    assert imported["window_target"] == {}
+
+
+@pytest.mark.parametrize(
+    "relative",
+    [
+        [0, 0, 0, 1],
+        [-0.1, 0, 0.5, 0.5],
+        [0.8, 0, 0.3, 1],
+        [False, 0, 1, 1],
+        [0, 0, float("nan"), 1],
+        [0, 0, 1],
+    ],
+)
+def test_settings_reject_unsafe_window_fractions(tmp_path, relative):
+    store = SettingsStore(tmp_path)
+    with pytest.raises(ValueError):
+        store.save(Settings(window_region=relative))
+    assert not store.path.exists()
+
+
+def test_window_move_region_survives_delayed_gui_delivery():
+    class MovingCapture(Capture):
+        region = Rect(0, 0, 120, 80)
+
+    capture = MovingCapture()
+    provider = SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        OCR,
+        lambda: provider,
+    )
+    results = []
+
+    def translated():
+        results.extend(event for event in pipeline.poll() if event.result)
+        return bool(results)
+
+    pipeline.start()
+    try:
+        until(translated)
+        results.clear()
+        capture.region = Rect(300, 200, 120, 80)
+        until(lambda: pipeline.capture_region == capture.region)
+        until(lambda: pipeline.counters["ocr"] >= 2)
+        until(translated)
+        # The preliminary move event can be superseded by a newer frame stamp.
+        # Accepted text must still carry the physical pixels it came from.
+        assert results[-1].region == capture.region
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
 @pytest.mark.parametrize(
     "client", [Rect(-3840, -2160, 3840, 2160), Rect(0, 0, 1920, 1080), Rect(-1920, 0, 1440, 2560)]
 )
