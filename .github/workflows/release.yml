@@ -71,6 +71,7 @@ jobs:
       - name: Prepare matching LGPL library sources
         run: python tools/library_sources.py
       - name: Compile installer and portable app
+        id: compile
         run: |
           $changes = git status --porcelain
           if ($changes) { $changes; throw 'Release candidate requires a clean tracked source tree' }
@@ -85,6 +86,7 @@ jobs:
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw 'Packaged startup failed' }
       - name: Prepare verified synthetic OCR qualification
+        id: prepare_ocr
         run: |
           python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('ja',Event(),lambda *args: None); assert ModelManager().installed('ja',verify=True)"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -101,15 +103,22 @@ jobs:
           subject-path: |
             dist/*.exe
             dist/*.zip
-      - name: Qualify two-hour endurance on the release runtime
-        if: inputs.endurance
+      - name: Prepare verified endurance models
+        id: prepare_endurance_models
+        if: inputs.endurance && !cancelled() && steps.compile.outcome == 'success' && steps.prepare_ocr.outcome == 'success'
         run: |
           python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('en',Event(),lambda *args: None); assert ModelManager().installed('en',verify=True)"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Qualify two-hour steady endurance on the release runtime
+        if: inputs.endurance && !cancelled() && steps.prepare_endurance_models.outcome == 'success'
+        run: |
           python tools/soak.py --long-running --mode steady --duration 7200 --stop-file .audit/stop-steady --output docs/soak-2h-hosted.json
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-2h-hosted.json').read_text()); assert r['elapsed_s'] >= 7200 and r['workload_passed'] is True and r['resource_qualification']['qualified'] is True and r['continuous_worker_qualification']['qualified'] is True and r['session_restarts'] == 0 and r['source_hashes'] == runtime_source_hashes(Path.cwd()) and r['python_version'] == '3.12.15'"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Qualify thirty-minute fault endurance on the release runtime
+        if: inputs.endurance && !cancelled() && steps.prepare_endurance_models.outcome == 'success'
+        run: |
           python tools/soak.py --long-running --mode chaos --duration 1800 --stop-file .audit/stop-chaos --output docs/soak-chaos-hosted.json
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-chaos-hosted.json').read_text()); assert r['elapsed_s'] >= 1800 and r['workload_passed'] is True and r['resource_qualification']['qualified'] is True and r['source_hashes'] == runtime_source_hashes(Path.cwd())"

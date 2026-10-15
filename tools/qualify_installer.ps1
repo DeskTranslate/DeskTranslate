@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 if (-not $AllowInstallChanges) {
     throw 'MANUAL INSTALLER QUALIFICATION: changes program files, shortcuts and per-user registration. Excluded from routine validation. Use -AllowInstallChanges only in a dedicated test account/VM.'
 }
+. (Join-Path $PSScriptRoot 'qualification_wait.ps1')
 if (-not ('DeskTranslateQualification.ShellLinks' -as [type])) {
     Add-Type -TypeDefinition @'
 using System;
@@ -69,12 +70,32 @@ foreach ($shortcutPath in $shortcutPaths) {
 $results = [ordered]@{version=$version; setup_sha256=(Get-FileHash -LiteralPath $setup -Algorithm SHA256).Hash.ToLowerInvariant(); synthetic_data_only=$true; non_ascii_path=$true; non_ascii_data_path=$true; system_only_path=$true; empty_non_ascii_working_directory=$true; previous_version_upgrade=$false; installed_ocr_http_credentials_tested=$false}
 function Run-Probe([string]$File, [string[]]$Arguments) {
     $previousPath = $env:PATH
+    $process = $null
     try {
         $env:PATH = (Join-Path $env:SystemRoot 'System32') + ';' + $env:SystemRoot
         $process = Start-Process -FilePath $File -ArgumentList $Arguments -WorkingDirectory $workingRoot -PassThru -WindowStyle Hidden
         if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Installer/runtime probe timed out' }
         if ($process.ExitCode) { throw "Installer/runtime probe failed with exit code $($process.ExitCode)" }
-    } finally { $env:PATH = $previousPath }
+    } finally {
+        $env:PATH = $previousPath
+        if ($process) { $process.Dispose() }
+    }
+}
+function Run-Uninstall {
+    $uninstaller = Join-Path $installRoot 'unins000.exe'
+    if (-not (Test-Path -LiteralPath $uninstaller)) {
+        throw 'Expected owned uninstaller is missing'
+    }
+    Run-Probe $uninstaller @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART')
+    # Inno's temporary clone can still be cleaning up after the original EXE
+    # exits. Starting a reinstall then can race its deletion of unins000.exe.
+    # Require observable completion; never delete leftovers to manufacture PASS.
+    Wait-QualificationCondition -Label 'Owned uninstall cleanup' -Condition {
+        -not (Test-Path -LiteralPath $uninstaller) -and
+        -not (Test-Path -LiteralPath (Join-Path $installRoot 'DeskTranslate.exe')) -and
+        -not (Test-Path -LiteralPath $registry) -and
+        @($shortcutPaths | Where-Object { Test-Path -LiteralPath $_ }).Count -eq 0
+    }
 }
 $options = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TASKS=desktopicon',('/DIR="'+$installRoot+'"'))
 try {
@@ -114,7 +135,7 @@ try {
     }
 } finally {
     $uninstaller = Join-Path $installRoot 'unins000.exe'
-    if (Test-Path -LiteralPath $uninstaller) { Run-Probe $uninstaller @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') }
+    if (Test-Path -LiteralPath $uninstaller) { Run-Uninstall }
 }
 $results.uninstall = -not (Test-Path -LiteralPath (Join-Path $installRoot 'DeskTranslate.exe'))
 $results.settings_retained_on_uninstall = (Get-FileHash -LiteralPath $settingsFile).Hash -eq $before
@@ -127,10 +148,11 @@ try {
     $results.reinstall_after_uninstall = (Get-FileHash -LiteralPath $settingsFile).Hash -eq $before
 } finally {
     $uninstaller = Join-Path $installRoot 'unins000.exe'
-    if (Test-Path -LiteralPath $uninstaller) { Run-Probe $uninstaller @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') }
+    Run-Uninstall
 }
 $results.final_registry_removed = -not (Test-Path -LiteralPath $registry)
 $results.final_shortcuts_removed = @($shortcutPaths | Where-Object { Test-Path -LiteralPath $_ }).Count -eq 0
+$results.uninstall_cleanup_observed = $true
 $results.passed = $results.install -and $results.startup -and $results.reinstall -and $results.obsolete_runtime_removed -and $results.settings_preserved_on_upgrade -and $results.uninstall -and $results.settings_retained_on_uninstall -and $results.registry_removed -and $results.shortcuts -and $results.shortcuts_removed -and $results.executable_metadata -and $results.uninstall_metadata -and $results.models_retained_on_uninstall -and $results.reinstall_after_uninstall -and $results.final_registry_removed -and $results.final_shortcuts_removed
 [IO.File]::WriteAllText((Join-Path $workspace 'docs/installer-qualification.json'), ($results | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
 $results | ConvertTo-Json

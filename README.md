@@ -6,7 +6,7 @@
 
 Translate the dialogue in a game, subtitles in a video, a menu, or text in an image. Press a shortcut, select a region, and read the translation in a quiet, customizable overlay.
 
-[Release readiness](docs/validation.md) · [Non-invasive testing](docs/testing.md) · [Published releases](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Upgrade guide](docs/upgrade.md)
+[Release readiness](docs/release-readiness.md) · [Acceptance matrix](docs/validation.md) · [Non-invasive testing](docs/testing.md) · [Published releases](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Upgrade guide](docs/upgrade.md)
 
 **Version 2.0.0 is undergoing stable-release qualification. It has not been published as stable.** The new Windows application brings managed local OCR, contextual translation, application-following capture, profiles, guided setup, and an editable subtitle overlay. Existing internal prerelease identifiers remain until acceptance gates pass; we are not publishing another beta. Publisher signing and physical/manual qualification remain outstanding. The release page currently contains the legacy application.
 
@@ -99,7 +99,7 @@ Advanced endpoint/API controls are hidden until requested. Known embedding, imag
 
 ## Release qualification
 
-Core algorithms, concurrent stale-result rejection, settings recovery, ten provider request/response contracts, model integrity, UI flows and privacy boundaries have automated tests. Packaging and native probes are rerun after application changes; older reports qualify only their recorded source. The installer and portable app are built with PyInstaller and Inno Setup.
+Core algorithms, concurrent stale-result rejection, settings recovery, ten provider request/response contracts, model integrity, UI flows and privacy boundaries have automated tests. Routine and pre-deployment checks run headlessly. Native desktop probes are separate, bounded manual checks for affected boundaries that cannot be verified below the UI; older reports qualify only their recorded scope/source. The installer and portable app are built with PyInstaller and Inno Setup.
 
 The [validation report](docs/validation.md) and [OCR benchmark](docs/ocr-benchmark.json) distinguish measured evidence from unqualified scenarios. The corpus contains 35 authored fixtures across 19 managed source languages, including outlined, shadowed, translucent, low-contrast, vertical and mixed-script text. Existing punctuation/character errors are retained and investigated. Warm CPU OCR on this host typically takes about a second; rapid subtitles may outpace it. Synthetic fixtures do not establish accuracy for every game or video.
 

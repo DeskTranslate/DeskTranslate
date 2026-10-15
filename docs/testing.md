@@ -55,4 +55,6 @@ Only use this tier when a native boundary cannot reasonably be tested below the 
 
 `qualify_installer.ps1` additionally requires `-AllowInstallChanges` because it creates/removes installed files, shortcuts and per-user uninstall registration. Use a dedicated account/VM or the manual hosted workflow. Display rotation/scaling/topology changes, real-media sessions, Narrator and OS-preference checks remain manual acceptance items, not unattended laptop tests.
 
+The installer probe waits for actual executable/registry/shortcut removal before reinstalling; an Inno uninstaller's original process can exit before temporary-clone cleanup finishes. The bounded polling logic has hidden component tests with authored temporary state, so those timing paths can be developed without repeatedly installing the application. Independent hosted steady/fault steps still run after an unrelated installer qualification failure when build/models are ready; each failed gate continues to fail the overall job.
+
 The prolonged visible-media experiment was stopped when the maintainer requested this policy. Its interrupted progress is not a completed endurance pass. No further visible playback or display changes are part of the current routine verification.

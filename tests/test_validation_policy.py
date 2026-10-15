@@ -1,4 +1,5 @@
 import os
+import shutil
 import socket
 import subprocess
 import sys
@@ -149,3 +150,33 @@ def test_manual_probe_timeout_terminates_owned_worker_tree(monkeypatch, tmp_path
         [sys.executable, "-c", "import time; time.sleep(20)"], dict(os.environ), 0.1
     )
     assert result == 124
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows qualification polling")
+@pytest.mark.parametrize("completes", [True, False])
+def test_installer_cleanup_polling_waits_or_fails_without_deleting_sentinels(tmp_path, completes):
+    shell = shutil.which("pwsh") or shutil.which("powershell")
+    assert shell
+    helper = Path(__file__).resolve().parents[1] / "tools/qualification_wait.ps1"
+    sentinel = tmp_path / "authored.txt"
+    sentinel.write_text("keep", encoding="utf-8")
+    script = tmp_path / "polling.ps1"
+    script.write_text(
+        "param([string]$Helper)\n"
+        ". $Helper\n"
+        "$state = @{ attempts=0 }\n"
+        "try {\n"
+        f" Wait-QualificationCondition -TimeoutSeconds {2 if completes else 0.1} -IntervalMilliseconds 1 -Condition {{\n"
+        "  $state.attempts++; " + ("$state.attempts -ge 3" if completes else "$false") + "\n }\n"
+        " if ($state.attempts -lt 3) { exit 2 }; exit 0\n"
+        "} catch { if ($_.Exception.Message -notmatch 'did not complete') { exit 3 }; exit 4 }\n",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        [shell, "-NoProfile", "-NonInteractive", "-File", str(script), str(helper)],
+        capture_output=True,
+        timeout=15,
+        creationflags=subprocess.CREATE_NO_WINDOW,
+    )
+    assert result.returncode == (0 if completes else 4), result.stderr.decode(errors="replace")
+    assert sentinel.read_text(encoding="utf-8") == "keep"
