@@ -11,6 +11,6 @@
     "prolonged_media": false
   },
   "publisher_signing_available": false,
-  "notes": "Publication HOLD; no publisher certificate exists. Routine validation is non-invasive:397 tests, headless widgets and isolated OS/network boundaries. Native observations and previous installer lifecycle/retention remain separate historical evidence. The visible media endurance run was stopped on maintainer request. Current-source2h qualification remains pending;30min fixture rerun is explicitly background/offscreen. No clean VM, physical mixed-DPI rig, Narrator qualification or paid accounts. All manual gates remain false without their exact evidence.",
+  "notes": "Publication HOLD; no publisher certificate exists. Routine validation is non-invasive:403 tests (47.18s), lint/types/smoke/dependency/history/source builds/frozen smoke PASS. Final portable headless runtime and20 artifact checks PASS; previous native/installer observations are historical. Visible media endurance stopped on maintainer request. Latest fault run FAIL:54 accepted<58 and sampling stopped during Windows Modern Standby; updated harness rejects such gaps. Current2h/30min hosted qualification required. No clean VM, physical mixed-DPI rig, Narrator qualification or paid accounts. All manual gates remain false without exact evidence.",
   "target": "2.0.0 stable"
 }

@@ -63,8 +63,40 @@ def child_resources() -> list[dict[str, object]]:
     return resources
 
 
+def observation_gate(samples: list[dict[str, object]], duration: float) -> dict[str, object]:
+    """Wall time without observations cannot establish continuous endurance."""
+    times = [sample.get("elapsed_s") for sample in samples]
+    if (
+        not times
+        or not math.isfinite(duration)
+        or any(type(value) not in (int, float) or not math.isfinite(value) for value in times)
+    ):
+        return {"qualified": False, "reason": "Sampling timestamps unavailable or invalid"}
+    gaps = [later - earlier for earlier, later in zip(times, times[1:], strict=False)]
+    start_gap = times[0]
+    end_gap = duration - times[-1]
+    longest = max([start_gap, end_gap, *gaps])
+    return {
+        "qualified": start_gap >= 0
+        and end_gap >= 0
+        and longest <= 90
+        and all(gap > 0 for gap in gaps),
+        "reason": "All observation gaps, including start/end, must be at most 90 seconds",
+        "max_gap_s": round(longest, 3),
+        "end_gap_s": round(end_gap, 3),
+        "observed_span_s": round(times[-1] - times[0], 3),
+    }
+
+
 def resource_gate(samples: list[dict[str, object]], duration: float) -> dict[str, object]:
     """Declared regression budgets, after five minutes of allocator warmup."""
+    observation = observation_gate(samples, duration)
+    if not observation["qualified"]:
+        return {
+            "qualified": False,
+            "reason": "Sampling coverage incomplete",
+            "observation": observation,
+        }
     stable = [sample for sample in samples if sample["elapsed_s"] >= 300]  # type: ignore[operator]
     if duration < 1800 or len(stable) < 20:
         return {
@@ -134,6 +166,13 @@ def resource_gate(samples: list[dict[str, object]], duration: float) -> dict[str
 
 def continuous_worker_gate(samples: list[dict[str, object]], duration: float) -> dict[str, object]:
     """A restart cannot hide a leaking native engine in the steady workload."""
+    observation = observation_gate(samples, duration)
+    if not observation["qualified"]:
+        return {
+            "qualified": False,
+            "reason": "Sampling coverage incomplete",
+            "observation": observation,
+        }
     stable = [sample for sample in samples if sample["elapsed_s"] >= 300]
     if duration < 7200 or len(stable) < 200:
         return {"qualified": False, "reason": "Two hours and 200 post-warmup samples required"}
@@ -492,6 +531,7 @@ def run(duration: float, output: Path, mode: str = "steady", stop_file: Path | N
             "remaining_children": len(multiprocessing.active_children()),
             "final_resources": process_resources(),
             "resource_qualification": resource_gate(samples, elapsed),
+            "observation_coverage": observation_gate(samples, elapsed),
             "continuous_worker_qualification": continuous_worker_gate(samples, elapsed)
             if mode == "steady"
             else {"qualified": False, "reason": "NOT APPLICABLE to restart workload"},

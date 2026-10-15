@@ -181,7 +181,7 @@ def test_resource_qualification_rejects_unavailable_or_impossible_measurements(m
 
     samples = [
         {
-            "elapsed_s": 300 + index * 30,
+            "elapsed_s": index * 30,
             "main": {
                 "rss_bytes": 1000,
                 "private_bytes": 1000,
@@ -198,7 +198,7 @@ def test_resource_qualification_rejects_unavailable_or_impossible_measurements(m
             "context_pairs": 0,
             "python_heap_bytes": 1000,
         }
-        for index in range(60)
+        for index in range(70)
     ]
     assert soak.resource_gate(samples, 2100)["qualified"]
     samples[-1]["main"]["native_threads"] = None
@@ -213,7 +213,7 @@ def test_continuous_worker_measurements_reject_restart_growth_or_missing_native_
 
     samples = [
         {
-            "elapsed_s": 300 + index * 30,
+            "elapsed_s": index * 30,
             "workers": [
                 {
                     "pid": 123,
@@ -225,7 +225,7 @@ def test_continuous_worker_measurements_reject_restart_growth_or_missing_native_
                 }
             ],
         }
-        for index in range(230)
+        for index in range(240)
     ]
     assert soak.continuous_worker_gate(samples, 7200)["qualified"]
     assert not soak.continuous_worker_gate(samples, 3600)["qualified"]
@@ -236,6 +236,28 @@ def test_continuous_worker_measurements_reject_restart_growth_or_missing_native_
     assert not soak.continuous_worker_gate(samples, 7200)["qualified"]
     for sample in samples[-10:]:
         sample["workers"][0]["private_bytes"] = 100 * 1024**2
+    assert not soak.continuous_worker_gate(samples, 7200)["qualified"]
+
+
+@pytest.mark.parametrize("gap", ["start", "middle", "end", "duplicate", "invalid"])
+def test_endurance_requires_observations_across_entire_run(monkeypatch, gap):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "tools"))
+    import soak
+
+    samples = [{"elapsed_s": index * 30} for index in range(61)]
+    assert soak.observation_gate(samples, 1800)["qualified"]
+    if gap == "start":
+        samples = samples[10:]
+    elif gap == "middle":
+        del samples[20:30]
+    elif gap == "end":
+        samples = samples[:36]  # Actual failed run ended sampling at 1050 s.
+    elif gap == "duplicate":
+        samples[30]["elapsed_s"] = samples[29]["elapsed_s"]
+    else:
+        samples[30]["elapsed_s"] = float("nan")
+    assert not soak.observation_gate(samples, 1800)["qualified"]
+    assert not soak.resource_gate(samples, 1800)["qualified"]
     assert not soak.continuous_worker_gate(samples, 7200)["qualified"]
 
 

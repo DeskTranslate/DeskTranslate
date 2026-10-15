@@ -45,7 +45,7 @@ $env:DESKTRANSLATE_DATA_DIR = "$PWD/.test-data"
 python tools/soak.py --long-running --mode chaos --duration 1800 --stop-file .audit/stop-chaos --output docs/soak-chaos.json
 ```
 
-Japanese/English packs must already be verified. Extended runs require both `--long-running` and `--stop-file`. Create that stop file to end cooperatively and reap workers; an existing stop request is never silently removed. A direct short smoke defaults to 60 seconds. Any incomplete run remains incomplete; resource failures return a failing exit code. Two-hour steady and 30-minute fault workloads retain their strict budgets. Do not add these workloads to the routine laptop test command.
+Japanese/English packs must already be verified. Extended runs require both `--long-running` and `--stop-file`. Create that stop file to end cooperatively and reap workers; an existing stop request is never silently removed. A direct short smoke defaults to 60 seconds. Any incomplete run remains incomplete; resource failures return a failing exit code. Sampling gaps longer than90 seconds, including the start/end, invalidate endurance; suspended or stalled wall time cannot count as continuous observation. The tool does not prevent sleep or change power settings. Two-hour steady and 30-minute fault workloads retain their strict budgets. Do not add these workloads to the routine laptop test command.
 
 ## Manual desktop and installation qualification
 

@@ -15,6 +15,7 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Corrected live DPI-transition overlay clipping with a coalesced native-geometry refit; compact navigation keeps smaller workspaces usable. Actual 1080p→720p→1080p capture/reselection checks now complement synthetic coordinate tests.
 - Release failed async sessions promptly without waiting for cyclic GC. Routine validation now forces offscreen components, isolates OS/network boundaries and tests picker/coordinate behavior without touching the real desktop; manual and extended probes require explicit opt-in.
 - Close the early-cancel Windows pipe-handle leak, and fail endurance commands when measured resource budgets fail. Set process-local ONNX Runtime diagnostic opt-outs before inference and document the upstream Windows ETW limitation accurately.
+- Reject endurance evidence with missing start/end/internal observations, including laptop standby gaps. Record verified upstream wheel build metadata separately from private-content findings without exempting changed binaries or credential signatures.
 - Reject LM Studio's silent fallback to another model when the selected model is missing or replaced. Bound detector tensors for thin screen regions while preserving ordinary-region OCR pixels and benchmark outputs.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.

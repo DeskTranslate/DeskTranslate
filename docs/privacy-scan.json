@@ -2,8 +2,8 @@
   "version": "2.0.0b2",
   "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
   "counts": {
-    "tree_files": 292,
-    "history_blobs": 532,
+    "tree_files": 300,
+    "history_blobs": 542,
     "artifact_members": 403,
     "release_files": 7,
     "release_archive_members": 410,

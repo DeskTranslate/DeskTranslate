@@ -67,7 +67,7 @@ def scan_stream(
     return hits, digest.hexdigest()
 
 
-@lru_cache(maxsize=3)
+@lru_cache(maxsize=4)
 def verified_vendor_source(package: str, relative: str) -> tuple[Path, str, str] | None:
     distribution = importlib.metadata.distribution(package)
     file = next((file for file in distribution.files or [] if file.as_posix() == relative), None)
@@ -91,7 +91,7 @@ def normalized_code(code: types.CodeType) -> types.CodeType:
 
 
 def vendor_metadata(location: str, digest: str, data: bytes | None) -> dict[str, str] | None:
-    # These three published wheel inputs have generic upstream build paths. No
+    # These published wheel inputs have generic upstream build paths. No
     # exemption covers our source, arbitrary modules, tokens or private keys.
     relative = next(
         (
@@ -99,12 +99,13 @@ def vendor_metadata(location: str, digest: str, data: bytes | None) -> dict[str,
             for name in (
                 "shapely/_geos.cp312-win_amd64.pyd",
                 "shapely/_geometry_helpers.cp312-win_amd64.pyd",
+                "bidi/bidi.cp312-win_amd64.pyd",
             )
             if location.endswith("/_internal/" + name)
         ),
         "",
     )
-    package = "shapely"
+    package = "python-bidi" if relative.startswith("bidi/") else "shapely"
     if location == "frozen/numpy.__config__":
         package, relative = "numpy", "numpy/__config__.py"
     if not relative:

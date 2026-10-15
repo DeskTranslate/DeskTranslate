@@ -5,6 +5,7 @@
     "runtime_digest": true,
     "runtime_versions": true,
     "unsigned_accurately_recorded": true,
+    "current_application_source_digest": true,
     "all_checksums": true,
     "portable_marker_only_in_zip": true,
     "no_test_private_files": true,
@@ -22,23 +23,23 @@
     "no_prior_contamination": true
   },
   "artifact_hashes": {
-    "DeskTranslate-2.0.0b2-build-sbom.json": "77353f5e541552eccd7c9999c3474b653c7340f9ba94f484547e8cc75b50fb71",
+    "DeskTranslate-2.0.0b2-build-sbom.json": "0d5b2b8724a7969dbea213837da2aff5a0c10cf51cfb5e872d2a25185c2a9814",
     "DeskTranslate-2.0.0b2-LibrarySources.zip": "fb471b860fbc93f44a2e1a6002a89b256bfca663856b81f68789778be12010f7",
-    "DeskTranslate-2.0.0b2-Portable-x64.zip": "16572ccc6c6a49873e4304503957e68ddeb4934d1d5b12c70671ed39f8143150",
-    "DeskTranslate-2.0.0b2-provenance.json": "2a83b98fe3cb8efa44035ab2c4a8989595c1059e4b3e2e4b9a7ed50a4e2bd4cf",
-    "DeskTranslate-2.0.0b2-runtime-sbom.json": "d3c8b3c84d595eb0e116b832f22b884b2edb61174437b97727265e024e7334c2",
-    "DeskTranslate-2.0.0b2-Setup-x64.exe": "a642569388fb2f702f14320fc4f21f49dab78c4a83e69d5a71c005cc933eeaa7"
+    "DeskTranslate-2.0.0b2-Portable-x64.zip": "ca0cd4a80f090640b025b77a0384d4a94be80062cdaee37217ac7c08f2f21fee",
+    "DeskTranslate-2.0.0b2-provenance.json": "cde2cbe51859afa80e5f496aaef47fac664040081ae55f801f7af9ef3b497495",
+    "DeskTranslate-2.0.0b2-runtime-sbom.json": "3c9187045846da94b4bb0806d78f5987eb34d2e1d88f9656305e394430474605",
+    "DeskTranslate-2.0.0b2-Setup-x64.exe": "5a8ac6a5fc14e46d6cab7eb13f14dc8e1b121a6a86970343645f6e51dc3b22b2"
   },
   "build_info": {
     "version": "2.0.0b2",
     "windows_version": "2.0.0.10002",
     "git_commit": "46ac123b69ad4844b1eb16563e7a8f97144e4a94",
     "working_tree_dirty": true,
-    "source_sha256": "5bee65266e02b4c1d60576925a5d69b9e2b477747b75ba069638c2b59d24a1ae",
+    "source_sha256": "c38414ff9af8ce503cf0a32784c8003ed52612f3e8bd83087feed5ec3d798a80",
     "publisher_signed": false,
     "python_version": "3.12.15",
     "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
-    "python_distribution": "local interpreter",
+    "python_distribution": "python-build-standalone 20261009 CPython3.12.15 windows-x64 install_only",
     "python_archive_sha256": "11ed9f8a6ac64fb1b5a55e40e305a6744a3f77a70863c8f8197a6e4349abc64a",
     "ocr_backend": "CPUExecutionProvider"
   },
