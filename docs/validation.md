@@ -1,60 +1,96 @@
-# DeskTranslate 2 beta2 validation
+# Stable-release acceptance matrix
 
-## Current hardening pass
+Target: **DeskTranslate v2.0.0**. **Publication HOLD; not qualified as stable.** The canonical identifier remains `2.0.0b2`; no new beta has been published. Results below describe their exact scope. A build or synthetic pass cannot replace physical hardware, account or human qualification.
 
-The full suite now passes **224 tests**, with Ruff lint/format and mypy over **41 application modules**. New regression coverage includes atomic state interleavings (ten seeded sequences of 300 actions), bounded OCR recovery, stale failure rejection, window binding/crop safety, profile/glossary schemas, semantic update ordering, total request deadlines through slow headers, immediate network cancellation, gzip expansion bounds, malformed/deep JSON, setup retry/completion, transcript privacy, persistent overlay hiding and passive recovery without focus theft. Native UI teardown now detaches its application event filter before destroying its owner; repeated UI lifecycle tests pass. Theme application is idempotent and demo/tests do not create real tray notifications.
+Host: Windows 11 Pro build26200, Lenovo82RD, single native1920×1080 panel at125% (Qt1536×864), non-RDP. AMD integrated graphics is active and an NVIDIA RTX3060 Laptop GPU is enumerated; GPU-routing compatibility is unqualified. Pinned CPython3.12.15 x64 / OpenSSL3.5.9, fresh76-distribution hash-locked venv. Tests run concurrently with other release QA where stated.
 
-[Native window qualification](window-qualification.json) passed ten authored-window checks at physical 125% scale, including movement, resize, minimize, restore, occlusion and replacement/ambiguous-reconnection guards. [Native UI qualification](ui-qualification.json) ran at an effective 200% Qt scale: eight pages have no horizontal overflow, 15 Tab focus targets were reached and all 19 combo boxes expose accessible names. All six setup pages keep navigation controls visible without horizontal overflow in a 560×320 logical viewport; initial dialog size fits the desktop. This is a layout inspection and does not substitute for the actual first-success tests. The Windows high-contrast native-style branch was exercised; an actual screen reader, physical mixed-DPI setup and OS preference changes remain manual gates.
+**PASS** means measured success within the stated scope. **FAIL** means an observed failure. **NOT TESTED** means missing evidence. **NOT APPLICABLE** means outside that criterion's purpose. Findings/root causes are in [production-audit.md](production-audit.md); every historical issue is in [issues-v2.md](issues-v2.md).
 
-[Six bundled sample checks](sample-qualification.json) use actual isolated OCR and Google's live translation endpoint, with no user content. Recognition fidelity is 1.0 for Japanese/Korean/English/Spanish, 0.947 for Simplified Chinese and 0.842 for Traditional Chinese; every translation is nonempty and differs from the authored source. Paid APIs and loaded local LLMs remain unqualified.
+See [testing.md](testing.md) for the non-invasive routine/pre-deployment path and separate manual tiers. Native observations below were collected before that policy; they are not repeated automatically.
 
-The final two-hour native-resource soak, final binary/installer lifecycle, artifact privacy scan and hosted CI results are recorded after completion in the production report. Partial/interrupted runs do not count. **Stable verdict remains NOT READY:** publisher signing is unavailable and the manual matrix is incomplete. The following beta1 evidence is retained as the baseline, not substituted for beta2 qualification.
+## Automated engineering and security
 
-[Actual onboarding qualification](onboarding-qualification.json) exercised native setup buttons at effective 200% scale using a fresh isolated Japanese model directory and live Google translation. Next stayed blocked until pack verification and actual OCR/provider success; Finish saved completion, Set up later saved nothing, and no OCR children remained. This qualifies the onboarding controller and overlay on authored content, rather than a full real-game/user session.
+| Test | Environment | Result | Evidence | Remaining limitation |
+|---|---|---|---|---|
+| Full regression suite | Fresh locked Windows runtime | PASS | 397 tests,47.56s; guard suite14/14 passes after adding child safety barriers; private JUnit retained | Hosted exact-commit checks tracked separately |
+| Ruff lint / format, mypy | Same runtime | PASS | 81 files formatted;42 source modules typed | Rerun after further edits |
+| Fresh hashed install, pip check, application smoke | Isolated pinned runtime, no system site packages | PASS | Bootstrap4 +76 locked distributions, editable install, smoke | Development OS, not clean consumer Windows |
+| Dependency vulnerability audit | Complete Windows lock | PASS | [dependency-audit.json](dependency-audit.json), no known findings | Database coverage finite; refresh before publication |
+| Settings/profiles/corruption/write failures/vault rollback | Deterministic regressions | PASS | Core, UI and profile tests; [upgrade.md](upgrade.md) | Legacy installer coexistence remains separate |
+| Provider schema/HTTP failure/cancellation/endpoint/model bounds | Mock transports and real loopback | PASS | Ten adapters; malformed/auth/quota/deadline/cancel/model tests | Mock contracts do not qualify real accounts |
+| Worker descendants and early-spawn pipe handles | Actual Windows jobs and child processes | PASS | Native descendant test;20 immediate cancellations no handle leak | Actual optional Tesseract binary not tested |
+| Non-invasive routine/pre-deployment workflow | Offscreen components, isolated data/vault/shortcuts, mocked/loopback IO | PASS | [testing.md](testing.md);397 tests;60 geometry cases and picker events; manual CLI/timeout guards | No real desktop/input/media/system changes in default suite |
+| Long-soak command and stable gate reject bad evidence | Deterministic negative tests | PASS | Resource-failed command, old source/assets/runtime, missing counters/cleanup, restart/harness/version/manual/signing regressions | Actual extended results below |
+| Source/reachable-history/privacy review | Publishable tree and reachable objects | PASS | No findings in source/history scan | Final current artifact report is [privacy-scan.json](privacy-scan.json); signature scan not exhaustive |
+| All existing GitHub issues reviewed | 23 issues,18 open,35 available comments | PASS | [Issue dispositions and drafted notes](issues-v2.md) | Original#28/#31 attachments unavailable; no comments/closures posted |
 
-The final local source soak uses CPython 3.12.15. Superseded runs do not count. Release CI now uses hash-pinned CPython 3.12.15 and has a separate two-hour endurance option for the actual release runtime; final evidence must distinguish the two. A clean-source preflight catches tracked-file rewrites during preparation; the library manifest generator now preserves LF line endings on Windows. Stable gates also reject an interpreter version different from the recorded soak.
+## Windows coordinates, UX and accessibility
 
-[Native focus qualification](focus-qualification.json) reproduced overlay placement exhaustion on a physical single-monitor Windows desktop. A live result keeps the main window hidden, preserves the foreground window and retains its text with passive guidance; an explicit one-shot result still opens the main window. The synthetic event does not qualify real fullscreen games. Both cases have regression coverage.
+| Test | Environment | Result | Evidence | Remaining limitation |
+|---|---|---|---|---|
+| Picker drag, corner resize, Enter/Escape, physical crop equality | Actual1920×1080, OS125% | PASS | [selection-motion-qualification.json](selection-motion-qualification.json), pixel mean difference0 | Authored target, not a game |
+| Moving/static/blank dialogue and return after blank | Native MSS, isolated OCR, loopback HTTP | PASS | Same report,11 checks; zero stale deliveries/restarts | OCR sometimes adds N/I to moving text; retained |
+| 1280×720 rendered mode, UI/picker/capture | Temporary driver mode on the native1080p panel, observed Qt100% | PASS | [windows-resolution-qualification.json](windows-resolution-qualification.json); original mode restored | Not a separate physical720p monitor |
+| Running1080p125%→720p100%→1080p | Actual main controller/MSS/OCR/overlay | PASS | [live-resolution-qualification.json](live-resolution-qualification.json):11 checks | Fixed region invalidated; explicit reselection required |
+| Running landscape→portrait1080×1920→landscape | Driver-applied orientation, same panel, Qt125% | PASS | [live-portrait-qualification.json](live-portrait-qualification.json):11 checks; original restored | Panel was not physically rotated by hand; no external monitor |
+| Effective100/125/150/175/200% layouts | Native Qt overrides on actual OS125% display | PASS | [ui-scale-qualification.json](ui-scale-qualification.json), eight pages each | Not five OS scaling settings or mixed-DPI hardware |
+| Compact640×360/720×405/960×540 layouts | Simulated available workspace | PASS | Eight pages, no horizontal overflow, native screenshots reviewed | Dimensions/layout only; simulated desktop positioning not a pass |
+| Negative origins/mixed-DPI transforms/topology changes | Synthetic monitor geometry and native message regressions | PASS | Core/window/capture/overlay tests | Physical layouts remain separate |
+| Physical1440p/4K/ultrawide, multi-monitor, negative origins, mixed DPI | Required hardware | NOT TESTED | No matching physical rig | Must qualify before stable |
+| Hot-plug, docking, primary-display changes, sleep/lock/RDP reconnect | Actual transitions | NOT TESTED | WTS/power handler tests cover messages only | Native registration is not a real transition |
+| Long Unicode/CJK/RTL, themes, reduced-motion and contrast branches | Qt tests and native authored UI | PASS | Overlay tests, font profile, reviewed fresh screenshots | Actual Narrator/OS contrast switching separate |
+| Real screen reader / high-contrast session | Human-assisted Windows accessibility | NOT TESTED | Accessible names/StaticText roles inspected only | End-user screen-reader qualification absent |
+| Actual game/anime/exclusive fullscreen/HDR/multi-GPU routing | Representative applications/hardware | NOT TESTED | No representative application session | Authored borderless windows are weaker evidence |
 
-[Native window-loop qualification](window-loop-qualification.json) additionally exercises the real main controller, separate-process authored target, Win32/MSS capture, isolated CPU OCR and live Google. Nine checks pass at physical 125% scale, including actual region propagation through move/resize, minimize/restore and occlusion/uncover, with five accepted results and no surviving owned target/OCR process. It does not exercise region-picker interaction or real fullscreen content. Settings/profile persistence, moved-region delivery and actual GUI-receipt tracking regressions bring the suite to 224 cases. Undelivered identical text retries after pixel changes; delivered text stays deduplicated, while blank/context-reset intervals permit redisplay.
+## OCR and providers
 
-## Beta1 baseline
+| Test | Environment | Result | Evidence | Remaining limitation |
+|---|---|---|---|---|
+| 35 authored fixtures ×3 preprocessing modes ×3 repeats | Actual CPU ONNX, current frozen source | PASS | [ocr-benchmark.json](ocr-benchmark.json); all results retained | Execution pass, not universal accuracy; concurrent QA affects timing |
+| Clear horizontal JA/KO/EN/ES and difficult English treatments | Native-font authored fixtures | PASS | Exact clean/outlined/shadow/translucent/low-contrast cases | Styled moving media remains less accurate |
+| Chinese punctuation / Traditional characters | Authored difficult fixtures | FAIL | CER and output retained in benchmark | Alternative models/scales caused other regressions; default not overfit |
+| Vietnamese accents | Authored setup fixture | FAIL | CER~0.278, first-run fidelity0.791 below unchanged0.8 guard | No network translation after fidelity failure; actionable alternatives |
+| Vertical/pixel Japanese | Short/long columns, pixel Katakana | FAIL | CER~0.429/0.583 vertical,~0.364 pixel original | Experimental vertical ordering cannot restore missing characters |
+| Arabic logical-order correction | Pinned Arabic recognizer | PASS | Native actual inference, no double reversal; regressions | Exact fidelity across mixed/multiline fixtures still fails |
+| Exact Arabic mixed/digit/multiline fidelity | Authored native-font fixtures | FAIL | CER and preprocessing differences retained | No universal RTL claim |
+| Installed packs operate without Python network/download paths | All19 explicit managed sources, real inference | PASS | [offline-ocr-qualification.json](offline-ocr-qualification.json),0 forbidden attempts | Python hooks, not native packet or OS-ETW tracing; not fidelity pass |
+| ONNX diagnostic opt-out ordering | Fresh import + engine-construction regressions | PASS | Process environment before import, API before session | Upstream Windows minimal-init/ETW scope remains explicit in [privacy](privacy.md) |
+| First-run OCR and actual Google sample translation | 19 bundled samples | FAIL | [sample-qualification.json](sample-qualification.json):18 pass,Vietnamese fails | Failure retained, corpus/guard unchanged |
+| Actual Google target handling | Authored EN→ES/HE/TH/CS | PASS | Live output, Hebrew script verified | Earlier429 retained; no service guarantee or133-language fidelity claim |
+| Actual Ollama lifecycle/service | Official0.40.4, CPU Qwen3:0.6b and Qwen2.5:1.5b, owned profile | PASS | [0.6b](ollama-qualification.json), [1.5b](ollama-qualification-1.5b.json),12 service checks each | Offline/discovery/load/unload/missing/restart/cancel tested; quality separate |
+| Actual LM Studio lifecycle/service | llmster0.0.25-1 / llama.cpp2.41.0, same CPU model families | PASS | [0.6b](lmstudio-qualification.json), [1.5b](lmstudio-qualification-1.5b.json),13 service checks each | Missing-model fallback reproduced/fixed; quality separate |
+| Tested local model translation quality | Actual authored Unicode/context generations | FAIL | Tiny model wrappers/empty output;1.5b omissions or variable explanations | Service success is not semantic/plain-text quality; no model recommendation |
+| Public LibreTranslate request without key | Actual HTTPS service, authored greeting | FAIL | [libre-public-qualification.json](libre-public-qualification.json),safe rejection | No successful generation; owned/authenticated server required |
+| Paid clouds, owned/authenticated LibreTranslate/custom server | Required accounts/servers | NOT TESTED | No configured paid credentials or relevant server | Contract tests and loopback do not replace accounts |
+| Optional external Tesseract | Native executable and language packs | NOT TESTED | Adapter tests and generic descendant containment only | No installed external binary qualified |
 
-This report distinguishes repeatable checks from unqualified scenarios. It does not certify every game, display layout or model.
+## Reliability, performance and distribution
 
-## Completed checks
+| Test | Environment | Result | Evidence | Remaining limitation |
+|---|---|---|---|---|
+| Long-text render profile | Native Segoe UI, before/after,3 repeats | PASS | [subtitle-performance.json](subtitle-performance.json):5000 chars176.2→19.3ms;20000 chars653.6→84.6ms | Rendering only, not media end-to-end latency |
+| Detector extreme-aspect bound | Actual preprocessing/pixel equality | PASS | Nine cases; ordinary tensors and35×3 outputs unchanged | Thin regions may reduce resolution |
+| Superseded two-hour steady run | Before early-spawn pipe fix, same worker | PASS | [preserved report](soak-2h-before-pipe-fix.json),7200.51s,504 accepted,all resource gates | Does not qualify changed source |
+| Superseded30min fault soak | Before pipe fix | FAIL | [preserved failure](soak-chaos-before-pipe-fix.json),handle growth44.5>32 | Root cause reproduced/fixed; budget not relaxed |
+| Current-source2h same-worker endurance | Optional hosted/background fixture stress | NOT TESTED | Prior current run stopped for the async retention fix; [soak-2h.json](soak-2h.json) incomplete | Prefer hosted runner; not a routine laptop gate |
+| Current-source30min fault/resource endurance | Explicitly opted-in offscreen OCR/loopback stress | NOT TESTED | Rerun in progress after async-retention fix, [soak-chaos.json](soak-chaos.json) pending | No playback or desktop capture; unchanged budgets |
+| Real moving-film background, five sources, windowed/borderless | Muted licensed Elephants Dream decoded into owned Qt widget; MSS/OCR/loopback | PASS | 300.49s,5569 decoded frames,19 results,zero pipeline errors,cleanup; historical probe before the non-invasive policy | Authored subtitles; no actual game/anime typesetting or model-quality claim |
+| Two-hour visible moving-video endurance | Manual desktop tier | NOT TESTED | [media-qualification.json](media-qualification.json),stopped at600s on maintainer request | Excluded from routine validation; no prolonged visible playback resumed |
+| Fresh portable/installer build | Locked isolated Windows build | NOT TESTED | Final async-cleanup rebuild in progress | Earlier artifacts are historical; final headless checks pending |
+| Previous portable frozen runtime and normal launch | Empty CJK/space path, system-only PATH | PASS | [packaged-qualification.json](packaged-qualification.json),12 checks,exactJA/HTTP/vault deletion | Same development OS; not clean consumer machine |
+| Previous owned main-process DLL origins | Owned frozen process | PASS |111 modules from bundle/Windows only, same report | Not an exhaustive worker/native dependency graph |
+| Previous stopped main-window idle | Frozen native app,30s, concurrent QA | PASS | CPU0.4167% of one core,0 TCP connections,handles772→771 | Short stopped-idle sample, not active-media CPU |
+| Previous install / beta1 upgrade / reinstall / uninstall / data retention | Per-user owned CJK/space directory | PASS | [installer-qualification.json](installer-qualification.json),shortcuts/PE/registry/OCR/vault/HTTP/stale-runtime removal/reinstall-after-uninstall | Same host; beta1 upgrade differs from legacyNSIS |
+| Unknown-runtime / runtime-junction / parent-junction refusal | Workspace-owned sentinels | PASS | [installer-refusal-qualification.json](installer-refusal-qualification.json),exit7,no registry/files changed | No malicious concurrent local-user race claim |
+| Actual publishedv1.1a installer coexistence | Original installer inspected,not run | NOT TESTED | [legacy-upgrade-qualification.json](legacy-upgrade-qualification.json),requiresAdministrator manifest | Clean VM absent; no machine-wide legacy install on development host |
+| Clean supported Windows without Python / non-ASCII username / standard account | Clean OS/account/VM | NOT TESTED | Sandbox/docker/VirtualBox/VMware/Hyper-V tools unavailable | PATH isolation is weaker evidence |
+| Notices/SBOM/hash/provenance/content/privacy inspection | Current internal artifacts | PASS | [artifact-qualification.json](artifact-qualification.json):19 checks,131 notices,42 runtime/78 build components; [privacy-scan.json](privacy-scan.json),no findings | Unsigned dirty-tree local provenance; hosted clean build separate |
+| Local Defender artifact scan | Installed engine/signatures, owned dist directory | PASS | [defender-qualification.json](defender-qualification.json),completion event,no detection events in interval | Not every AV/SmartScreen or publisher identity |
+| Trusted publisher signing/timestamp/trust | Publisher certificate/service | NOT TESTED | Maintainer confirmed unavailable; current artifacts accurately unsigned | Signing-ready process is not signing qualification |
+| GPU OCR/cloud OCR/speech/persistent history | Outside shipped scope | NOT APPLICABLE | Deliberately deferred | No exposed feature deleted to avoid testing |
 
-| Area | Evidence |
-|---|---|
-| Domain and integration regression | 145 pytest cases pass, including real worker threads, stale successes/failures, pause/resume, stop cancellation, bounded queues, cache identity, context budgets, settings recovery, endpoint security and privacy |
-| Overlay | 60 scripted size/preset/script/long-output combinations; click-through/edit flags; DPI cache invalidation; full-copy retention; style validation/persistence |
-| Static checks | Ruff lint and formatting; mypy on 26 application modules |
-| Fresh dependencies | New CPython 3.12 x64 environment installs the 75-distribution Windows lock with artifact hashes; editable installation, startup and the regression suite pass |
-| Dependencies | Complete locked environment audited against the vulnerability database: no known vulnerabilities at the time of this run |
-| Repository hygiene | Signature scan of the publishable text tree found no suspected credentials; runtime/private/build folders are ignored. This is not a guarantee against every secret pattern |
-| Recognition | Verified model installation and corrupt-download cleanup; real isolated Japanese OCR exact match; native process shutdown; nine synthetic fixtures and three preprocessing variants, each repeated three times |
-| Provider contracts | Ten adapters exercised with mock transports, discovery schemas, invalid payloads, auth/quota/timeout/redirect errors, scoped prompts and safe error messages |
-| Real translation | Google's quick endpoint returns a nonempty translated result for authored synthetic Japanese; no paid credentials or real local LLM were supplied |
-| Actual desktop | Guarded synthetic window at 125% Windows scaling; physical crop matches the fixture, OCR is exact, and translation differs from source; cold total about 4.0 s, including process/model startup |
-| Native shortcuts | Eight actions register successfully after first-run fallback; four base shortcuts were occupied on this host. Registrations were released after the probe |
-| Native credentials | Source and frozen app roundtrip a temporary synthetic Windows Credential Manager entry and delete it; sandbox access denial was tested as a safe error |
-| Source packaging | Wheel and source distribution compile successfully; package assets resolve |
-| Binary packaging | PyInstaller folder and Inno per-user installer compile; runtime startup, isolated OCR, credential storage and installer lifecycle are checked before upload |
+## Decision
 
-The frozen Qt startup initially failed because an unrelated Poppler ICU DLL on PATH was collected into the app. Build analysis now runs with an isolated Windows/Python PATH and uses system ICU. Development-environment auto-downloaded OCR weights are explicitly excluded; managed resources come from verified application-data models. Qt/PySide corresponding sources and original license texts accompany binaries.
+No known P0 is intentionally left unresolved. Unresolved P1 qualification gaps have no implicit waiver. Physical mixed-DPI/media/accessibility, clean-Windows/legacy install, provider accounts/model quality and publisher signing remain explicit blockers. No stable promotion follows from CI success alone.
 
-## Measured behavior
-
-The [OCR report](ocr-benchmark.json) contains every fixture and preprocessing result; [the earlier model baseline](ocr-v4-benchmark.json) and [multilingual comparison](ocr-v6-comparison.json) retain unsuccessful alternatives. Seven of nine original-color fixtures have zero whitespace-normalized character error. Korean initially failed because the document angle classifier rotated upright subtitles; disabling classification and selecting its dedicated recognizer corrected it. Simplified Chinese loses punctuation (CER 0.1); Traditional Chinese also confuses a character (CER 0.2). These remaining failures are not hidden.
-
-Warm recognition medians on this host are roughly 0.9–1.4 seconds for the 660×160 fixture corpus. Original RGB remains the default because contrast/upscaling did not consistently improve this sample. A high-confidence settled frame needs one inference; uncertain/accuracy-mode text is confirmed from a fresh captured frame, not by repeating OCR on identical pixels. Idle capture cadence backs off after three unchanged seconds while static OCR remains suppressed.
-
-The [30-second synthetic soak](performance.json) accepted 40 changing lines, retained eight context pairs and 40 cache entries, and observed event queue occupancy at most two, with no pending frames/text at completion. Cached overlay paints measured about 1.1 ms median and 2.0 ms p95. The report's memory values cover Python allocations only, not native Qt/ONNX buffers. Synthetic inference and a brief soak do not validate several hours of real media or native memory growth.
-
-## Remaining qualification
-
-Before calling this stable, complete the [manual release matrix](release-checklist.md): clean supported Windows user account, multiple resolutions, physical mixed-DPI/negative-origin monitors, display hot-plug/rotation, exclusive and borderless games, prolonged media use, stylized/vertical/RTL OCR and real configured cloud/local models. This host supplies one physical 125% configuration; unit transforms cover other geometries without proving their native behavior.
-
-The beta is unsigned. There is no publisher signing certificate in this workspace. Hashes and library/source inventories improve auditability but do not replace signing. CI is configured to rerun Windows quality and packaged startup; release-candidate builds require manual dispatch and do not autonomously publish. Any remote CI result must be checked separately from the local evidence.
-
-Cloud OCR, screenshot/vision upload, GPU OCR, speech, automatic quality routing, persistent history, multi-region sessions were not exposed as completed beta1 features. Interfaces leave room for them. The beta keeps local OCR independent of its translation adapter and never falls back to cloud silently.
+Earlier window/onboarding/focus and hosted build reports are historical evidence for their recorded source. Legitimate beta changelog history remains. The canonical prerelease identifier cannot change until stable gates actually pass.

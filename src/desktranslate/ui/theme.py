@@ -44,7 +44,16 @@ def apply_theme(app: QApplication, theme: str) -> None:
     # Qt's offscreen platform has no system font discovery on Windows. Load OS fonts
     # explicitly for reproducible previews; the installer does not redistribute fonts.
     if len(QFontDatabase.families()) < 10:
-        for filename in ("segoeui.ttf", "seguisb.ttf", "YuGothM.ttc", "malgun.ttf", "msjh.ttc"):
+        for filename in (
+            "segoeui.ttf",
+            "seguisb.ttf",
+            "YuGothM.ttc",
+            "malgun.ttf",
+            "msjh.ttc",
+            "msyh.ttc",
+            "Nirmala.ttf",
+            "tahoma.ttf",
+        ):
             path = Path("C:/Windows/Fonts") / filename
             if path.is_file():
                 QFontDatabase.addApplicationFont(str(path))

@@ -1,6 +1,9 @@
 """Render synthetic UI previews without capturing a desktop or making network calls."""
 
+import os
 from pathlib import Path
+
+os.environ["QT_QPA_PLATFORM"] = "offscreen"
 
 from PIL import Image, ImageOps
 from PySide6.QtWidgets import QApplication

@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0b2",
+  "completed": false,
+  "result": "NOT TESTED",
+  "requested_duration_s": 7200,
+  "interrupted_elapsed_s": 600.01,
+  "reason": "Visible media run stopped immediately at maintainer request; never resumed. No completed endurance pass claimed.",
+  "policy": "docs/testing.md",
+  "scope": "Previously decoded licensed open movie with authored subtitle overlays; no actual game/anime or model-quality qualification.",
+  "historical_smoke": {
+    "elapsed_s": 300.49,
+    "decoded_frames": 5569,
+    "checks": {
+      "duration_complete": true,
+      "actual_video_frames": true,
+      "all_five_sources_delivered": true,
+      "windowed_and_borderless_delivered": true,
+      "no_playback_errors": true,
+      "no_pipeline_errors": true,
+      "workers_closed": true,
+      "no_remaining_children": true
+    },
+    "scope": "Actual OpenCV-decoded moving video rendered in an owned native Qt widget with authored overlaid subtitles and MSS, real isolated CPU OCR, loopback HTTP and overlay. No actual game/anime typesetting or cloud/model translation-quality qualification. No captured frames saved. Concurrent release QA affects latency."
+  },
+  "no_captured_frames_persisted": true
+}

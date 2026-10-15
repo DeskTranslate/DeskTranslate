@@ -25,7 +25,7 @@ def main() -> int:
 
     enable_dpi_awareness()
     from PySide6.QtCore import QTimer
-    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication, QMessageBox
 
     from desktranslate.logging import configure_logging
     from desktranslate.settings import SettingsStore, data_dir
@@ -35,7 +35,15 @@ def main() -> int:
     app.setApplicationName("DeskTranslate")
     app.setOrganizationName("DeskTranslate")
     app.setQuitOnLastWindowClosed(False)
-    configure_logging(data_dir() / "logs")
+    try:
+        configure_logging(data_dir() / "logs")
+    except OSError:
+        QMessageBox.critical(
+            None,
+            "DeskTranslate cannot start",
+            "The application data folder is not writable. Extract the portable ZIP to a writable folder, or check your Windows account's app-data permissions.",
+        )
+        return 1
     window = MainWindow(
         SettingsStore(),
         demo=args.demo or args.smoke_test or bool(args.render_preview) or bool(args.verify_runtime),
@@ -50,7 +58,7 @@ def main() -> int:
             import json
             import uuid
 
-            from desktranslate.runtime_verification import verify_http_provider
+            from desktranslate.runtime_verification import verify_credentials, verify_http_provider
             from desktranslate.security import CredentialStore
 
             report: dict[str, object] = {
@@ -62,17 +70,7 @@ def main() -> int:
             except Exception as error:
                 report["http_provider_error"] = type(error).__name__
             account = "release-probe-" + uuid.uuid4().hex
-            credentials = CredentialStore()
-            try:
-                credentials.set(account, account)
-                report["credential_roundtrip"] = credentials.get(account) == account
-            except Exception as error:
-                report["credential_error"] = type(error).__name__
-            finally:
-                try:
-                    credentials.delete(account)
-                except Exception:
-                    report["credential_cleanup"] = False
+            report.update(verify_credentials(CredentialStore(), account))
             if args.ocr_fixture:
                 from PIL import Image
 
@@ -88,8 +86,13 @@ def main() -> int:
                     report["ocr_error"] = type(error).__name__
                 finally:
                     if engine:
-                        engine.close()
-                        engine.reap()
+                        try:
+                            engine.close()
+                            engine.reap()
+                            report["ocr_cleanup"] = True
+                        except Exception as error:
+                            report["ocr_cleanup"] = False
+                            report["ocr_cleanup_error"] = type(error).__name__
             args.verify_runtime.parent.mkdir(parents=True, exist_ok=True)
             args.verify_runtime.write_text(json.dumps(report, indent=2), encoding="utf-8")
             verification.update(report)
@@ -100,9 +103,13 @@ def main() -> int:
 
         def finish_verification() -> None:
             if not thread.is_alive():
-                required = ["qt", "assets", "credential_roundtrip", "http_provider_roundtrip"] + (
-                    ["ocr_exact"] if args.ocr_fixture else []
-                )
+                required = [
+                    "qt",
+                    "assets",
+                    "credential_roundtrip",
+                    "credential_cleanup",
+                    "http_provider_roundtrip",
+                ] + (["ocr_exact", "ocr_cleanup"] if args.ocr_fixture else [])
                 window.exit_code = int(not all(verification.get(key) is True for key in required))
                 window.quit()
 

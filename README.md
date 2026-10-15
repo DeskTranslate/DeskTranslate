@@ -6,9 +6,9 @@
 
 Translate the dialogue in a game, subtitles in a video, a menu, or text in an image. Press a shortcut, select a region, and read the translation in a quiet, customizable overlay.
 
-[Download the Windows beta](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Privacy](docs/privacy.md) · [Report a problem](https://github.com/DeskTranslate/DeskTranslate/issues/new/choose)
+[Release readiness](docs/validation.md) · [Non-invasive testing](docs/testing.md) · [Published releases](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Upgrade guide](docs/upgrade.md)
 
-**V2 is the DeskTranslate revival:** a new Windows application with managed local OCR, contextual translation and an editable subtitle overlay. The 2.0.0b2 hardening pass adds window-following capture, full profiles and guided first-translation setup. **Stable release verdict: NOT READY.** Publisher signing and the remaining clean-machine, physical display, screen-reader and provider qualification gates are still outstanding.
+**Version 2.0.0 is undergoing stable-release qualification. It has not been published as stable.** The new Windows application brings managed local OCR, contextual translation, application-following capture, profiles, guided setup, and an editable subtitle overlay. Existing internal prerelease identifiers remain until acceptance gates pass; we are not publishing another beta. Publisher signing and physical/manual qualification remain outstanding. The release page currently contains the legacy application.
 
 ![DeskTranslate 2 in its midnight mint theme, showing synthetic Japanese dialogue](docs/screenshots/translate-dark.png)
 
@@ -23,15 +23,21 @@ Translate the dialogue in a game, subtitles in a video, a menu, or text in an im
 - **A setup for every story.** Save, load, update, duplicate, rename and exchange profiles for games and shows. Profiles include language, OCR, provider/model, glossary, context, shortcuts and overlay settings. Keys stay in the OS vault; imported profiles require a new local capture selection.
 - **A first translation you can see.** Guided setup installs the right recognition pack and processes an authored sample with actual OCR and your chosen provider. Back, retry and Set up later remain available.
 - **Built for everyday use.** Searchable languages/models, global shortcuts, tray controls, light/dark and Windows high-contrast support, previewed diagnostics, and explicit stable/beta update checks. Runtime failures pause translation without opening the main window over your game.
-- **Privacy you can understand.** Screenshots remain in memory. Local AI keeps recognized text on your machine. Cloud services receive recognized text and configured context, never screenshots. API keys use the OS credential vault. No telemetry. An optional bounded session transcript stays in memory until you explicitly copy or export it.
+- **Privacy you can understand.** Screenshots remain in memory. Cloud services receive recognized text and configured context, never screenshots. API keys use the OS credential vault. DeskTranslate has no app analytics and opts out of ONNX Runtime telemetry before inference. Local servers have their own logging policies. An optional bounded session transcript stays in memory until you explicitly copy or export it. [Privacy and dependency scope](docs/privacy.md).
+
+![DeskTranslate's profile manager with authored example setups for a visual novel, subtitles and menus](docs/screenshots/profiles-dark.png)
+
+Save a setup for each game, show or task, then load it when you're ready. The examples above are synthetic; keys stay in your local OS vault. [Read the privacy policy](docs/privacy.md) or [report a problem](https://github.com/DeskTranslate/DeskTranslate/issues/new/choose).
 
 ## Install
 
-DeskTranslate 2 is a **Windows x64 beta**, targeting Windows 10 2004 or later and Windows 11. Download the versioned `Setup-x64.exe` from the [release page](https://github.com/DeskTranslate/DeskTranslate/releases). Installation is per user and needs no administrator account. Python and Tesseract are not required.
+The planned stable distribution is **Windows x64**, primarily Windows 11. The runtime's technical minimum is Windows 10 build 19041; that minimum does not establish current Microsoft support or successful hardware qualification. Once qualified artifacts are published, download the versioned `Setup-x64.exe` from this repository's release page. Installation is per user and needs no administrator account. Normal users need no Python, pip, Visual Studio, Tesseract, or manual DLL installation. See the [acceptance matrix](docs/validation.md).
 
-For a portable installation, extract the **entire** portable ZIP and launch `DeskTranslate.exe`. Keep `_internal` beside the executable. Portable describes the executable distribution; settings and downloaded recognition models still use `%LOCALAPPDATA%\DeskTranslate`.
+For portable use, extract the **entire** ZIP into a writable folder and launch `DeskTranslate.exe`. Keep `_internal` and `portable-mode` beside it. Portable settings, logs, and downloaded models live in `DeskTranslateData` beside the executable; installed builds use `%LOCALAPPDATA%\DeskTranslate`. Credentials remain in your Windows account's vault. Move the entire folder to retain portable data.
 
-The beta binaries are **unsigned**. Verify their SHA-256 against `SHA256SUMS.txt` on the release page. Checksums detect changed files but do not establish publisher identity. Separate runtime/build SBOMs, a build provenance statement, library sources and third-party notices accompany new builds. Trusted Authenticode signing with RFC 3161 timestamps is required before stable promotion; no publisher certificate is currently available.
+Internal qualification binaries are **unsigned** and must not be treated as stable. Checksums detect changed files but do not establish publisher identity. Separate runtime/build SBOMs, a build provenance statement, library sources and third-party notices accompany new builds. Trusted Authenticode signing with RFC 3161 timestamps is required before stable promotion; no publisher certificate is currently available.
+
+V1 did not persist language preferences. V2 starts with new settings and does not remove an unrelated legacy installation or Tesseract. Read [upgrade and data retention](docs/upgrade.md) before replacing an existing setup.
 
 ## Your first translation
 
@@ -70,6 +76,8 @@ Click-through lets a game receive mouse input. Edit mode temporarily restores in
 
 ## Translation providers
 
+Translation targets retain v1's 133-language catalog. OCR sources depend on the selected engine: managed source packs are listed separately from optional Tesseract languages. Provider language availability varies; a listed language does not promise universal OCR or translation accuracy.
+
 | Provider | Processing | Setup |
 |---|---|---|
 | Google quick translation | Cloud, conventional MT | No key; public endpoint with no availability guarantee |
@@ -89,18 +97,18 @@ Advanced endpoint/API controls are hidden until requested. Known embedding, imag
 
 **Find local AI servers** probes Ollama and LM Studio on localhost. DeskTranslate does not download large LLMs or silently fall back from local to cloud. Start/load the server yourself, test it, choose a model, and apply. Translation quality and speed depend on that model and your hardware.
 
-## What the beta has been checked against
+## Release qualification
 
-Core algorithms, concurrent stale-result rejection, settings recovery, ten provider request/response contracts, model integrity, UI flows and privacy boundaries have automated tests. The packaged runtime has been checked for startup, assets, isolated OCR and native credential storage. A guarded desktop integration probe at 125% scaling captures synthetic dialogue and translates it. The installer and portable app are built with PyInstaller and Inno Setup.
+Core algorithms, concurrent stale-result rejection, settings recovery, ten provider request/response contracts, model integrity, UI flows and privacy boundaries have automated tests. Packaging and native probes are rerun after application changes; older reports qualify only their recorded source. The installer and portable app are built with PyInstaller and Inno Setup.
 
-The [production audit](docs/production-audit.md), [validation report](docs/validation.md) and [raw OCR benchmark](docs/ocr-benchmark.json) distinguish measured evidence from unqualified scenarios. Seven of nine synthetic fixtures have zero whitespace-normalized character error with original colors; Chinese punctuation/traditional-character errors remain. Typical warm CPU OCR on this host takes roughly 0.9–1.4 seconds; rapid subtitles may outpace it. Synthetic fixtures do not establish accuracy for every game or video.
+The [validation report](docs/validation.md) and [OCR benchmark](docs/ocr-benchmark.json) distinguish measured evidence from unqualified scenarios. The corpus contains 35 authored fixtures across 19 managed source languages, including outlined, shadowed, translucent, low-contrast, vertical and mixed-script text. Existing punctuation/character errors are retained and investigated. Warm CPU OCR on this host typically takes about a second; rapid subtitles may outpace it. Synthetic fixtures do not establish accuracy for every game or video.
 
 ## Current limits
 
 - Regions stay within one monitor. Negative origins and mixed-scale coordinate transforms are tested; physical mixed-DPI, hot-plug and exclusive-fullscreen coverage still need a hardware matrix. Use windowed/borderless mode if capture is blank. Protected content cannot be promised.
-- Auto recognition uses a Chinese/Latin family and is not universal. Choose the source script explicitly. Vertical reading order is experimental; curved/rotated/stylized text may fail.
-- AI adapters have mocked contract coverage. Paid-account and local-model quality testing require your configured providers; no universal accuracy or compatibility claim is made.
-- This beta ships local CPU OCR and visible-window following. Cloud OCR, vision uploads, production GPU inference, universal automatic script routing, multiple simultaneous regions, speech and persistent history are not shipped. DirectML and Windows Graphics Capture remain documented investigations.
+- Auto recognition uses a Chinese/Latin family and is not universal. Choose the source script explicitly. Vietnamese accents, Chinese punctuation/Traditional characters, vertical Japanese and pixel fonts have known fixture errors. Vertical reading order remains experimental. A verified model download guarantees integrity, not recognition accuracy; reinstalling the same pack will not fix these errors.
+- All adapters have contract/failure tests. Actual Ollama and LM Studio lifecycle tests have also run, but the tiny test model failed plain-text translation-quality checks. Paid-account APIs and a real LibreTranslate server remain unqualified. Choose and evaluate a model for your content; no universal accuracy or compatibility claim is made.
+- The current implementation uses local CPU OCR and visible-window following. Cloud OCR, vision uploads, production GPU inference, universal automatic script routing, multiple simultaneous regions, speech and persistent history are not shipped. DirectML and Windows Graphics Capture remain documented investigations.
 - macOS/Linux source portability is unqualified. The separate legacy [Mac project](https://github.com/DeskTranslate/DeskTranslate-Mac) is not the DeskTranslate 2 release.
 
 ## Develop and build

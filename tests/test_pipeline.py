@@ -10,6 +10,45 @@ from desktranslate.pipeline import LatestMailbox, Pipeline, Session
 from desktranslate.settings import Settings
 
 
+def test_failed_sessions_release_worker_state_without_waiting_for_cyclic_gc():
+    import gc
+    import weakref
+
+    import httpx
+
+    from desktranslate.models import SessionState
+    from desktranslate.providers import create_provider
+
+    def failed_session():
+        provider = create_provider(
+            "custom", transport=httpx.MockTransport(lambda request: httpx.Response(500))
+        )
+        pipeline = Pipeline(
+            Settings(recent_region=[0, 0, 120, 80]), Capture, OCR, lambda: provider, once=True
+        )
+        reference = weakref.ref(pipeline)
+        pipeline.start()
+        try:
+            until(lambda: pipeline.session.state == SessionState.ERROR)
+        finally:
+            pipeline.stop()
+            assert pipeline.wait_closed()
+        return reference
+
+    gc.collect()
+    collecting = gc.isenabled()
+    gc.disable()
+    try:
+        retired = [failed_session() for _ in range(8)]
+        assert all(reference() is None for reference in retired), (
+            "Failed provider tasks retained retired sessions and their native synchronization handles"
+        )
+    finally:
+        if collecting:
+            gc.enable()
+        gc.collect()
+
+
 def until(predicate, timeout=3):
     end = time.monotonic() + timeout
     while time.monotonic() < end:
@@ -293,3 +332,182 @@ def test_failure_of_stale_request_does_not_break_new_generation():
         assert events[-1].result.text == "C translated"
     finally:
         pipeline.stop()
+
+
+def test_stop_is_responsive_while_native_ocr_reaper_holds_join_lock():
+    from threading import Lock
+
+    from desktranslate.ocr import IsolatedOCR
+
+    engine = IsolatedOCR.__new__(IsolatedOCR)
+    engine.lock = Lock()
+    engine.closed = Event()
+    engine.closed.set()  # Reaper has terminated IPC and is joining the child.
+    engine.cancelled = Event()
+    pipeline = Pipeline(Settings(), Capture, OCR, SlowProvider)
+    pipeline.ocr = engine
+    with engine.lock:
+        started = time.monotonic()
+        pipeline.stop()
+        assert time.monotonic() - started < 0.1
+
+
+@pytest.mark.parametrize("blank", [False, True])
+def test_one_shot_releases_workers_without_invalidating_pending_result(blank):
+    class OnceOCR(OCR):
+        def recognize(self, *args):
+            return OCRResult("" if blank else "Authored text", confidence=0.99)
+
+    provider = SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(recent_region=[0, 0, 120, 80]), Capture, OnceOCR, lambda: provider, once=True
+    )
+    pipeline.start()
+    try:
+        assert pipeline.wait_closed(3)
+        events = pipeline.poll()
+        assert (
+            any(event.clear for event in events) if blank else any(event.result for event in events)
+        )
+        assert all(pipeline.session.current(event.stamp) for event in events)
+    finally:
+        pipeline.stop()
+
+
+def test_pause_cancels_pending_provider_and_resume_uses_fresh_client():
+    from desktranslate.errors import Cancelled
+
+    providers = []
+
+    class Cancellable(SlowProvider):
+        def __init__(self):
+            super().__init__()
+            self.cancelled = Event()
+            providers.append(self)
+
+        def translate(self, request):
+            self.started.set()
+            if len(providers) == 1:
+                self.cancelled.wait(2)
+                if self.cancelled.is_set():
+                    raise Cancelled()
+            return TranslationResult("Authored translated result")
+
+        def cancel_pending(self):
+            self.cancelled.set()
+
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]), Capture, OCR, Cancellable
+    )
+    pipeline.start()
+    try:
+        until(lambda: providers and providers[0].started.is_set())
+        pipeline.pause()
+        assert providers[0].cancelled.is_set()
+        pipeline.resume()
+        accepted = []
+
+        def received():
+            accepted.extend(event for event in pipeline.poll() if event.result)
+            return bool(accepted)
+
+        until(received)
+        assert len(providers) == 2
+        assert len(accepted) == 1
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
+def test_continuous_motion_translates_and_new_confirmed_text_rejects_old_request():
+    class Moving(Capture):
+        tick = 0
+        text = 0
+
+        def capture(self, region):
+            self.tick += 1
+            image = Image.new("RGB", (120, 80), ((self.tick * 31) % 256,) * 3)
+            image.putpixel((0, 0), (self.text,) * 3)
+            return image
+
+    capture, provider = Moving(), SlowProvider()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        OCR,
+        lambda: provider,
+    )
+    pipeline.start()
+    try:
+        until(provider.started.is_set, 5)
+        original = pipeline.session.stamp()
+        capture.text = 200
+        until(lambda: pipeline.session.stamp() != original, 4)
+        provider.release.set()
+        accepted = []
+
+        def received():
+            accepted.extend(event for event in pipeline.poll() if event.result)
+            return bool(accepted)
+
+        until(received, 4)
+        assert [event.source for event in accepted] == ["C"]
+        assert pipeline.counters["ocr"] > 0
+        assert pipeline.frames.queue.qsize() <= 1
+        assert pipeline.counters["stale"] >= 1
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
+@pytest.mark.parametrize("component", ["ocr", "provider"])
+def test_cleanup_failure_is_reported_and_does_not_exhaust_worker_capacity(component):
+    class BadOCR(OCR):
+        def close(self):
+            raise RuntimeError("authored cleanup failure")
+
+    class BadProvider(SlowProvider):
+        def close(self):
+            raise RuntimeError("authored cleanup failure")
+
+    for _ in range(3):
+        provider = BadProvider() if component == "provider" else SlowProvider()
+        provider.release.set()
+        pipeline = Pipeline(
+            Settings(recent_region=[0, 0, 120, 80]),
+            Capture,
+            BadOCR if component == "ocr" else OCR,
+            lambda provider=provider: provider,
+            once=True,
+        )
+        pipeline.start()
+        until(lambda pipeline=pipeline: not any(thread.is_alive() for thread in pipeline.threads))
+        assert not pipeline.wait_closed()
+        assert pipeline.cleanup_failed.is_set()
+    provider = SlowProvider()
+    provider.release.set()
+    healthy = Pipeline(
+        Settings(recent_region=[0, 0, 120, 80]), Capture, OCR, lambda: provider, once=True
+    )
+    healthy.start()
+    assert healthy.wait_closed(3)
+    assert any(event.result for event in healthy.poll())
+
+
+def test_overlong_recognition_stops_with_actionable_error_and_sends_no_text():
+    class LongOCR(OCR):
+        def recognize(self, *args, **kwargs):
+            return OCRResult("Authored " + "x" * 5001, confidence=0.99)
+
+    provider = SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(recent_region=[0, 0, 120, 80]), Capture, LongOCR, lambda: provider, once=True
+    )
+    pipeline.start()
+    assert pipeline.wait_closed(3)
+    assert provider.calls == []
+    errors = [event for event in pipeline.poll() if event.category]
+    assert len(errors) == 1 and "smaller region" in errors[0].error
+    assert pipeline.session.state == SessionState.ERROR

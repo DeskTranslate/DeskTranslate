@@ -61,7 +61,7 @@ class ModelNotFoundError(TranslationError):
 
 
 class LocalServerUnavailableError(ProviderUnavailableError):
-    message = "Local AI is not running. Start Ollama or LM Studio, load a model, then test again."
+    message = "Cannot reach the local translation server. Start the configured server, load a model if needed, and test again in Providers."
 
 
 class CredentialError(DeskTranslateError):

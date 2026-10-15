@@ -3,18 +3,22 @@ from __future__ import annotations
 import json
 import os
 import re
+import sys
 import tempfile
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
-from desktranslate.languages import REGISTRY
+from desktranslate.languages import REGISTRY, source_languages
 from desktranslate.models import Rect
 
 
 def data_dir() -> Path:
     if override := os.environ.get("DESKTRANSLATE_DATA_DIR"):
         return Path(override)
+    executable_dir = Path(sys.executable).resolve().parent
+    if getattr(sys, "frozen", False) and (executable_dir / "portable-mode").is_file():
+        return executable_dir / "DeskTranslateData"
     if os.name == "nt":
         return Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local")) / "DeskTranslate"
     return Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "desktranslate"
@@ -140,6 +144,8 @@ class Settings:
         for name, values in enums.items():
             if getattr(self, name) not in values:
                 raise ValueError("Invalid setting")
+        if self.source not in {language.code for language in source_languages(self.ocr)}:
+            raise ValueError("Choose a source language supported by the selected OCR engine.")
         for name, low, high in [
             ("overlay_size", 12, 64),
             ("overlay_opacity", 30, 100),
@@ -266,6 +272,7 @@ class SettingsStore:
         self.recovered = False
 
     def load(self) -> Settings:
+        self.recovered = False
         if not self.path.exists():
             return Settings()
         try:
@@ -292,6 +299,8 @@ class SettingsStore:
             return Settings()
 
     def save(self, settings: Settings) -> None:
+        if self.recovered:
+            raise ValueError("Damaged settings are retained until you explicitly reset them.")
         settings.validate()
         encoded = json.dumps(asdict(settings), ensure_ascii=False, indent=2)
         if len(encoded.encode("utf-8")) > 200_000:

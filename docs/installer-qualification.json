@@ -1,6 +1,6 @@
 {
   "version": "2.0.0b2",
-  "setup_sha256": "616e167120c4c2bb8a1303765fab13039ab423b3cf548ab581d44c9f28d7f3ab",
+  "setup_sha256": "a642569388fb2f702f14320fc4f21f49dab78c4a83e69d5a71c005cc933eeaa7",
   "synthetic_data_only": true,
   "non_ascii_path": true,
   "non_ascii_data_path": true,
@@ -10,10 +10,19 @@
   "installed_ocr_http_credentials_tested": true,
   "install": true,
   "startup": true,
+  "shortcuts": true,
+  "executable_metadata": true,
+  "uninstall_metadata": true,
   "settings_preserved_on_upgrade": true,
   "reinstall": true,
+  "obsolete_runtime_removed": true,
   "uninstall": true,
   "settings_retained_on_uninstall": true,
   "registry_removed": true,
+  "shortcuts_removed": true,
+  "models_retained_on_uninstall": true,
+  "reinstall_after_uninstall": true,
+  "final_registry_removed": true,
+  "final_shortcuts_removed": true,
   "passed": true
 }

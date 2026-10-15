@@ -163,19 +163,56 @@ class HTTPProvider:
         self.loop = cast(asyncio.BaseEventLoop, asyncio.new_event_loop())
 
     def call(self, method: str, path: str, **kwargs: Any) -> Any:
+        async def watch_cancel() -> None:
+            while not self.cancelled.is_set():
+                await asyncio.sleep(0.05)
+
         async def bounded() -> Any:
             self.pending = asyncio.current_task()
+            task = asyncio.create_task(self._call(method, path, **kwargs))
+            watcher = asyncio.create_task(watch_cancel())
+            done: set[asyncio.Task[Any]] = set()
+            pending: set[asyncio.Task[Any]] = set()
             try:
-                return await asyncio.wait_for(self._call(method, path, **kwargs), self.timeout)
+                done, pending = await asyncio.wait(
+                    (task, watcher), timeout=self.timeout, return_when=asyncio.FIRST_COMPLETED
+                )
+                if self.cancelled.is_set():
+                    raise Cancelled()
+                if task in done:
+                    return await task
+                raise TimeoutError()
             finally:
+                task.cancel()
+                watcher.cancel()
+                await asyncio.gather(task, watcher, return_exceptions=True)
                 self.pending = None
+                # A failed task owns its traceback, which includes this frame.
+                # Drop frame→task links so retired sessions/OS locks need not
+                # wait for a later cyclic-GC pass after repeated failures.
+                done.clear()
+                pending.clear()
+                del task, watcher
 
         try:
             return self.loop.run_until_complete(bounded())
-        except TimeoutError:
+        except TimeoutError as error:
+            error.__traceback__ = None
+            error.__context__ = None
             raise ProviderTimeoutError() from None
-        except asyncio.CancelledError:
+        except asyncio.CancelledError as error:
+            error.__traceback__ = None
+            error.__context__ = None
             raise Cancelled() from None
+        except Exception as error:
+            # run_until_complete's frame holds the failed task. Its exception
+            # can otherwise retain an entire retired pipeline until cyclic GC.
+            # Preserve the failure type/message, release coroutine traceback
+            # ownership, and let Python clear this except-variable on exit.
+            error.__traceback__ = None
+            error.__context__ = None
+            error.__cause__ = None
+            raise error from None
 
     async def _call(self, method: str, path: str, **kwargs: Any) -> Any:
         deadline = time.monotonic() + self.timeout
@@ -184,9 +221,17 @@ class HTTPProvider:
                 raise Cancelled()
             async with self.client.stream(method, self.endpoint + path, **kwargs) as response:
                 if response.status_code in {401, 403}:
+                    if self.id == "google":
+                        raise ProviderUnavailableError(
+                            "Google's quick endpoint denied access. Try later or choose an API provider in Providers."
+                        )
                     raise ProviderAuthenticationError()
                 if response.status_code == 404:
-                    raise ModelNotFoundError()
+                    if self.capabilities.model_discovery:
+                        raise ModelNotFoundError()
+                    raise ProviderUnavailableError(
+                        "The translation endpoint was not found. Check its base URL in Providers or try another service."
+                    )
                 if response.status_code == 429:
                     try:
                         delay = float(response.headers.get("Retry-After", "10"))
@@ -196,7 +241,9 @@ class HTTPProvider:
                 if response.status_code >= 500:
                     raise ProviderUnavailableError()
                 if not 200 <= response.status_code < 300:
-                    raise TranslationError()
+                    raise TranslationError(
+                        "The provider rejected this request. Check its credentials, supported languages, model and endpoint in Providers."
+                    )
                 content = bytearray()
                 buffered = response.is_stream_consumed
                 encoding = (
@@ -284,6 +331,10 @@ class CompatibleProvider(HTTPProvider):
         return {"Authorization": "Bearer " + self.key} if self.key else {}
 
     def translate(self, request: TranslationRequest) -> TranslationResult:
+        # LM Studio can silently substitute its loaded model for an unknown ID.
+        # Check on every request: models may be removed/unloaded during a session.
+        if self.id == "lmstudio" and request.model not in {model.id for model in self.models()}:
+            raise ModelNotFoundError()
         system, user = prompts(request)
         data = self.call(
             "POST",
@@ -300,13 +351,17 @@ class CompatibleProvider(HTTPProvider):
             },
         )
         try:
+            if self.id == "lmstudio" and data.get("model", request.model) != request.model:
+                raise ModelNotFoundError(
+                    "The local server used another model. Refresh the model list and select the intended model."
+                )
             choice = data["choices"][0]
             if choice.get("finish_reason") in {"length", "content_filter"}:
                 raise TranslationError(
                     "Translation was truncated or blocked. Choose another model or smaller region."
                 )
             return self.result(choice["message"]["content"], data.get("usage"))
-        except (KeyError, IndexError, TypeError, ValueError):
+        except (KeyError, IndexError, TypeError, ValueError, AttributeError):
             raise TranslationError() from None
 
     def models(self) -> list[ModelInfo]:
@@ -320,13 +375,13 @@ class CompatibleProvider(HTTPProvider):
                     m.get("pricing", {}).get("prompt"),
                     m.get("pricing", {}).get("completion"),
                 )
-                for m in data["data"]
+                for m in catalog_entries(data["data"])
                 if isinstance(m, dict)
                 and isinstance(m.get("id"), str)
                 and len(m["id"]) <= 200
                 and usable_model(m)
             ]
-        except (KeyError, TypeError, AttributeError):
+        except (KeyError, TypeError, AttributeError, ValueError):
             raise TranslationError("The model catalog is invalid.") from None
 
 
@@ -343,6 +398,16 @@ def usable_model(model: dict[str, Any]) -> bool:
         return False
     outputs = architecture.get("output_modalities")
     return outputs is None or isinstance(outputs, list) and "text" in outputs
+
+
+def catalog_entries(value: Any) -> list[dict[str, Any]]:
+    if (
+        not isinstance(value, list)
+        or len(value) > 2000
+        or any(not isinstance(entry, dict) for entry in value)
+    ):
+        raise TranslationError("The model catalog is invalid or too large.")
+    return value
 
 
 class OpenAIProvider(CompatibleProvider):
@@ -414,7 +479,7 @@ class AnthropicProvider(HTTPProvider):
                 "".join(block["text"] for block in data["content"] if block["type"] == "text"),
                 data.get("usage"),
             )
-        except (KeyError, TypeError, ValueError):
+        except (KeyError, TypeError, ValueError, AttributeError):
             raise TranslationError() from None
 
     def models(self) -> list[ModelInfo]:
@@ -429,12 +494,13 @@ class AnthropicProvider(HTTPProvider):
             )
             try:
                 catalog.extend(
-                    ModelInfo(m["id"], m.get("display_name", m["id"])) for m in data["data"]
+                    ModelInfo(m["id"], m.get("display_name", m["id"]))
+                    for m in catalog_entries(data["data"])
                 )
                 if not data.get("has_more"):
                     break
                 after = data["last_id"]
-            except (KeyError, TypeError):
+            except (KeyError, TypeError, ValueError, AttributeError):
                 raise TranslationError() from None
         return catalog
 
@@ -466,7 +532,7 @@ class GeminiProvider(HTTPProvider):
                     "output_tokens": usage.get("candidatesTokenCount", 0),
                 },
             )
-        except (KeyError, IndexError, TypeError, ValueError):
+        except (KeyError, IndexError, TypeError, ValueError, AttributeError):
             raise TranslationError() from None
 
     def models(self) -> list[ModelInfo]:
@@ -486,13 +552,13 @@ class GeminiProvider(HTTPProvider):
                         m.get("displayName", m["name"]),
                         m.get("inputTokenLimit"),
                     )
-                    for m in data.get("models", [])
+                    for m in catalog_entries(data.get("models", []))
                     if "generateContent" in m.get("supportedGenerationMethods", [])
                 )
                 token = data.get("nextPageToken", "")
                 if not token:
                     break
-            except (KeyError, TypeError):
+            except (KeyError, TypeError, ValueError, AttributeError):
                 raise TranslationError() from None
         return catalog
 
@@ -514,6 +580,10 @@ class OllamaProvider(HTTPProvider):
             },
         )
         try:
+            if data.get("done") is not True or data.get("done_reason", "stop") != "stop":
+                raise TranslationError(
+                    "Translation was incomplete or exceeded the output limit. Select a smaller region or another model."
+                )
             return self.result(
                 data["message"]["content"],
                 {
@@ -528,9 +598,10 @@ class OllamaProvider(HTTPProvider):
         data = self.call("GET", "/api/tags")
         try:
             return [
-                ModelInfo(m["name"], m["name"], size_bytes=m.get("size")) for m in data["models"]
+                ModelInfo(m["name"], m["name"], size_bytes=m.get("size"))
+                for m in catalog_entries(data["models"])
             ]
-        except (KeyError, TypeError):
+        except (KeyError, TypeError, ValueError, AttributeError):
             raise TranslationError() from None
 
 
@@ -548,6 +619,19 @@ class GoogleProvider(HTTPProvider):
             },
         )
         try:
+            if (
+                not isinstance(data, list)
+                or not data
+                or not isinstance(data[0], list)
+                or any(
+                    not isinstance(part, list)
+                    or not part
+                    or part[0] is not None
+                    and not isinstance(part[0], str)
+                    for part in data[0]
+                )
+            ):
+                raise TranslationError()
             return self.result("".join(part[0] for part in data[0] if part[0]))
         except (KeyError, IndexError, TypeError):
             raise TranslationError() from None
@@ -574,8 +658,8 @@ class LibreProvider(HTTPProvider):
     def translate(self, request: TranslationRequest) -> TranslationResult:
         body = {
             "q": request.text,
-            "source": request.source.split("-")[0],
-            "target": request.target.split("-")[0],
+            "source": {"zh-CN": "zh", "zh-TW": "zt"}.get(request.source, request.source),
+            "target": {"zh-CN": "zh", "zh-TW": "zt"}.get(request.target, request.target),
             "format": "text",
         }
         if self.key:

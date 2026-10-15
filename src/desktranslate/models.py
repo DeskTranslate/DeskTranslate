@@ -18,6 +18,12 @@ class Rect:
     height: int
 
     def __post_init__(self) -> None:
+        if any(type(value) is not int for value in (self.x, self.y, self.width, self.height)):
+            raise ValueError("Rectangle coordinates must be integers")
+        if not all(
+            -(2**31) <= value < 2**31 for value in (self.x, self.y, self.right, self.bottom)
+        ):
+            raise ValueError("Rectangle coordinates exceed the native desktop range")
         if self.width <= 0 or self.height <= 0:
             raise ValueError("Rectangle dimensions must be positive")
         if self.width > 16384 or self.height > 16384 or self.width * self.height > 40_000_000:
@@ -92,6 +98,22 @@ class ModelInfo:
     output_price: str | None = None
     size_bytes: int | None = None
     text_support: str = "unverified"
+
+    def __post_init__(self) -> None:
+        for value, limit in ((self.id, 200), (self.name, 500)):
+            if (
+                not isinstance(value, str)
+                or not value.strip()
+                or len(value) > limit
+                or any(ord(character) < 32 for character in value)
+            ):
+                raise ValueError("Invalid model identity")
+        for numeric, maximum in ((self.context_length, 100_000_000), (self.size_bytes, 10**15)):
+            if numeric is not None and (type(numeric) is not int or not 0 <= numeric <= maximum):
+                raise ValueError("Invalid model metadata")
+        for price in (self.input_price, self.output_price):
+            if price is not None and (not isinstance(price, str) or len(price) > 100):
+                raise ValueError("Invalid model pricing")
 
 
 @dataclass(frozen=True)

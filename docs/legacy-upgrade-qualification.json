@@ -1,0 +1,8 @@
+{
+  "source": "https://github.com/DeskTranslate/DeskTranslate/releases/download/1.1a/DeskTranslateInstaller.exe",
+  "bytes": 110156108,
+  "sha256": "6728efad2b8a0d6b3b2c24251ed145b6f2f6ffb699b354997aea3f3f5d1a9516",
+  "result": "NOT TESTED",
+  "installer_requires_administrator": true,
+  "limitation": "The actual published v1 installer requires administrator elevation. No clean VM is available; it was inspected without installing this machine-wide legacy product on the development host. V2 per-user and retained beta1 upgrade are separately tested."
+}

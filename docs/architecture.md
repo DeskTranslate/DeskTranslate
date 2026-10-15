@@ -9,7 +9,7 @@ Capture → thumbnail change gate → latest frame mailbox (capacity 1)
   → bounded events → Qt timer → overlay
 ```
 
-A session has a serial and frame generation. Every meaningful frame change invalidates previous work immediately. Pause, stop and configuration changes also invalidate it. Results retain their original stamp and are checked in workers and presentation. Context receives only accepted results, is bounded by entries, Unicode characters and a conservative UTF-8 byte upper bound for tokens, and is cleared each session. Full request identity is hashed for the bounded memory cache.
+A session has a serial and frame generation. Static-frame changes invalidate prior work immediately. Continuously moving backgrounds are sampled at a bounded interval; confirmed source-text changes and blanks advance the semantic generation, so changing pixels do not starve OCR or discard every translation. Pause, stop, configuration and capture-geometry changes invalidate work immediately. Results retain their stamp and are checked in workers and presentation. Context receives only accepted results, is bounded by entries, Unicode characters and a conservative UTF-8 byte upper bound for tokens, and is cleared each session. Full request identity is hashed for the bounded memory cache.
 
 OCR stabilization is provisional. A frame change resets it from the last source actually delivered to the current UI, allowing identical text to retry if its earlier translation was discarded. Draining an event queue alone does not acknowledge presentation. Delivered dialogue stays deduplicated across pixel-only changes; blank observations and explicit context/target resets permit the same line to appear again. Stamped physical capture regions accompany work through result delivery so overlay avoidance follows the pixels that produced it.
 
@@ -27,7 +27,7 @@ Claude uses native Messages, Gemini uses generateContent, and Ollama uses /api/c
 
 Credentials are bound to provider and endpoint identity in the OS vault. Remote services require verified HTTPS; HTTP is loopback-only. No redirects or insecure TLS overrides. Logs use a metadata allowlist and discard messages, args, traceback, URLs, headers and dialogue. Diagnostics have a separate allowlist.
 
-Models, settings and logs use OS application data. Assets resolve from the package. `DESKTRANSLATE_DATA_DIR` isolates test data; it never holds credentials. Build and test folders are ignored by Git.
+Installed builds keep models, settings and logs in OS application data. The portable ZIP's adjacent `portable-mode` marker selects `DeskTranslateData` beside the executable instead. Assets resolve from the package. `DESKTRANSLATE_DATA_DIR` isolates test data; it never holds credentials. Build and test folders are ignored by Git.
 
 Pure `profiles.py`, `shortcuts.py`, `transcript.py`, `diagnostics.py` and `metrics.py` own validation, bounds and data contracts. Dedicated UI modules own profile CRUD/exchange, glossary exchange, onboarding, transcript and support previews. MainWindow coordinates session/capture state; it remains a substantial controller rather than disguising a mechanical rewrite as a completed architecture migration. Imported profiles never establish capture consent. Session transcript memory is opt-in and clears at boundaries. Metrics retain bounded numeric samples, never content.
 
@@ -36,3 +36,7 @@ Pure `profiles.py`, `shortcuts.py`, `transcript.py`, `diagnostics.py` and `metri
 Subtitle rendering uses Qt Unicode shaping and cached glyph pixmaps per content/style/size/DPI change. Outlines and shadows reuse cached glyphs. Long text shrinks within a bounded range and clips at an explicit line limit. Edit mode restores interaction and pauses capture. A one-second blank-text grace prevents immediate flicker. The document angle classifier is disabled because it rotated upright Korean subtitles incorrectly.
 
 Model downloads and release discovery use worker-owned async loops with total header/body deadlines and Event-driven cancellation. Identity-only bounded raw chunks prevent decompression expansion in these binary/metadata paths. Provider JSON and release catalogs reject non-finite constants and nesting beyond 64 levels before parsing.
+
+Windows OCR IPC transfers a pipe directly into the spawned child's handle table. This avoids a parent-owned duplicate if cancellation kills the child before unpickling. A kill-on-close job is assigned before the initialization handshake allows native/external engines to start. The OCR worker owns process reaping; cancellation remains nonblocking. The spawn API use is covered by actual Windows handle-growth and descendant-lifecycle regressions on the pinned runtime.
+
+Native display changes invalidate capture immediately and trigger a coalesced100ms overlay refit after the DPI resize cascade. The retained last translation is labelled STOPPED; a fresh region selection is required. ONNX Runtime is opted out at process initialization and before sessions; upstream Windows ETW initialization is described in the privacy policy.

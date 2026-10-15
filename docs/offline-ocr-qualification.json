@@ -1,0 +1,124 @@
+{
+  "version": "2.0.0b2",
+  "process_ort_opt_out": true,
+  "scope": "Actual local ONNX inference with verified installed packs and Python socket/DNS/upstream-download entry points forbidden. Not an OS ETW or native packet-capture audit.",
+  "languages": [
+    {
+      "language": "ja",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2035.99
+    },
+    {
+      "language": "ko",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1927.56
+    },
+    {
+      "language": "en",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1993.94
+    },
+    {
+      "language": "es",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2970.44
+    },
+    {
+      "language": "zh-CN",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2069.28
+    },
+    {
+      "language": "zh-TW",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1892.97
+    },
+    {
+      "language": "fr",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2877.18
+    },
+    {
+      "language": "de",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2109.33
+    },
+    {
+      "language": "it",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1963.01
+    },
+    {
+      "language": "pt",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1974.1
+    },
+    {
+      "language": "nl",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 2003.41
+    },
+    {
+      "language": "pl",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1963.42
+    },
+    {
+      "language": "vi",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1926.46
+    },
+    {
+      "language": "id",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1938.04
+    },
+    {
+      "language": "tr",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1948.92
+    },
+    {
+      "language": "ru",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1946.13
+    },
+    {
+      "language": "uk",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1941.78
+    },
+    {
+      "language": "ar",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1890.22
+    },
+    {
+      "language": "hi",
+      "result": "PASS",
+      "nonempty": true,
+      "inference_ms": 1905.79
+    }
+  ],
+  "blocked_attempts": 0,
+  "upstream_downloader_called": false,
+  "passed": true
+}

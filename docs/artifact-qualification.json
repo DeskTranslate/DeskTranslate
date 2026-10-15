@@ -1,0 +1,59 @@
+{
+  "version": "2.0.0b2",
+  "checks": {
+    "canonical_version": true,
+    "runtime_digest": true,
+    "runtime_versions": true,
+    "unsigned_accurately_recorded": true,
+    "all_checksums": true,
+    "portable_marker_only_in_zip": true,
+    "no_test_private_files": true,
+    "no_bundled_ocr_weights": true,
+    "required_assets": true,
+    "managed_runtime_marker": true,
+    "pe_version": true,
+    "icon_manifest": true,
+    "notices_included": true,
+    "bidi_license": true,
+    "matching_library_sources": true,
+    "runtime_sbom": true,
+    "build_sbom": true,
+    "bidi_in_runtime_sbom": true,
+    "no_prior_contamination": true
+  },
+  "artifact_hashes": {
+    "DeskTranslate-2.0.0b2-build-sbom.json": "77353f5e541552eccd7c9999c3474b653c7340f9ba94f484547e8cc75b50fb71",
+    "DeskTranslate-2.0.0b2-LibrarySources.zip": "fb471b860fbc93f44a2e1a6002a89b256bfca663856b81f68789778be12010f7",
+    "DeskTranslate-2.0.0b2-Portable-x64.zip": "16572ccc6c6a49873e4304503957e68ddeb4934d1d5b12c70671ed39f8143150",
+    "DeskTranslate-2.0.0b2-provenance.json": "2a83b98fe3cb8efa44035ab2c4a8989595c1059e4b3e2e4b9a7ed50a4e2bd4cf",
+    "DeskTranslate-2.0.0b2-runtime-sbom.json": "d3c8b3c84d595eb0e116b832f22b884b2edb61174437b97727265e024e7334c2",
+    "DeskTranslate-2.0.0b2-Setup-x64.exe": "a642569388fb2f702f14320fc4f21f49dab78c4a83e69d5a71c005cc933eeaa7"
+  },
+  "build_info": {
+    "version": "2.0.0b2",
+    "windows_version": "2.0.0.10002",
+    "git_commit": "46ac123b69ad4844b1eb16563e7a8f97144e4a94",
+    "working_tree_dirty": true,
+    "source_sha256": "5bee65266e02b4c1d60576925a5d69b9e2b477747b75ba069638c2b59d24a1ae",
+    "publisher_signed": false,
+    "python_version": "3.12.15",
+    "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
+    "python_distribution": "local interpreter",
+    "python_archive_sha256": "11ed9f8a6ac64fb1b5a55e40e305a6744a3f77a70863c8f8197a6e4349abc64a",
+    "ocr_backend": "CPUExecutionProvider"
+  },
+  "runtime_sbom_components": 42,
+  "build_sbom_components": 78,
+  "third_party_notice_files": 131,
+  "unexpected_binaries": [],
+  "pe_metadata": {
+    "CompanyName": "DeskTranslate",
+    "FileDescription": "DeskTranslate screen translator",
+    "FileVersion": "2.0.0b2",
+    "ProductVersion": "2.0.0b2",
+    "ProductName": "DeskTranslate",
+    "OriginalFilename": "DeskTranslate.exe"
+  },
+  "scope": "Local dirty-tree unsigned internal artifacts. Source/binary version and exact digests checked; not hosted provenance or publisher trust. No exhaustive native dependency graph or byte-reproducibility claim.",
+  "passed": true
+}

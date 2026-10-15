@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
     QWizardPage,
 )
 
-from desktranslate.algorithms import normalize_text
+from desktranslate.algorithms import normalize_text, preprocess
 from desktranslate.errors import DeskTranslateError, OCRInferenceError
 from desktranslate.languages import LANGUAGES
 from desktranslate.models import TranslationRequest
@@ -43,6 +43,19 @@ SAMPLES = {
     "es": ("es-ui.png", "Selecciona una región para traducir."),
     "zh-CN": ("zh-dialogue.png", "明天我们在这里见面。"),
     "zh-TW": ("zh-traditional.png", "明天我們在這裡見面。"),
+    "fr": ("fr-setup.png", "Sélectionnez une région à traduire."),
+    "de": ("de-setup.png", "Wähle einen Bereich zum Übersetzen."),
+    "it": ("it-setup.png", "Seleziona una regione da tradurre."),
+    "pt": ("pt-setup.png", "Selecione uma região para traduzir."),
+    "nl": ("nl-setup.png", "Selecteer een gebied om te vertalen."),
+    "pl": ("pl-setup.png", "Wybierz obszar do tłumaczenia."),
+    "vi": ("vi-setup.png", "Chọn một vùng để dịch."),
+    "id": ("id-setup.png", "Pilih wilayah untuk diterjemahkan."),
+    "tr": ("tr-setup.png", "Çevirmek için bir alan seçin."),
+    "ru": ("ru-setup.png", "Выберите область для перевода."),
+    "uk": ("uk-setup.png", "Виберіть область для перекладу."),
+    "ar": ("ar-setup.png", "مرحبا بالعالم"),
+    "hi": ("hi-setup.png", "नमस्ते दुनिया"),
 }
 
 
@@ -125,13 +138,15 @@ class Onboarding(QWizard):
         self.pending: Callable[[object, str], None] | None = None
         self.active_provider: Any = None
         self.tested = False
+        self.tested_snapshot: Settings | None = None
+        self.tested_revision: int | None = None
         self.selection_serial = 0
         welcome = SetupPage(
             "Words without the setup maze.",
             "We'll prepare recognition and translate a harmless bundled sample.",
         )
         intro = QLabel(
-            "Screenshots stay on your computer. Online providers receive recognized text and configured dialogue context. Local AI keeps text local. There is no telemetry or automatic translation history. Downloads and connection tests run only when you press their buttons."
+            "Screenshots stay on your computer. Online providers receive recognized text and configured dialogue context. Local AI keeps text local. DeskTranslate has no app analytics or automatic translation history. Downloads and connection tests run only when you press their buttons."
         )
         intro.setWordWrap(True)
         welcome.content.addWidget(intro)
@@ -150,7 +165,8 @@ class Onboarding(QWizard):
             )
         for language in LANGUAGES:
             if language.code != "auto":
-                self.source.addItem(language.name, language.code)
+                if language.recognition:
+                    self.source.addItem(language.name, language.code)
                 self.target.addItem(language.name, language.code)
         self.source.setCurrentIndex(max(0, self.source.findData(get_settings().source)))
         self.target.setCurrentIndex(max(0, self.target.findData(get_settings().target)))
@@ -159,6 +175,11 @@ class Onboarding(QWizard):
         form.addRow("Read", self.source)
         form.addRow("Translate into", self.target)
         languages.content.addLayout(form)
+        quality = QLabel(
+            "Managed recognition works best on clear horizontal text. Vietnamese accents, stylized Japanese and vertical columns remain less reliable. If the sample fails, you can choose Set up later and try a screen region; recognition accuracy is not guaranteed."
+        )
+        quality.setWordWrap(True)
+        languages.content.addWidget(quality)
         self.addPage(languages)
         self.recognition = SetupPage(
             "Prepare recognition",
@@ -232,6 +253,7 @@ class Onboarding(QWizard):
     def selection_changed(self) -> None:
         self.selection_serial += 1
         self.tested = False
+        self.tested_snapshot = None
         self.test_page.set_ready(False)
         self.sample_result.clear()
         sample = SAMPLES.get(self.source.currentData())
@@ -332,6 +354,7 @@ class Onboarding(QWizard):
             self.test_status.setText(str(error))
             return
         revision = self.selection_serial
+        settings_revision = self.host.settings_revision
         self.test_status.setText("Reading the sample locally, then translating…")
 
         def operation() -> object:
@@ -340,11 +363,13 @@ class Onboarding(QWizard):
             try:
                 with Image.open(Path(__file__).parents[1] / "assets/samples" / sample[0]) as image:
                     recognized = engine.recognize(
-                        image.convert("RGB"), snapshot.source, cancel=self.jobs.cancel
+                        preprocess(image.convert("RGB"), snapshot.preprocessing),
+                        snapshot.source,
+                        cancel=self.jobs.cancel,
                     )
                 if not normalize_text(recognized.text):
                     raise OCRInferenceError(
-                        "The sample wasn't recognized. Reinstall the language pack and retry."
+                        "The sample wasn't recognized. Try another preprocessing setting in Recognition, another source language, or Set up later to try a screen region."
                     )
                 if (
                     SequenceMatcher(
@@ -353,7 +378,7 @@ class Onboarding(QWizard):
                     < 0.8
                 ):
                     raise OCRInferenceError(
-                        "The sample recognition did not match closely enough. Reinstall the language pack and retry."
+                        "Recognition did not match the sample closely enough. Try another preprocessing setting in Recognition, another source language, or Set up later to try a screen region. Reinstalling a verified pack will not improve its accuracy."
                     )
                 provider = factory()
                 self.active_provider = provider
@@ -365,6 +390,7 @@ class Onboarding(QWizard):
                         snapshot.target,
                         snapshot.model,
                         snapshot.style,
+                        glossary=tuple(sorted(snapshot.glossary.items())),
                         instructions=snapshot.instructions,
                     )
                 )
@@ -377,7 +403,14 @@ class Onboarding(QWizard):
                 self.active_provider = None
 
         def complete(result: object, error: str) -> None:
-            if revision != self.selection_serial:
+            if (
+                revision != self.selection_serial
+                or settings_revision != self.host.settings_revision
+                or snapshot != self.snapshot()
+            ):
+                self.test_status.setText(
+                    "Setup changed during the sample. Test the current setup again."
+                )
                 return
             if error:
                 self.test_status.setText(error + " Retry, or go Back to choose another setup.")
@@ -390,20 +423,33 @@ class Onboarding(QWizard):
                     "Sample translated. Review the recognized words and translation, then continue."
                 )
                 self.tested = True
+                self.tested_snapshot = snapshot
+                self.tested_revision = settings_revision
                 self.test_page.set_ready(True)
                 self.host.overlay.display(source, translated)
 
         self.run_job(operation, complete)
 
     def accept(self) -> None:
-        if self.tested:
+        if (
+            self.tested
+            and self.tested_snapshot == self.snapshot()
+            and self.tested_revision == self.host.settings_revision
+        ):
             updated = self.snapshot()
             updated.onboarding_done = True
             if self.commit(updated, True):
                 super().accept()
+        elif self.tested:
+            self.tested = False
+            self.test_page.set_ready(False)
+            self.test_status.setText(
+                "Setup changed after the sample. Test the current setup before finishing."
+            )
 
     def reject(self) -> None:
         self.jobs.cancel.set()
-        if self.active_provider and hasattr(self.active_provider, "cancel_pending"):
-            self.active_provider.cancel_pending()
+        provider = self.active_provider
+        if provider and hasattr(provider, "cancel_pending"):
+            provider.cancel_pending()
         super().reject()

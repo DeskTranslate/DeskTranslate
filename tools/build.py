@@ -12,6 +12,7 @@ import shutil
 import ssl
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 from packaging.version import Version
@@ -97,14 +98,14 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
         "certifi",
         "--collect-binaries",
         "onnxruntime",
-        "--collect-data",
-        "onnxruntime",
         "--hidden-import",
         "rapidocr.main",
         "--hidden-import",
         "rapidocr.inference_engine.onnxruntime",
         "--hidden-import",
         "keyring.backends.Windows",
+        "--hidden-import",
+        "bidi.algorithm",
         "--exclude-module",
         "tkinter",
         "--exclude-module",
@@ -134,6 +135,10 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
     # Model provisioning belongs to the managed application-data cache. Never
     # bundle an accidental upstream auto-download from the development environment.
     for source, target in collect_data_files("rapidocr", excludes=["models/**"]):
+        args.extend(["--add-data", f"{source};{target}"])
+    # ONNX Runtime's wheel also contains example models and conversion docs.
+    # They are not application resources and must not enter the runtime payload.
+    for source, target in collect_data_files("onnxruntime", excludes=["datasets/**", "tools/**"]):
         args.extend(["--add-data", f"{source};{target}"])
     # Dependency tools may put Poppler's incompatible ICU DLLs on PATH. Qt uses
     # the Windows system ICU; keep unrelated native runtimes out of analysis.
@@ -226,6 +231,9 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
     (dist / "DeskTranslate/build-info.json").write_text(
         json.dumps(build_info, indent=2), encoding="utf-8"
     )
+    (dist / "DeskTranslate/managed-runtime.txt").write_text(
+        "DeskTranslate managed runtime v1\n", encoding="utf-8"
+    )
     notices = dist / "DeskTranslate/THIRD_PARTY_NOTICES"
     notices.mkdir(exist_ok=True)
     for name in ("LICENSE", "README.md", "SECURITY.md"):
@@ -268,6 +276,13 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
             )
         )
     )
+    # Only the portable archive contains this marker. Installed builds keep
+    # per-user AppData; portable settings/models stay beside their executable.
+    with zipfile.ZipFile(artifacts[-1], "a") as archive:
+        archive.writestr(
+            "DeskTranslate/portable-mode",
+            "DeskTranslate portable data lives in DeskTranslateData.\n",
+        )
     sources = dist / f"DeskTranslate-{__version__}-LibrarySources.zip"
     if sources.exists():
         artifacts.append(sources)

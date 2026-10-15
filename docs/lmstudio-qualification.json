@@ -1,0 +1,135 @@
+{
+  "version": "2.0.0b2",
+  "server": "LM Studio llmster 0.0.25-1",
+  "runtime": "llama.cpp 2.41.0, gpu=off",
+  "model": "Qwen3-0.6B-Q4_K_M",
+  "authored_content_only": true,
+  "isolated_test_profile": true,
+  "checks": {
+    "offline_before_start": true,
+    "real_model_discovery": true,
+    "adapter_response_nonempty_changed": true,
+    "context_response_nonempty": true,
+    "missing_model_rejected": true,
+    "model_unloaded": true,
+    "generation_after_reload": true,
+    "actual_generation_cancellation": true,
+    "mid_generation_disconnect_handled": true,
+    "offline_after_stop": true,
+    "discovery_after_restart": true,
+    "generation_after_restart": true,
+    "owned_server_stopped": true
+  },
+  "commands": [
+    {
+      "command": [
+        "load",
+        "qwen3-0.6b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--parallel",
+        "1",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "start",
+        "--port",
+        "55997",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "unload",
+        "--all"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "ps",
+        "--json"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "load",
+        "qwen3-0.6b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "load",
+        "qwen3-0.6b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--parallel",
+        "1",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "start",
+        "--port",
+        "55997",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "stop"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "unload",
+        "--all"
+      ],
+      "exit": 0
+    }
+  ],
+  "resolved_model_ids": [
+    "desktranslate-authored",
+    "desktranslate-authored"
+  ],
+  "cold_translation_s": 1.131,
+  "authored_translation": "{}",
+  "authored_context_translation": "\"Gracias.\"",
+  "missing_model_category": "ModelNotFoundError",
+  "cancellation_ms": 4.174,
+  "mid_generation_disconnect_category": "LocalServerUnavailableError",
+  "service_lifecycle_passed": true,
+  "translation_quality": "FAIL",
+  "quality_limitation": "Tiny model output is not a reliable plain-text Spanish translation; nonempty API output is not translation-quality evidence.",
+  "passed": false
+}

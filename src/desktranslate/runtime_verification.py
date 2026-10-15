@@ -8,6 +8,25 @@ from threading import Thread
 
 from desktranslate.models import TranslationRequest
 from desktranslate.providers import CompatibleProvider, create_provider
+from desktranslate.security import CredentialStore
+
+
+def verify_credentials(credentials: CredentialStore, account: str) -> dict[str, object]:
+    """A temporary vault entry is successful only if it is also removed."""
+    report: dict[str, object] = {}
+    try:
+        credentials.set(account, account)
+        report["credential_roundtrip"] = credentials.get(account) == account
+    except Exception as error:
+        report["credential_error"] = type(error).__name__
+    finally:
+        try:
+            credentials.delete(account)
+            report["credential_cleanup"] = True
+        except Exception as error:
+            report["credential_cleanup"] = False
+            report["credential_cleanup_error"] = type(error).__name__
+    return report
 
 
 def verify_http_provider() -> bool:

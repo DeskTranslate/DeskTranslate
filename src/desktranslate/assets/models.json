@@ -36,10 +36,10 @@
     "bytes": 7653044
   },
   "latin": {
-    "filename": "latin_PP-OCRv3_rec_mobile.onnx",
-    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/latin_PP-OCRv3_rec_mobile.onnx",
-    "sha256": "e9d7a33667e8aaa702862975186adf2012e3f390cc0f9422865957125f8071cf",
-    "bytes": 8978191
+    "filename": "latin_PP-OCRv5_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv5/rec/latin_PP-OCRv5_rec_mobile.onnx",
+    "sha256": "b20bd37c168a570f583afbc8cd7925603890efbcdc000a59e22c269d160b5f5a",
+    "bytes": 7904513
   },
   "chinese_cht": {
     "filename": "chinese_cht_PP-OCRv3_rec_mobile.onnx",
@@ -48,9 +48,10 @@
     "bytes": 11152536
   },
   "cyrillic": {
-    "filename": "cyrillic_PP-OCRv3_rec_mobile.onnx",
-    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/cyrillic_PP-OCRv3_rec_mobile.onnx",
-    "sha256": "1efb65bdc460af1c0e8733d005b20952b17ca5aac10ddb56c968333791c5eaa3"
+    "filename": "cyrillic_PP-OCRv5_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv5/rec/cyrillic_PP-OCRv5_rec_mobile.onnx",
+    "sha256": "90f761b4bfcce0c8c561c0cb5c887b0971d3ec01c32164bdf7374a35b0982711",
+    "bytes": 8074092
   },
   "arabic": {
     "filename": "arabic_PP-OCRv4_rec_mobile.onnx",
@@ -58,8 +59,9 @@
     "sha256": "4a9011bef71687bb84288dc86ad2471bd5d37b717ddf672dd156f9e7a5601bac"
   },
   "devanagari": {
-    "filename": "devanagari_PP-OCRv4_rec_mobile.onnx",
-    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/devanagari_PP-OCRv4_rec_mobile.onnx",
-    "sha256": "a62b6148303187907aa0b0d3a0125bdc62557d07966468cab9056949e36035e8"
+    "filename": "devanagari_PP-OCRv5_rec_mobile.onnx",
+    "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv5/rec/devanagari_PP-OCRv5_rec_mobile.onnx",
+    "sha256": "d6f0a906580e3fa6b324a318718f1f31f268b6ea8ef985f91c2012a37f52c91e",
+    "bytes": 7940361
   }
 }

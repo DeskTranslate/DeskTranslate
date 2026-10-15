@@ -13,6 +13,9 @@ from desktranslate.window_capture import Win32Windows, WindowCapture, project_re
 
 
 def main() -> None:
+    from qualification_policy import require_interactive_desktop
+
+    require_interactive_desktop()
     enable_dpi_awareness()
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QApplication, QWidget

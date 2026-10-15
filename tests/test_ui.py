@@ -1,8 +1,5 @@
 import json
-import os
 import time
-
-os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
 from PySide6.QtCore import QCoreApplication, QEvent
@@ -10,6 +7,8 @@ from PySide6.QtWidgets import QApplication
 
 from desktranslate.settings import Settings, SettingsStore
 from desktranslate.ui.window import MainWindow
+
+pytestmark = pytest.mark.headless_ui
 
 
 @pytest.fixture(scope="module")
@@ -119,6 +118,89 @@ def test_custom_overlay_style_is_validated_and_persisted(window):
     controls["overlay_color"].setText("invalid")
     window.save_appearance()
     assert window.store.load().overlay_color == "#ffdd22"
+
+
+@pytest.mark.parametrize(
+    "action", ["provider", "recognition", "preferences", "appearance", "language"]
+)
+def test_failed_settings_write_keeps_active_configuration_and_reports_failure(
+    window, monkeypatch, action
+):
+    import copy
+
+    original = copy.deepcopy(window.settings)
+
+    def fail_write(settings):
+        raise OSError("test disk full")
+
+    monkeypatch.setattr(window.store, "save", fail_write)
+    if action == "provider":
+        window.provider_combo.setCurrentIndex(window.provider_combo.findData("libre"))
+        assert not window.save_provider()
+    elif action == "recognition":
+        window.quality_combo.setCurrentIndex(window.quality_combo.findData("fast"))
+        window.save_recognition()
+    elif action == "preferences":
+        window.tray_check.setChecked(True)
+        window.save_preferences()
+    elif action == "appearance":
+        window.theme_combo.setCurrentIndex(window.theme_combo.findData("light"))
+        window.save_appearance()
+    else:
+        window.source_combo.setCurrentIndex(window.source_combo.findData("es"))
+    assert window.settings == original
+    assert "could not be saved" in window.status_label.text()
+
+
+def test_failed_provider_save_rolls_back_vault_key(window, monkeypatch):
+    keys = {}
+    monkeypatch.setattr(window.credentials, "get", lambda account: keys.get(account, ""))
+    monkeypatch.setattr(
+        window.credentials, "set", lambda account, value: keys.__setitem__(account, value)
+    )
+    monkeypatch.setattr(window.credentials, "delete", lambda account: keys.pop(account, None))
+
+    def fail_write(settings):
+        raise OSError("authored disk failure")
+
+    monkeypatch.setattr(window.store, "save", fail_write)
+    window.provider_combo.setCurrentIndex(window.provider_combo.findData("openai"))
+    window.key_edit.setText("synthetic-credential")
+    assert not window.save_provider()
+    assert keys == {}
+    assert window.settings.provider == "google"
+    assert window.key_edit.text() == "synthetic-credential"
+
+
+def test_invalid_language_search_cannot_start_with_another_language(window, monkeypatch):
+    starts = []
+    monkeypatch.setattr(
+        "desktranslate.ui.window.ModelManager.installed",
+        lambda *args, **kwargs: starts.append(True),
+    )
+    window.source_combo.setEditText("not a language")
+    window.start(True)
+    assert not starts
+    assert window.settings.source == "ja"
+    assert window.source_combo.currentText() == "Japanese"
+    assert "Choose a language" in window.status_label.text()
+
+
+def test_region_save_failure_keeps_previous_capture_and_does_not_queue_start(window, monkeypatch):
+    from desktranslate.models import Rect
+
+    starts = []
+
+    def fail_write(settings):
+        raise OSError("authored disk failure")
+
+    monkeypatch.setattr(window.store, "save", fail_write)
+    monkeypatch.setattr(window, "queue_start", lambda once: starts.append(once))
+    window.selected_action = "once"
+    window.region_selected(Rect(20, 20, 120, 80))
+    assert not starts
+    assert window.settings.recent_region is None
+    assert "could not be saved" in window.status_label.text()
 
 
 def test_runtime_errors_do_not_reopen_main_window(window, monkeypatch):
@@ -351,6 +433,90 @@ def test_passive_restart_preflight_does_not_open_main_window(window, monkeypatch
     window.settings.recent_region = [0, 0, 100, 50]
     window.start(False, False)
     assert calls == []
+
+
+def test_compact_navigation_keeps_low_resolution_high_scale_pages_usable(window):
+    from PySide6.QtCore import Qt
+    from PySide6.QtTest import QTest
+
+    window.setMinimumSize(1, 1)
+    window.resize(600, 320)
+    window.show()
+    QApplication.processEvents()
+    assert window.compact_navigation.isVisible()
+    assert not window.sidebar_widget.isVisible()
+    for index in range(window.navigation.count()):
+        window.compact_navigation.setCurrentIndex(index)
+        QApplication.processEvents()
+        page = window.pages.currentWidget()
+        assert window.pages.currentIndex() == index
+        assert page.horizontalScrollBar().maximum() == 0, window.navigation.item(index).text()
+    window.compact_navigation.setCurrentIndex(0)
+    window.compact_navigation.setFocus()
+    QTest.keyClick(window.compact_navigation, Qt.Key.Key_Down)
+    assert window.pages.currentIndex() == 1
+    window.resize(1000, 800)
+    QApplication.processEvents()
+    assert window.sidebar_widget.isVisible()
+    assert not window.compact_navigation.isVisible()
+    assert window.pages.currentIndex() == 1
+
+
+def test_display_change_refits_after_the_native_window_geometry_arrives(window):
+    window.hide()
+    window.settings.recent_region = [20, 20, 100, 50]
+    window.overlay.display("Authored source", "Authored translation")
+    window.display_changed()
+    # Windows applies a suggested top-level rectangle after screen signals.
+    bounds = window.overlay.screen().availableGeometry()
+    window.overlay.setGeometry(
+        bounds.x() - 30, bounds.y() - 30, bounds.width() + 80, bounds.height() + 80
+    )
+    deadline = time.monotonic() + 0.35
+    while time.monotonic() < deadline:
+        QApplication.processEvents()
+        time.sleep(0.01)
+    assert bounds.contains(window.overlay.geometry())
+    assert window.settings.recent_region is None
+    assert window.store.load().recent_region is None
+    assert not window.isVisible()
+    assert window.overlay.latest == "Authored translation"
+    assert window.overlay.status.text().endswith("STOPPED")
+
+
+def test_stop_closes_region_picker_and_rejects_late_selection(window, monkeypatch):
+    from desktranslate.models import Rect
+    from desktranslate.ui.selection import RegionSelector
+
+    picker = RegionSelector()
+    selected = []
+    picker.selected.connect(selected.append)
+    window.selector = picker
+    window.stop()
+    picker.start()  # The pending singleShot must not reopen it after Stop.
+    picker.finish(Rect(1, 1, 100, 80))
+    assert picker.closed and not picker.windows
+    assert window.selector is None and selected == []
+
+
+def test_first_success_keeps_unsaved_completion_visible(window, monkeypatch):
+    from desktranslate.models import PipelineEvent, SessionState, Stamp, TranslationResult
+
+    def unwritable(*args):
+        raise OSError("authored disk failure")
+
+    monkeypatch.setattr(window.store, "save", unwritable)
+    window.handle_pipeline_event(
+        PipelineEvent(
+            Stamp(1, 1),
+            SessionState.WATCHING,
+            source="Authored text",
+            result=TranslationResult("Authored translation"),
+        )
+    )
+    assert not window.settings.onboarding_done
+    assert window.result_translation.text() == "Authored translation"
+    assert "could not be saved" in window.status_label.text()
 
 
 def test_onboarding_is_singleton_and_waits_for_cancelled_work(window):

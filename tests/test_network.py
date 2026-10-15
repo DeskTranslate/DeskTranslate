@@ -83,6 +83,28 @@ def test_stop_cancels_request_during_headers(slow_headers):
     assert failures == [Cancelled]
 
 
+def test_setup_cancel_event_interrupts_provider_headers(slow_headers):
+    endpoint, requested = slow_headers
+    provider = create_provider("custom", endpoint=endpoint)
+    failures = []
+
+    def discover():
+        try:
+            provider.models()
+        except Exception as error:
+            failures.append(type(error))
+        finally:
+            provider.close()
+
+    thread = Thread(target=discover, daemon=True)
+    thread.start()
+    assert requested.wait(2)
+    provider.cancelled.set()
+    thread.join(0.7)
+    assert not thread.is_alive()
+    assert failures == [Cancelled]
+
+
 @pytest.mark.parametrize(
     "content",
     [

@@ -3,15 +3,22 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
+import platform
 import statistics
 import time
 from pathlib import Path
 from threading import Event
 
+from fixtures import EXTRA_SAMPLES, render_fixture
 from PIL import Image, ImageDraw, ImageFont
+from release_support import runtime_source_hashes
 
+from desktranslate import __version__
 from desktranslate.algorithms import FrameGate, preprocess
+from desktranslate.languages import REGISTRY
 from desktranslate.ocr import ModelManager, RapidEngine, TesseractEngine
 
 SAMPLES = [
@@ -98,12 +105,15 @@ SAMPLES = [
         "bg": "white",
         "fg": "black",
     },
-]
+] + EXTRA_SAMPLES
 
 
 def generate(directory: Path, font_dir: Path) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     for sample in SAMPLES:
+        if sample.get("render") == "qt":
+            render_fixture(sample, directory / (str(sample["id"]) + ".png"))
+            continue
         font = ImageFont.truetype(str(font_dir / str(sample["font"])), int(sample["size"]))
         image = Image.new("RGB", (660, 160), str(sample["bg"]))
         ImageDraw.Draw(image).multiline_text(
@@ -131,27 +141,39 @@ def distance(a: str, b: str) -> int:
     return previous[-1]
 
 
-def benchmark(directory: Path, engine_name: str, install: bool) -> dict:
-    report: dict = {"engine": engine_name, "fixtures": []}
+def benchmark(directory: Path, engine_name: str, install: bool, repeats: int = 3) -> dict:
+    report: dict = {
+        "engine": engine_name,
+        "repeats_per_variant": repeats,
+        "authored_fixtures_only": True,
+        "fixtures": [],
+    }
     engines: dict = {}
     manager = ModelManager()
     for sample in SAMPLES:
         language = str(sample["language"])
-        if language not in engines:
+        family = (
+            manager.catalog[REGISTRY[language].recognition]["filename"]
+            if engine_name == "rapidocr"
+            else language
+        )
+        if family not in engines:
             if install:
                 manager.install(language, Event(), lambda model, done, total: None)
             start = time.perf_counter()
-            engines[language] = (
+            engines[family] = (
                 RapidEngine(language) if engine_name == "rapidocr" else TesseractEngine()
             )
             report.setdefault("startup_ms", {})[language] = (time.perf_counter() - start) * 1000
-        engine = engines[language]
+        engine = engines[family]
         image = Image.open(directory / (str(sample["id"]) + ".png")).convert("RGB")
         variants = []
         for mode in ("original", "contrast", "subtitle"):
             measurements = []
-            for _ in range(3):
-                result = engine.recognize(preprocess(image, mode), language)
+            for _ in range(repeats):
+                result = engine.recognize(
+                    preprocess(image, mode), language, bool(sample.get("vertical"))
+                )
                 measurements.append(result.duration_ms)
             expected = "".join(str(sample["text"]).split())
             actual = "".join(result.text.split())
@@ -163,7 +185,14 @@ def benchmark(directory: Path, engine_name: str, install: bool) -> dict:
                     "text": result.text,
                 }
             )
-        report["fixtures"].append({"id": sample["id"], "language": language, "variants": variants})
+        report["fixtures"].append(
+            {
+                "id": sample["id"],
+                "language": language,
+                "vertical": bool(sample.get("vertical")),
+                "variants": variants,
+            }
+        )
     for engine in engines.values():
         engine.close()
     gate = FrameGate()
@@ -181,13 +210,30 @@ def main() -> None:
         "--install", action="store_true", help="Explicitly download missing OCR models"
     )
     parser.add_argument("--engine", choices=["rapidocr", "tesseract"], default="rapidocr")
+    parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--fixtures", type=Path, default=Path("tests/fixtures"))
     parser.add_argument("--fonts", type=Path, default=Path("C:/Windows/Fonts"))
     parser.add_argument("--output", type=Path, default=Path("docs/ocr-benchmark.json"))
     args = parser.parse_args()
     if args.generate:
         generate(args.fixtures, args.fonts)
-    report = benchmark(args.fixtures, args.engine, args.install)
+    if not 1 <= args.repeats <= 20:
+        raise ValueError("Use between one and twenty repetitions")
+    report = benchmark(args.fixtures, args.engine, args.install, args.repeats)
+    report.update(
+        version=__version__,
+        python_version=platform.python_version(),
+        system=platform.platform(),
+        logical_processors=os.cpu_count(),
+        repeats_per_variant=args.repeats,
+        source_hashes=runtime_source_hashes(Path(__file__).resolve().parents[1]),
+        fixture_hashes={
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(args.fixtures.glob("*"))
+            if path.is_file()
+        },
+        authored_synthetic_only=True,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Evaluated {len(report['fixtures'])} synthetic fixtures. Report: {args.output}")

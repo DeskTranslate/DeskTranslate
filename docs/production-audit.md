@@ -1,52 +1,69 @@
-# V2 production readiness audit
+# v2 production audit and finding register
 
-Baseline: `a810027` / 2.0.0b1. This pass preserves the existing Qt/domain/pipeline design.
-Checks below are tracked against implementation and measured evidence, not previous marketing.
+Target: **2.0.0 stable**, publication held. This register comes from independent source/test/build/documentation review, v1 comparison, all 23 historical issues, native Windows probes, real CPU OCR and actual local-provider experiments. It supersedes the beta-oriented audit summary. The [acceptance matrix](validation.md) contains test/environment/result/evidence/limitations; no simulated test is a physical hardware pass.
 
-## P0 findings before implementation
+P0 means crash/core breakage, data loss or security release blocker. P1 means important correctness/reliability/compatibility. P2 means significant polish/quality. P3 is optional future enhancement. Finding severity describes impact, not a claim that every old defect occurred on every machine.
 
-- Runtime failure delivery calls `showNormal()`, interrupting a game or video.
-- Overlay Hide is overridden by the next result; window flag changes can hide a visible overlay.
-- OCR failures stop the recognition thread without bounded recovery; process termination never joins/closes its process handle.
-- Failure/pause/stop races are not atomic, and stale OCR mutates stabilization before checking its generation.
-- Repeated session replacement can overlap provider/OCR resources; network reads have per-read timeouts but no total deadline.
-- Suspended and reconnected display sessions need explicit invalidation. Unproven Win32/Qt mapping currently falls back to scaling absolute origins.
-- Profile payloads are only shallowly checked; there is no safe portable schema or import/export.
-- Onboarding marks completion before any recognition/translation succeeds.
-- Update checks ignore beta releases and trust weakly validated release metadata.
-- Version strings are duplicated in package/build/installer/UI/release assets.
-- Release candidates do not verify installer upgrade/uninstall, signatures, artifact privacy or runtime inventory.
-- The only recorded soak is 30 seconds and measures Python allocations, not native/process resources.
-- Publisher signing is unavailable (maintainer confirmed); physical mixed-DPI/fullscreen and real provider qualification are incomplete.
+## Implemented fixes
 
-## P1 work to complete
+| Priority / finding | Root cause | Disposition and regression evidence |
+|---|---|---|
+| P0: failed/cancelled/stale work could alter active presentation/state | Session transitions, queued events and asynchronous callbacks did not all share current identities | Atomic session/command invalidation; worker and GUI checks; setup/catalog/update revision guards; late-cancel results discarded; seeded interleaving and dedicated failure tests |
+| P0: unsafe persistence activation / damaged-settings overwrite | UI mutated active settings before durable write; automatic paths could overwrite an unreadable config | Validate/save first, then activate; explicit damaged-config recovery; credentials rolled back if config commit fails; injected write-failure tests |
+| P1: restored v1 translation targets were missing | V2 reused its 19 managed OCR sources as the translation catalog | Restore 133 target languages, canonical aliases/RTL metadata; distinct managed/Tesseract source coverage; safe swap/preflight; Hebrew actual endpoint output verified |
+| P1: continuous motion starved OCR and discarded useful translations | Frame gate required stillness and pixel generations changed faster than inference | Bounded motion sampling with semantic source/blank generations; static/geometry/command invalidation preserved; red regression then moving native MSS probe passes |
+| P1: a one-character text change could remain suppressed | Lower-confidence minimal-change rule persisted after prior text acceptance | Accept a confirmed new candidate; deterministic regression |
+| P1: failed provider sessions retained native synchronization resources | Failed asyncio tasks owned tracebacks through run_until_complete and retired worker frames | Second30min soak failed41-handle growth after the pipe fix. A mocked, GC-disabled weak-reference regression reproduced retained sessions; sync-boundary traceback ownership and request-local task references now release promptly. Error types/messages still propagate; no forced product GC or relaxed budget. Current stress rerun pending. |
+| P2: routine tests could interact with the real desktop | Per-module setdefault inherited a native Qt backend; preference tests reached global shortcut APIs | Central offscreen/temporary-data boundary fixtures, in-memory vault, loopback-only network and forbidden desktop/browser APIs. Real picker events and60 geometry combinations now run headlessly. Manual probes require explicit opt-in and owned timeout/interrupt cleanup; installation and stress excluded from default validation. |
+| P2: local server failure guidance assumed AI | Local LibreTranslate/custom failure showed Ollama/LM Studio-specific instructions | General configured-server guidance and credential-aware request-rejection copy; mocked offline-Libre regression retains error/privacy behavior. |
+| P1: early OCR cancellation leaked one native pipe handle per spawn | The default Windows connection reducer left a parent-owned duplicate when a child exited before unpickling | Native RED regression leaked21 handles across20 immediate cancellations; OCR-local reducer now duplicates directly into the spawned child. Regression and actual inference pass. Original30min handle-budget failure is retained, with unchanged limits for the rerun. |
+| P1: native OCR cancellation/restarts could leave descendants or exhaust recovery | Parent termination did not contain external descendants; deliberate cancellation consumed crash budget | Windows kill-on-close job, initialization handshake, reap checks, separate deliberate cancel; native orphan reproduced before fix and descendant termination verified after |
+| P1: cleanup failures could look successful / leak global slots | Cleanup exceptions interrupted slot release and were hidden from shutdown callers | Slots always released; explicit cleanup-failed state, wait result, UI restart guidance and nonzero shutdown; failure-injection tests |
+| P1: slow headers and setup requests survived cancellation | Deadline/cancel applied too late or only to part of HTTP work | Complete header/body deadlines; worker-owned async cancellation, bounded bodies/decompression/retries; slow-header and immediate-cancel tests |
+| P1: LM Studio silently used another model for a missing selected ID | Real server accepted an unknown request key and selected a loaded model | Reproduced with actual llmster; check current catalog before each request and reject a different returned model; missing/disappearing/mid-request replacement regressions |
+| P1: Ollama truncated/incomplete output looked usable | Adapter ignored `done` / `done_reason` | Require completed stop response, typed safe error; four failure regressions; actual completed local generation still works |
+| P1: malformed provider data / metadata and unsafe error presentation | Loose shape checks and untrusted catalog strings | Strict parsers/limits, escaped tooltips, typed safe failures, correct Libre `zt`, keyless Google auth guidance; ten adapter contracts/fault cases |
+| P1: source selection could persist incompatible OCR or wrong capture state | Mixed source/target catalog and save/activate ordering | Engine-aware source choices, unsupported managed pack rejected, transactional capture/window/region changes; failed-selection tests |
+| P1: Arabic output reversed twice | Pinned Arabic recognizer already emits logical Unicode; visual-order conversion was reapplied | Instance-local RTL conversion override, no library-global patch; actual Arabic authored inference and mixed/digit/multiline cases retained |
+| P1: thin display regions could allocate huge detector tensors | RapidOCR re-enlarged the short side after limiting the long side | Bound detector long side at4096; ordinary preprocessing is pixel-identical; 35×3 benchmark outputs unchanged; extreme thin/portrait tensor tests |
+| P1: installer/portable state and stale runtimes | Both layouts used AppData; upgrades overlaid old DLL files | Portable marker/adjacent data, installed per-user data; owned runtime marker and link/unknown-folder refusals; current artifact qualification recorded separately |
+| P1: small/high-scale main window pages clipped horizontally | Fixed sidebar left too little content width | Compact keyboard-accessible navigation, wrapping forms and tighter margins; all eight pages fit simulated640×360/720×405/960×540 logical workspaces |
+| P1: live DPI-change overlay clipping | Native DPI resize arrived after the initial display-topology handler | Coalesced100ms geometry refit; actual running1080p125%→720p100%→1080p and landscape→driver portrait1080×1920→landscape pass, stop/reselect/workarea/self-capture checks included. |
+| P1: ONNX Runtime default diagnostics policy was not explicitly suppressed | App-level no-analytics wording did not account for upstream defaults | Process-local opt-out before native import, disable API before inference; three regressions and19-language offline inference pass. Upstream Windows minimal-initialization/ETW scope remains explicit; no zero-event packet/ETW trace claimed. |
+| P1: display/native coordinate assumptions | Absolute-origin scaling, invalid rectangles or stale topology could map capture incorrectly | Int32 rectangle validation, origin-relative per-monitor transforms, fail-closed mapping and topology invalidation; negative/synthetic topology tests plus real125% picker/crop equality |
+| P1: selection could survive Stop or start after cancellation | Queued picker start/finish callback outlived controller selection state | Stop closes picker and late callbacks are ignored; suspend clears frozen selection; deterministic regression |
+| P1: overlay focus/edit/geometry/self-capture faults | Passive versus edit flags, target workarea and fade state were inconsistent | Explicit edit focus, block capture while editing, restore passive flags/opacity, target-monitor fit, avoid capture rectangle; native/unit evidence remains scope-limited |
+| P1: long translated text made rendering expensive | Full-size masks and linear font-fit loop for very long strings | Binary fitting, painted-band cache and bounded masks; native20k-character rendering median653.6→84.6ms; full text retained for Copy |
+| P1: lost first-success state / false save feedback | Completion flag activated before checking save and later notice overwrote failure | Transactional onboarding completion, failed-save guidance preserved; regression |
+| P2: misleading OCR/setup/oversized-text guidance | Accuracy error suggested reinstall of a valid model; overlong source looked like blank OCR | Keep fidelity guard; show preprocessing/source/region alternatives; >5000 characters gives a smaller-region error before HTTP |
+| P2: recognition coverage / source assets incomplete | Clean nine-fixture corpus and six-language first-run assets missed real script limitations | 35 authored native-font fixtures,19 first-run assets, glyph guard; Latin/Cyrillic/Hindi recognizers improved from measured comparisons; failures retained |
+| P2: source extraction / supply-chain path safety | Absolute/`..` checks missed Windows drive-relative paths, ADS and reserved names | License extraction rejects these forms before writing; normal attribution preserved;12 new path tests |
+| P2: stale documentation and false migration/download claims | Public docs mixed v1 setup and beta announcements; V1 JSON migration was assumed | V2 README/upgrade/privacy/provider/release docs corrected; no nonexistent stable download or invented V1 migration |
+| P2: corrupted language label encoding | Three labels contained a duplicated UTF-8 marker | Correct Auto/Simplified/Traditional label strings; no language IDs changed |
+| P1: weak stable qualification gate | Restarting soak / requested duration / old source could be mistaken for sustained current evidence | Separate steady2h and chaos30min; actual elapsed time, same child, native resource budgets, exact source/runtime/harness hashes, strict boolean/integer checks; final versions always enforce signing/manual gates |
+| P1: completed soak command could return success despite resource failure | Workload completion and qualification were separate, but the command returned only completion | Long-run exit status now includes main/continuous-worker resource gates; two failure regressions. The stable-promotion gate already rejected the failed report. No thresholds relaxed. |
+| P2: release/tool evidence lost on failures | Probe aborted on first sample and CI reports were success-dependent | Partial per-language reports, service circuit break, JUnit/security/runtime/endurance retention; no automatic stable publication |
 
-- Window/client-relative capture with explicit target identity, normalized regions, occlusion/minimize/restart safety and clear backend boundaries.
-- First-class profile CRUD/import/export and bounded glossary exchange.
-- Guided, recoverable first-translation onboarding and clear active target/provider/model status.
-- Provider/model progressive disclosure, native OpenAI API evaluation, usable-model filtering without fabricated claims.
-- Opt-in bounded memory transcript and privacy-previewed diagnostic export.
-- Keyboard/accessibility pass, model download states, latency percentiles, explicit release channels.
-- Maintainable ownership of profile/onboarding/support UI and capture state.
+## Remaining blockers and limitations
 
-## P2 investigations, with evidence required before exposure
+| Priority | Status | Finding / required disposition |
+|---|---|---|
+| P1 | NOT TESTED | Physical mixed-DPI/negative-origin/hot-plug/docking/primary changes; additional physical resolutions, session transitions, fullscreen/HDR/multi-GPU and representative media. Synthetic transforms are insufficient. |
+| P1 | NOT TESTED | Clean supported Windows account/VM without Python, non-ASCII Windows username and standard-account installation. Same-host paths/PATH isolation are weaker evidence. |
+| P1 | NOT TESTED | Paid provider accounts, a real LibreTranslate server and representative translation-model quality. Actual Ollama/LM Studio services and0.6b/1.5b CPU models were tested. No credentials are invented or exposed. |
+| P1 | FAIL | Qwen3:0.6b produced JSON-wrapped Spanish or `{}`; Qwen2.5:1.5b omitted meaning or produced explanations under LM Studio. Service/lifecycle tests passed; translation quality is not qualified. |
+| P1 | NOT TESTED | Trusted publisher signing/timestamp/trust verification: no certificate/service exists. No self-signed workaround. |
+| P1 | NOT TESTED | A further30min run failed+41 handles after the pipe fix; async session-retention regression is now fixed. Current30min background rerun pending; current-source2h remains required, preferably hosted. Earlier failures/incomplete runs are retained and do not qualify. |
+| P1 | NOT TESTED | Current final portable and installed runtime/lifecycle PASS, including retained beta1 upgrade and junction/unknown-runtime refusals. Final artifact/content/privacy scans PASS; exact-commit hosted CI is pending. True legacyv1/clean Windows remain separate. |
 
-- Windows Graphics Capture and acceleration beyond CPU compatibility: adopt only when reliable and measured on available hardware.
-- Automatic language routing beyond explicitly chosen script packs; avoid silently promising universal Auto.
-- Optional process profile activation; no implicit application binding.
+| P2 | FAIL | Chinese punctuation/Traditional characters, Vietnamese accents, vertical/pixel Japanese retain measured OCR errors. Alternative models/preprocessing/resize experiments caused cross-case regressions, so no overfit global shortcut was adopted. Clear core horizontal fixtures pass; real media remains a required gate. |
+| P2 | NOT TESTED | Actual Narrator/high-contrast session and optional external Tesseract runtime; accessible Qt names/roles and generic descendant cleanup do not prove these workflows. |
+| P2 | NOT TESTED | Native ONNX working-set variability and cold/warm latency under representative multi-hour media. The superseded2h showed bounded post-warmup child private growth2.45MiB with no restarts. Current-source and moving-media runs remain required; snapshot variation alone is not proof of a leak. |
 
-## Release policy
+No currently known P0 is intentionally left unresolved. This is not a claim that untested environments have no P0 defects. Unresolved P1 qualification gaps have no implicit waiver. Stable recommendation remains withheld until evidence is complete and remaining waivers, if any, are explicit and defensible.
 
-Implementation has addressed the source P0 findings above: atomic failure/pause/stop and stale guards, bounded global pipeline resources and OCR recovery/reaping, full-request network deadlines/cancellation, focus-safe runtime/display recovery, persistent overlay hiding, fail-closed monitor mapping, validated portable profiles, real first-success onboarding, strict semantic release selection and canonical package/PE/installer versions. Final regression has 219 passing tests. The final review also found an installed native event filter surviving its owner during repeated GUI lifecycles; shutdown now detaches it on the GUI thread. Demo avoids native tray side effects and themes apply idempotently.
+## v1 comparison and scope
 
-The manual/signing findings remain unresolved release gates. Window/UI/sample probes have specific, limited evidence; the two-hour resource soak and final packaging/CI are documented when complete. P1 implementations include dedicated profile/setup/transcript/support/glossary controllers, visible application capture, explicit update channels and numeric latency/resource diagnostics. P2 acceleration/WGC/universal routing decisions are recorded in [the investigation](acceleration-and-dependencies.md), without pretending they shipped.
+V1 was a Python/Tesseract application with a133-target/69-source catalog, manual dependency/path setup and no persisted language preferences. V2's managed source set is explicitly narrower than optional Tesseract coverage; unsupported sources never silently use English. The installer does not remove an unrelated old NSIS/Tesseract installation. Pons/Linguee/MyMemory/speech and OneRing-specific integration are not claimed as implemented equivalents. Windows is the supported release target; Linux/macOS source portability remains unqualified.
 
-Stable promotion is prohibited until signing and the documented manual qualification gates pass.
-Unsigned development/candidate artifacts remain available and clearly identified. No self-signed certificate
-is substituted for trusted publisher signing. Deferred features are recorded separately from failed P0 gates.
-
-The final UI review found fixed-height setup/export dialogs exceeding a 200% desktop. Dialog sizes now use available Qt logical geometry, setup pages scroll independently of navigation buttons, and sample previews adapt to width. Native inspection checks all six pages at 560×320, while completion still requires an actual translated result.
-
-The final focus review also reproduced live results reopening the main window after a target resize left no overlay space. Main-window fallback now applies only to an explicit one-shot session; live results retain their text and provide passive guidance without opening the window. Two regression cases and a native visibility/foreground probe pass. Both final endurance runs use the patched CPython 3.12.15 runtime and the updated application source.
-
-The authored end-to-end application-window loop found two further blockers that narrower capture/API tests missed: normalized settings validation constructed a forbidden 100-million-pixel dummy rectangle, and a moved-window hint could be discarded when frame generation advanced before GUI delivery. Fraction validation now has no physical rectangle dependency; stamped capture/text work carries its actual region into recognition/translation/result events. Settings and local profiles now roundtrip safely, and portable import still strips capture consent. Nine new regression cases and a native main-controller/Win32 capture/CPU OCR/live-Google probe pass. The loop follows move/resize, waits on minimize/occlusion, recovers on restore/uncover, keeps the main window hidden and closes its owned target/OCR children. Source changes invalidate prior build/soak evidence; final qualification must use the corrected source.
+Cloud OCR, GPU OCR, universal automatic script routing, speech and persistent translation history are deferred P3 product work, not features to add during hardening. No exposed functionality was deleted merely because testing was difficult. Privacy remains local in-memory screenshots, no default persisted text/history, scoped OS-vault credentials and explicit provider choice.

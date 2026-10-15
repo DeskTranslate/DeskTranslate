@@ -170,9 +170,13 @@ class RegionSelector(QObject):
         self.windows.clear()
 
     def finish(self, region: Rect) -> None:
+        if self.closed:
+            return
         self.cleanup()
         self.selected.emit(region)
 
     def cancel(self) -> None:
+        if self.closed:
+            return
         self.cleanup()
         self.cancelled.emit()

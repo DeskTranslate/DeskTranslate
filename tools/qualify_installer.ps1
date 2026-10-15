@@ -1,5 +1,35 @@
-param([string]$PreviousInstaller = '', [switch]$Signed, [string]$OcrFixture = '', [string]$ModelDataDirectory = '')
+param([string]$PreviousInstaller = '', [switch]$Signed, [string]$OcrFixture = '', [string]$ModelDataDirectory = '', [switch]$AllowInstallChanges)
 $ErrorActionPreference = 'Stop'
+if (-not $AllowInstallChanges) {
+    throw 'MANUAL INSTALLER QUALIFICATION: changes program files, shortcuts and per-user registration. Excluded from routine validation. Use -AllowInstallChanges only in a dedicated test account/VM.'
+}
+if (-not ('DeskTranslateQualification.ShellLinks' -as [type])) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Text;
+namespace DeskTranslateQualification {
+    [ComImport, Guid("00021401-0000-0000-C000-000000000046")]
+    class ShellLink {}
+    [ComImport, Guid("000214F9-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface IShellLinkW {
+        void GetPath([Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder path, int capacity, IntPtr findData, uint flags);
+    }
+    public static class ShellLinks {
+        public static string Target(string file) {
+            object link = new ShellLink();
+            try {
+                ((IPersistFile)link).Load(file, 0);
+                var path = new StringBuilder(32768);
+                ((IShellLinkW)link).GetPath(path, path.Capacity, IntPtr.Zero, 0);
+                return path.ToString();
+            } finally { Marshal.FinalReleaseComObject(link); }
+        }
+    }
+}
+'@
+}
 $workspace = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $version = (& python -c 'from desktranslate import __version__; print(__version__)').Trim()
 if ($LASTEXITCODE) { throw 'Canonical version lookup failed' }
@@ -30,6 +60,12 @@ if ($OcrFixture) {
 if ($LASTEXITCODE) { throw 'Could not prepare isolated settings' }
 $settingsFile = Join-Path $dataRoot 'settings.json'
 $before = (Get-FileHash -LiteralPath $settingsFile).Hash
+$modelHashes = @{}
+Get-ChildItem -LiteralPath (Join-Path $dataRoot 'models') -File -ErrorAction SilentlyContinue | ForEach-Object { $modelHashes[$_.Name] = (Get-FileHash -LiteralPath $_.FullName).Hash }
+$shortcutPaths = @((Join-Path ([Environment]::GetFolderPath('Programs')) 'DeskTranslate/DeskTranslate 2.lnk'), (Join-Path ([Environment]::GetFolderPath('DesktopDirectory')) 'DeskTranslate 2.lnk'))
+foreach ($shortcutPath in $shortcutPaths) {
+    if ((Test-Path -LiteralPath $shortcutPath) -and [DeskTranslateQualification.ShellLinks]::Target($shortcutPath) -ne (Join-Path $installRoot 'DeskTranslate.exe')) { throw 'Refusing to replace a shortcut for a different installation' }
+}
 $results = [ordered]@{version=$version; setup_sha256=(Get-FileHash -LiteralPath $setup -Algorithm SHA256).Hash.ToLowerInvariant(); synthetic_data_only=$true; non_ascii_path=$true; non_ascii_data_path=$true; system_only_path=$true; empty_non_ascii_working_directory=$true; previous_version_upgrade=$false; installed_ocr_http_credentials_tested=$false}
 function Run-Probe([string]$File, [string[]]$Arguments) {
     $previousPath = $env:PATH
@@ -40,7 +76,7 @@ function Run-Probe([string]$File, [string[]]$Arguments) {
         if ($process.ExitCode) { throw "Installer/runtime probe failed with exit code $($process.ExitCode)" }
     } finally { $env:PATH = $previousPath }
 }
-$options = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/NOICONS',('/DIR="'+$installRoot+'"'))
+$options = @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/TASKS=desktopicon',('/DIR="'+$installRoot+'"'))
 try {
     if ($PreviousInstaller) {
         Run-Probe ([IO.Path]::GetFullPath($PreviousInstaller)) $options
@@ -51,16 +87,26 @@ try {
     $results.install = Test-Path -LiteralPath (Join-Path $installRoot '_internal/desktranslate/assets/models.json')
     Run-Probe (Join-Path $installRoot 'DeskTranslate.exe') @('--smoke-test')
     $results.startup = $true
+    $results.shortcuts = @($shortcutPaths | Where-Object { -not (Test-Path -LiteralPath $_) -or [DeskTranslateQualification.ShellLinks]::Target($_) -ne (Join-Path $installRoot 'DeskTranslate.exe') }).Count -eq 0
+    $metadata = (Get-Item -LiteralPath (Join-Path $installRoot 'DeskTranslate.exe')).VersionInfo
+    $results.executable_metadata = $metadata.ProductVersion -eq $version -and $metadata.ProductName -eq 'DeskTranslate'
+    $uninstallMetadata = Get-ItemProperty -LiteralPath $registry
+    $results.uninstall_metadata = $uninstallMetadata.DisplayVersion -eq $version -and [IO.Path]::GetFullPath($uninstallMetadata.InstallLocation).TrimEnd('\') -eq $installRoot.TrimEnd('\')
     if ($OcrFixture) {
-        $runtimeReport = Join-Path $workspace '.audit/installed-runtime-beta2.json'
+        $runtimeReport = Join-Path $workspace '.audit/installed-runtime-candidate.json'
         Run-Probe (Join-Path $installRoot 'DeskTranslate.exe') @('--verify-runtime',('"'+$runtimeReport+'"'),'--ocr-fixture',('"'+[IO.Path]::GetFullPath($OcrFixture)+'"'))
         $runtime = Get-Content -LiteralPath $runtimeReport -Raw | ConvertFrom-Json
-        if (-not $runtime.qt -or -not $runtime.assets -or -not $runtime.ocr_exact -or -not $runtime.http_provider_roundtrip -or -not $runtime.credential_roundtrip -or $runtime.credential_cleanup -eq $false) { throw 'Installed OCR/HTTP/credential qualification failed' }
+        foreach ($field in @('qt','assets','ocr_exact','ocr_cleanup','http_provider_roundtrip','credential_roundtrip','credential_cleanup')) {
+            if ($runtime.$field -ne $true) { throw "Installed runtime qualification failed: $field" }
+        }
         $results.installed_ocr_http_credentials_tested = $true
     }
     $results.settings_preserved_on_upgrade = (Get-FileHash -LiteralPath $settingsFile).Hash -eq $before
+    $staleProbe = Join-Path $installRoot '_internal/obsolete-owned-runtime-probe.txt'
+    [IO.File]::WriteAllText($staleProbe, 'Authored obsolete runtime file')
     Run-Probe $setup $options
     $results.reinstall = $true
+    $results.obsolete_runtime_removed = -not (Test-Path -LiteralPath $staleProbe)
     if ($Signed) {
         & (Join-Path $workspace 'packaging/verify-signature.ps1') -Artifact (Join-Path $installRoot 'DeskTranslate.exe') -Expected $env:DESKTRANSLATE_SIGNING_THUMBPRINT
         & (Join-Path $workspace 'packaging/verify-signature.ps1') -Artifact (Join-Path $installRoot 'unins000.exe') -Expected $env:DESKTRANSLATE_SIGNING_THUMBPRINT
@@ -73,7 +119,19 @@ try {
 $results.uninstall = -not (Test-Path -LiteralPath (Join-Path $installRoot 'DeskTranslate.exe'))
 $results.settings_retained_on_uninstall = (Get-FileHash -LiteralPath $settingsFile).Hash -eq $before
 $results.registry_removed = -not (Test-Path -LiteralPath $registry)
-$results.passed = $results.install -and $results.startup -and $results.reinstall -and $results.settings_preserved_on_upgrade -and $results.uninstall -and $results.settings_retained_on_uninstall -and $results.registry_removed
+$results.shortcuts_removed = @($shortcutPaths | Where-Object { Test-Path -LiteralPath $_ }).Count -eq 0
+$results.models_retained_on_uninstall = @($modelHashes.Keys | Where-Object { -not (Test-Path -LiteralPath (Join-Path $dataRoot "models/$_")) -or (Get-FileHash -LiteralPath (Join-Path $dataRoot "models/$_")).Hash -ne $modelHashes[$_] }).Count -eq 0
+try {
+    Run-Probe $setup $options
+    Run-Probe (Join-Path $installRoot 'DeskTranslate.exe') @('--smoke-test')
+    $results.reinstall_after_uninstall = (Get-FileHash -LiteralPath $settingsFile).Hash -eq $before
+} finally {
+    $uninstaller = Join-Path $installRoot 'unins000.exe'
+    if (Test-Path -LiteralPath $uninstaller) { Run-Probe $uninstaller @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') }
+}
+$results.final_registry_removed = -not (Test-Path -LiteralPath $registry)
+$results.final_shortcuts_removed = @($shortcutPaths | Where-Object { Test-Path -LiteralPath $_ }).Count -eq 0
+$results.passed = $results.install -and $results.startup -and $results.reinstall -and $results.obsolete_runtime_removed -and $results.settings_preserved_on_upgrade -and $results.uninstall -and $results.settings_retained_on_uninstall -and $results.registry_removed -and $results.shortcuts -and $results.shortcuts_removed -and $results.executable_metadata -and $results.uninstall_metadata -and $results.models_retained_on_uninstall -and $results.reinstall_after_uninstall -and $results.final_registry_removed -and $results.final_shortcuts_removed
 [IO.File]::WriteAllText((Join-Path $workspace 'docs/installer-qualification.json'), ($results | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
 $results | ConvertTo-Json
 if (-not $results.passed) { throw 'Installer qualification failed' }

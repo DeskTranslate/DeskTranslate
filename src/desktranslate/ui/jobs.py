@@ -3,7 +3,7 @@ from threading import Event, Thread
 
 from PySide6.QtCore import QObject, Signal
 
-from desktranslate.errors import DeskTranslateError
+from desktranslate.errors import Cancelled, DeskTranslateError
 
 
 class Jobs(QObject):
@@ -28,6 +28,8 @@ class Jobs(QObject):
         def worker() -> None:
             try:
                 result = operation()
+                if self.cancel.is_set():
+                    raise Cancelled()
                 self.done.emit(serial, result, "")
             except Exception as error:
                 message = (

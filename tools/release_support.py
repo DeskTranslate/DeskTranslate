@@ -6,6 +6,7 @@ import ast
 import hashlib
 import importlib.metadata
 import json
+import math
 import os
 import platform
 import re
@@ -198,17 +199,53 @@ def stable_gate(root: Path, tag: str) -> None:
     if evidence.get("version") != __version__ or missing:
         raise ValueError("Stable manual qualification is incomplete: " + ", ".join(missing))
     soak = json.loads((root / "docs/soak-2h.json").read_text())
+    elapsed = soak.get("elapsed_s")
     if (
         soak.get("version") != __version__
-        or soak.get("elapsed_s", 0) < 7200
-        or not soak.get("workload_passed")
-        or not soak.get("source_unchanged")
-        or not soak.get("resource_qualification", {}).get("qualified")
+        or type(elapsed) not in (int, float)
+        or not math.isfinite(elapsed)
+        or elapsed < 7200
+        or soak.get("workload_passed") is not True
+        or soak.get("source_unchanged") is not True
+        or soak.get("resource_qualification", {}).get("qualified") is not True
+        or soak.get("completed") is not True
+        or soak.get("workers_closed") is not True
+        or type(soak.get("remaining_children")) is not int
+        or soak.get("remaining_children") != 0
+        or soak.get("mode") != "steady"
+        or soak.get("session_restarts") != 0
+        or type(soak.get("session_restarts")) is not int
+        or soak.get("harness_unchanged") is not True
+        or soak.get("harness_sha256")
+        != hashlib.sha256((root / "tools/soak.py").read_bytes()).hexdigest()
+        or soak.get("continuous_worker_qualification", {}).get("qualified") is not True
     ):
         raise ValueError("Stable requires the completed two-hour workload/resource soak")
     if soak.get("source_hashes") != runtime_source_hashes(root):
         raise ValueError("Application source/assets changed after the recorded soak")
     if soak.get("python_version") != platform.python_version():
         raise ValueError("Python runtime changed after the recorded soak")
+    chaos = json.loads((root / "docs/soak-chaos.json").read_text())
+    chaos_elapsed = chaos.get("elapsed_s")
+    if (
+        chaos.get("version") != __version__
+        or chaos.get("mode") != "chaos"
+        or type(chaos_elapsed) not in (int, float)
+        or not math.isfinite(chaos_elapsed)
+        or chaos_elapsed < 1800
+        or any(
+            chaos.get(key) is not True
+            for key in ("completed", "workload_passed", "source_unchanged", "workers_closed")
+        )
+        or chaos.get("remaining_children") != 0
+        or type(chaos.get("remaining_children")) is not int
+        or chaos.get("harness_unchanged") is not True
+        or chaos.get("harness_sha256")
+        != hashlib.sha256((root / "tools/soak.py").read_bytes()).hexdigest()
+        or chaos.get("resource_qualification", {}).get("qualified") is not True
+        or chaos.get("source_hashes") != runtime_source_hashes(root)
+        or chaos.get("python_version") != platform.python_version()
+    ):
+        raise ValueError("Stable requires the completed current-source chaos/resource soak")
     if not tag:
         raise ValueError("Stable requires an exact canonical Git tag")

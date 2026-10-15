@@ -56,7 +56,7 @@ class LatencyMetrics:
             return result
 
 
-def process_resources(pid: int | None = None) -> dict[str, int | float]:
+def process_resources(pid: int | None = None) -> dict[str, int | float | None]:
     if os.name != "nt":
         return {}
     pid = pid or os.getpid()
@@ -105,7 +105,7 @@ def process_resources(pid: int | None = None) -> dict[str, int | float]:
         counters = MemoryCounters()
         counters.size = ctypes.sizeof(counters)
         handles = wintypes.DWORD()
-        result: dict[str, int | float] = {}
+        result: dict[str, int | float | None] = {}
         if psapi.GetProcessMemoryInfo(process, ctypes.byref(counters), counters.size):
             result.update(
                 rss_bytes=counters.working,
@@ -132,7 +132,7 @@ def process_resources(pid: int | None = None) -> dict[str, int | float]:
         kernel.CloseHandle(process)
 
 
-def thread_count(pid: int) -> int:
+def thread_count(pid: int) -> int | None:
     kernel = ctypes.WinDLL("kernel32", use_last_error=True)
 
     class ThreadEntry(ctypes.Structure):
@@ -153,11 +153,13 @@ def thread_count(pid: int) -> int:
     kernel.CloseHandle.argtypes = [wintypes.HANDLE]
     snapshot = kernel.CreateToolhelp32Snapshot(4, 0)
     if snapshot == ctypes.c_void_p(-1).value:
-        return 0
+        return None
     try:
         entry, count = ThreadEntry(), 0
         entry.size = ctypes.sizeof(entry)
         success = kernel.Thread32First(snapshot, ctypes.byref(entry))
+        if not success:
+            return None
         while success:
             count += entry.owner == pid
             success = kernel.Thread32Next(snapshot, ctypes.byref(entry))
@@ -166,7 +168,7 @@ def thread_count(pid: int) -> int:
         kernel.CloseHandle(snapshot)
 
 
-def socket_count(pid: int) -> int:
+def socket_count(pid: int) -> int | None:
     library = ctypes.WinDLL("iphlpapi")
     library.GetExtendedTcpTable.argtypes = [
         ctypes.c_void_p,
@@ -176,13 +178,18 @@ def socket_count(pid: int) -> int:
         ctypes.c_int,
         wintypes.ULONG,
     ]
-    size = wintypes.DWORD()
-    library.GetExtendedTcpTable(None, ctypes.byref(size), False, 2, 5, 0)
-    if not 4 <= size.value <= 4_000_000:
-        return 0
-    buffer = ctypes.create_string_buffer(size.value)
-    if library.GetExtendedTcpTable(buffer, ctypes.byref(size), False, 2, 5, 0):
-        return 0
-    count = wintypes.DWORD.from_buffer(buffer).value
-    rows: Any = (wintypes.DWORD * (count * 6)).from_buffer(buffer, 4)
-    return sum(rows[i * 6 + 5] == pid for i in range(count))
+    total = 0
+    for family, stride, owner in ((2, 6, 5), (23, 14, 13)):
+        size = wintypes.DWORD()
+        library.GetExtendedTcpTable(None, ctypes.byref(size), False, family, 5, 0)
+        if not 4 <= size.value <= 4_000_000:
+            return None
+        buffer = ctypes.create_string_buffer(size.value)
+        if library.GetExtendedTcpTable(buffer, ctypes.byref(size), False, family, 5, 0):
+            return None
+        count = wintypes.DWORD.from_buffer(buffer).value
+        if 4 + count * stride * 4 > size.value:
+            return None
+        rows: Any = (wintypes.DWORD * (count * stride)).from_buffer(buffer, 4)
+        total += sum(rows[i * stride + owner] == pid for i in range(count))
+    return total

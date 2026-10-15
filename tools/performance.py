@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import json
+import os
 import statistics
 import time
 import tracemalloc
 from pathlib import Path
+
+os.environ["QT_QPA_PLATFORM"] = "offscreen"
 
 from PIL import Image
 from PySide6.QtWidgets import QApplication
@@ -80,9 +83,11 @@ def main() -> None:
         time.sleep(0.02)
     memory, peak = tracemalloc.get_traced_memory()
     pipeline.stop()
+    workers_closed = pipeline.wait_closed(10)
     report = {
         "duration_s": 30,
         "synthetic_inference": True,
+        "workers_closed": workers_closed,
         "overlay_cached_paint_median_ms": statistics.median(measures),
         "overlay_cached_paint_p95_ms": sorted(measures)[190],
         "accepted": accepted,
@@ -98,6 +103,8 @@ def main() -> None:
     Path("docs/performance.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     overlay.close()
     print("Synthetic soak complete; see docs/performance.json")
+    if not workers_closed:
+        raise SystemExit("Synthetic workers failed to close")
 
 
 if __name__ == "__main__":

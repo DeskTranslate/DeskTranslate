@@ -1,0 +1,43 @@
+# Historical issue review for the v2.0.0 target
+
+The audit read all 23 issue bodies and available comments, including the 18 open issues. This is a disposition review, not a bulk closure. No comments or closures have been posted. V2 remains unpublished and cannot yet be recommended as a stable fix to reporters. Two old screenshot attachments could not be retrieved; authored regressions do not reproduce those exact images.
+
+| Issue | Classification | Evidence and remaining work |
+|---|---|---|
+| [#33 Add AI Translation](https://github.com/DeskTranslate/DeskTranslate/issues/33) | Partially fixed | Native Gemini, Claude, OpenAI, OpenRouter and local adapters exist. Contract tests pass; real Ollama/LM Studio lifecycle checks ran. Paid accounts and representative model translation quality remain unqualified. |
+| [#32 I can't translate from Spanish](https://github.com/DeskTranslate/DeskTranslate/issues/32) | Fixed by v2 on authored content; needs reporter verification | Spanish managed OCR fixture is exact and actual Google sample translation succeeds. The reporter's original environment/content is unavailable. |
+| [#31 Cant start.](https://github.com/DeskTranslate/DeskTranslate/issues/31) | Needs reporter verification | Packaged runtime removes normal users' Python/Tesseract setup. The original screenshot could not be retrieved. Fresh candidate installation and clean-machine gates must pass before proposing closure. |
+| [#30 Can't select borders](https://github.com/DeskTranslate/DeskTranslate/issues/30) | Partially fixed | Native authored picker drag, corner resize, Enter/Escape and physical crop equality pass on one 125% monitor. Other physical display layouts remain untested. |
+| [#29 Bug with high-dpi screen (incorrect border position)](https://github.com/DeskTranslate/DeskTranslate/issues/29) | Partially fixed | Per-monitor origin-relative transforms, negative-coordinate regressions and native 125% capture pass. Five effective Qt scale layouts are tested; real mixed-DPI hardware is still required. |
+| [#28 Innacurate Katana Detection](https://github.com/DeskTranslate/DeskTranslate/issues/28) | Still reproducible in representative authored text | Pixel Katakana fixture has recognition errors. Original game attachments were unavailable. Candidate models/settings were compared; regressions prevent indiscriminate replacement. Do not close as fixed. |
+| [#27 Error During Install](https://github.com/DeskTranslate/DeskTranslate/issues/27) | Obsolete user workflow; packaging verification pending | V1 Python 3.13/NumPy source installation is replaced by a bundled Windows runtime. Developer requirements are separately locked. A clean Windows install remains a gate. |
+| [#26 problem in translating on screen](https://github.com/DeskTranslate/DeskTranslate/issues/26) | Partially fixed | Continuous motion no longer starves OCR; stale requests are cancelled. Native authored motion produces results and clears blanks, but noisy extra letters and stylized-font errors remain. |
+| [#22 Remember last used From and To languages](https://github.com/DeskTranslate/DeskTranslate/issues/22) | Fixed by v2 in regression tests | Atomic settings/profile persistence retains languages after restart. Failed writes leave the current settings intact and display an error. |
+| [#21 Downloaded everything and it doesnt translate my screen.](https://github.com/DeskTranslate/DeskTranslate/issues/21) | Needs reporter verification | Managed OCR removes Tesseract-path setup; onboarding performs actual OCR/provider work. The original machine/content and physical topology cannot be reproduced here. |
+| [#20 Add spanish to translation](https://github.com/DeskTranslate/DeskTranslate/issues/20) | Fixed by v2 on authored content | Spanish is an explicit OCR source and translation target; live Google sample translation and outlined Spanish OCR pass. |
+| [#19 Translating](https://github.com/DeskTranslate/DeskTranslate/issues/19) | Partially fixed | Managed recognition requires no fixed Tesseract executable path. Optional Tesseract is still available; an actual installed Tesseract binary was unavailable for qualification. |
+| [#18 Linux version?](https://github.com/DeskTranslate/DeskTranslate/issues/18) | Unrelated to the supported v2 Windows release | Linux source portability remains unqualified. This request should stay a platform enhancement, not be closed as implemented. |
+| [#16 Having issues during install](https://github.com/DeskTranslate/DeskTranslate/issues/16) | Obsolete user workflow; needs packaging verification | Normal users no longer install setuptools/Python. The old Python 3.12 dependency setup is not the v2 installation path. |
+| [#15 Secondary Screen Issue](https://github.com/DeskTranslate/DeskTranslate/issues/15) | Partially fixed | No primary-origin or common-DPI assumption remains in the transform contract; topology changes invalidate selections. Physical secondary-monitor/ticker tests remain required. |
+| [#14 bik fan](https://github.com/DeskTranslate/DeskTranslate/issues/14) | Unrelated / no actionable defect | Contains no reproducible product issue. No technical fix or automatic closure is proposed. |
+| [#13 OneRingTranslator support](https://github.com/DeskTranslate/DeskTranslate/issues/13) | Not implemented; future integration | Existing compatible local servers are supported, but no tested OneRing-specific integration exists. Do not describe it as fixed. |
+| [#6 Add LibreTranslate API](https://github.com/DeskTranslate/DeskTranslate/issues/6) | Partially fixed | Adapter, optional authentication, loopback/HTTPS validation and Traditional Chinese `zt` mapping have contract tests. No real LibreTranslate server was configured. |
+| [#25 VirusTotal Scan... afraid to install.](https://github.com/DeskTranslate/DeskTranslate/issues/25) (closed) | Needs release-specific verification | New packaging does not prove absence of AV detections. No publisher certificate exists. Never advise disabling antivirus or claim a clean VirusTotal result without an actual scan. |
+| [#17 Translated Text here](https://github.com/DeskTranslate/DeskTranslate/issues/17) (closed) | Needs reporter verification | V2 displays explicit readiness/error/result states and a real sample flow. This alone cannot reconstruct the reporter's failure. |
+| [#8 Requirements.txt doesn't work with Python 3.11](https://github.com/DeskTranslate/DeskTranslate/issues/8) (closed) | Obsolete user workflow | Bundled release runtime; developer source now requires Python 3.12–3.14, with release qualification pinned to 3.12.15. |
+| [#7 If this is for windows only...](https://github.com/DeskTranslate/DeskTranslate/issues/7) (closed) | Fixed by v2's managed path | Normal installation no longer requires a Tesseract path. Optional external OCR is a separate feature. |
+| [#5 English to Hebrew doesn't work](https://github.com/DeskTranslate/DeskTranslate/issues/5) (closed) | Fixed by v2 on authored content | Restored the v1 target catalog with canonical `he`; real Google output contains Hebrew characters. Hebrew managed OCR is not claimed. |
+
+## Prepared comment notes, not posted
+
+For #22: “V2 saves source/target languages and profiles atomically. Restart and write-failure regressions pass. After a qualified release is available, please verify your language choices survive closing and reopening.”
+
+For #20/#32: “V2 includes managed Spanish recognition. Authored Spanish OCR and a live sample translation pass. Please retest your original content once a qualified release is published; include Windows/display scaling and a redistributable sample if it still fails.”
+
+For #29/#30/#15: “V2 now maps each monitor's logical coordinates relative to its physical origin and invalidates regions after topology changes. Native selection/capture passes on one 125% display. We still need verification on your secondary/mixed-DPI layout; the issue is not yet fully qualified.”
+
+For #28/#26: “Continuous motion and stale-result handling are fixed in tested cases. Pixel/stylized Japanese still has OCR errors, so this issue remains partially unresolved. The validation report retains those failures.”
+
+For #33/#6: “The requested provider path is implemented and has contract/failure tests. Real account/server and translation-quality qualification remains separate; implementation alone is not grounds for closing the issue.”
+
+For #27/#16/#19/#31/#21: “V2's intended Windows installer bundles its runtime and uses managed OCR without Python or mandatory Tesseract. We are completing installer and clean-Windows qualification before recommending it as the resolution to the old installation/startup report.”

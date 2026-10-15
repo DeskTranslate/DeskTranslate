@@ -1,0 +1,88 @@
+{
+  "mode_returns": {
+    "portrait": 0,
+    "1080p": 0
+  },
+  "driver_mode": [
+    1080,
+    1920
+  ],
+  "physical_panel_native": [
+    1920,
+    1080
+  ],
+  "rotation_applied_by_driver": true,
+  "physical_panel_rotated_by_hand": false,
+  "controller_exit": 0,
+  "final_restore_return": 0,
+  "original_mode_restored": true,
+  "controller": {
+    "scope": "Actual running main controller, fixed region, MSS, isolated OCR and loopback HTTP through a temporary landscape1080p\u2192portrait1080\u00d71920\u2192landscape1080p change. No cloud/media or other monitor tested.",
+    "checks": {
+      "initial_real_translation": true,
+      "initial_main_hidden": true,
+      "running_capture_invalidated_on_change": true,
+      "overlay_explicitly_stopped": true,
+      "stopped_overlay_fits_workarea": true,
+      "no_main_focus_after_change": true,
+      "new_portrait_selection_translates": true,
+      "new_portrait_overlay_outside_capture": true,
+      "restoring_mode_invalidates_portrait_region": true,
+      "retired_workers_closed": true,
+      "ocr_children_closed": true
+    },
+    "observed_displays": [
+      {
+        "physical": [
+          1920,
+          1080
+        ],
+        "qt_dpr": 1.25
+      },
+      {
+        "physical": [
+          1080,
+          1920
+        ],
+        "qt_dpr": 1.25
+      },
+      {
+        "physical": [
+          1920,
+          1080
+        ],
+        "qt_dpr": 1.25
+      }
+    ],
+    "overlay_after_mode_signal": {
+      "frame": [
+        71,
+        1237,
+        720,
+        210
+      ],
+      "available": [
+        0,
+        0,
+        864,
+        1488
+      ]
+    },
+    "overlay_after_settle": {
+      "frame": [
+        71,
+        1237,
+        720,
+        210
+      ],
+      "available": [
+        0,
+        0,
+        864,
+        1488
+      ]
+    },
+    "result": "PASS"
+  },
+  "result": "PASS"
+}

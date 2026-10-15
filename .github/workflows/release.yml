@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Exact canonical release tag (optional for unsigned beta builds)
+        description: Exact canonical release tag (optional for internal qualification builds)
         type: string
         default: ''
       signed:
@@ -27,7 +27,7 @@ jobs:
       id-token: write
       attestations: write
     runs-on: windows-2022
-    timeout-minutes: 180
+    timeout-minutes: 210
     env:
       QT_QPA_PLATFORM: offscreen
       DESKTRANSLATE_DATA_DIR: ${{ github.workspace }}/.test-data
@@ -36,6 +36,8 @@ jobs:
       RELEASE_STABLE: ${{ inputs.stable }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
       - name: Prepare pinned Python security runtime
         run: ./tools/install_python.ps1
       - name: Install and check
@@ -47,15 +49,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m pip install --no-deps --no-build-isolation -e .
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m ruff check src tests tools
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m ruff format --check src tests tools
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m mypy src
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pytest -q --basetemp=.test-tmp
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pip_audit --require-hashes --disable-pip -r requirements-windows.lock
+          python tools/validate.py --predeploy --junitxml .audit/pytest.xml
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -c "from pathlib import Path; import os; from tools.release_support import version_gate,stable_gate; version_gate(Path.cwd(),os.getenv('RELEASE_TAG','')); stable_gate(Path.cwd(),os.getenv('RELEASE_TAG','')) if os.getenv('RELEASE_STABLE') == 'true' else None"
       - name: Import publisher certificate
@@ -96,7 +90,7 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Installer lifecycle and artifact privacy
         run: |
-          $probe = @{OcrFixture="$PWD/tests/fixtures/ja-game.png"; ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"}
+          $probe = @{OcrFixture="$PWD/tests/fixtures/ja-game.png"; ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"; AllowInstallChanges=$true}
           if ($env:RELEASE_SIGNED -eq 'true') { $probe.Signed = $true }
           ./tools/qualify_installer.ps1 @probe
           python tools/privacy_scan.py --artifacts --history --output docs/privacy-scan.json
@@ -110,9 +104,15 @@ jobs:
       - name: Qualify two-hour endurance on the release runtime
         if: inputs.endurance
         run: |
-          python tools/soak.py --duration 7200 --output docs/soak-2h-hosted.json
+          python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('en',Event(),lambda *args: None); assert ModelManager().installed('en',verify=True)"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-2h-hosted.json').read_text()); assert r['elapsed_s'] >= 7200 and r['workload_passed'] and r['resource_qualification']['qualified'] and r['source_hashes'] == runtime_source_hashes(Path.cwd()) and r['python_version'] == '3.12.15'"
+          python tools/soak.py --long-running --mode steady --duration 7200 --stop-file .audit/stop-steady --output docs/soak-2h-hosted.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-2h-hosted.json').read_text()); assert r['elapsed_s'] >= 7200 and r['workload_passed'] is True and r['resource_qualification']['qualified'] is True and r['continuous_worker_qualification']['qualified'] is True and r['session_restarts'] == 0 and r['source_hashes'] == runtime_source_hashes(Path.cwd()) and r['python_version'] == '3.12.15'"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python tools/soak.py --long-running --mode chaos --duration 1800 --stop-file .audit/stop-chaos --output docs/soak-chaos-hosted.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python -c "import json; from pathlib import Path; from tools.release_support import runtime_source_hashes; r=json.loads(Path('docs/soak-chaos-hosted.json').read_text()); assert r['elapsed_s'] >= 1800 and r['workload_passed'] is True and r['resource_qualification']['qualified'] is True and r['source_hashes'] == runtime_source_hashes(Path.cwd())"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Remove publisher certificate
         if: always() && inputs.signed
@@ -121,6 +121,7 @@ jobs:
             Remove-Item -LiteralPath "Cert:\CurrentUser\My\$env:DESKTRANSLATE_SIGNING_THUMBPRINT" -Force -ErrorAction SilentlyContinue
           }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
         with:
           name: desktranslate-release-candidate
           path: |
@@ -132,4 +133,7 @@ jobs:
             docs/installer-qualification.json
             docs/privacy-scan.json
             docs/soak-2h-hosted.json
+            docs/soak-chaos-hosted.json
+            .audit/pytest.xml
+            .audit/dependency-audit.json
           retention-days: 30

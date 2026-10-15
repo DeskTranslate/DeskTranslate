@@ -49,15 +49,16 @@ def main() -> None:
             )
         finally:
             engine.close()
+            engine.reap()
         engine = IsolatedOCR("rapidocr", "ja")
-        start = time.monotonic()
+        start = time.perf_counter()
         engine.close()
-        engine.process.join(3)
+        engine.reap()
         print(
             json.dumps(
                 {
-                    "shutdown_ms": (time.monotonic() - start) * 1000,
-                    "terminated": not engine.process.is_alive(),
+                    "shutdown_ms": (time.perf_counter() - start) * 1000,
+                    "terminated": engine.reaped,
                 }
             )
         )

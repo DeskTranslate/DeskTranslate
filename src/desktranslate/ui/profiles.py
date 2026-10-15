@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QMessageBox,
     QPlainTextEdit,
     QPushButton,
     QVBoxLayout,
@@ -94,9 +95,12 @@ class ProfilePage(QWidget):
             self.notice(str(error))
             return None
 
-    def store(self, settings: Settings, selected: str = "") -> None:
+    def store(self, settings: Settings, selected: str = "") -> bool:
         if self.commit(settings, False):
             self.refresh(selected)
+            self.notice("Profile saved.")
+            return True
+        return False
 
     def save(self) -> None:
         if name := self.name():
@@ -135,10 +139,15 @@ class ProfilePage(QWidget):
 
     def delete(self) -> None:
         if name := self.selected():
+            if (
+                QMessageBox.question(self, "Delete profile", f'Delete the saved profile "{name}"?')
+                != QMessageBox.StandardButton.Yes
+            ):
+                return
             updated = copy.deepcopy(self.get_settings())
             updated.profiles.pop(name)
-            self.store(updated)
-            self.notice("Profile deleted. The currently applied settings remain available.")
+            if self.store(updated):
+                self.notice("Profile deleted. The currently applied settings remain available.")
 
     def import_file(self) -> None:
         filename, _ = QFileDialog.getOpenFileName(
@@ -152,10 +161,10 @@ class ProfilePage(QWidget):
                     self.notice("A profile with that name exists. Rename it before importing.")
                     return
                 updated.profiles[name] = values
-                self.store(updated, name)
-                self.notice(
-                    "Profile imported. Select a local capture target after loading it; API keys are not imported."
-                )
+                if self.store(updated, name):
+                    self.notice(
+                        "Profile imported. Select a local capture target after loading it; API keys are not imported."
+                    )
             except (OSError, ValueError, RecursionError):
                 self.notice(
                     "Cannot import this profile. Check its format, size and file permissions."

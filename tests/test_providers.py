@@ -4,12 +4,27 @@ import httpx
 import pytest
 
 from desktranslate.errors import (
+    ModelNotFoundError,
     ProviderAuthenticationError,
     ProviderRateLimitError,
     TranslationError,
 )
 from desktranslate.models import ContextPair, TranslationRequest
 from desktranslate.providers import create_provider, prompts
+
+
+def test_offline_local_libretranslate_does_not_direct_users_to_an_ai_server():
+    def offline(request):
+        raise httpx.ConnectError("Private server details must not appear", request=request)
+
+    provider = create_provider("libre", transport=httpx.MockTransport(offline))
+    try:
+        with pytest.raises(TranslationError) as failed:
+            provider.translate(TranslationRequest("Authored greeting", "en", "es"))
+        assert "configured server" in str(failed.value)
+        assert "Ollama" not in str(failed.value) and "Private" not in str(failed.value)
+    finally:
+        provider.close()
 
 
 @pytest.mark.parametrize(
@@ -44,7 +59,15 @@ from desktranslate.providers import create_provider, prompts
                 ]
             },
         ),
-        ("ollama", {"message": {"content": "Translation"}, "prompt_eval_count": 10}),
+        (
+            "ollama",
+            {
+                "message": {"content": "Translation"},
+                "prompt_eval_count": 10,
+                "done": True,
+                "done_reason": "stop",
+            },
+        ),
         ("google", [[["Translation", "Source"]]]),
         ("deepl", {"translations": [{"text": "Translation"}]}),
         ("libre", {"translatedText": "Translation"}),
@@ -53,6 +76,8 @@ from desktranslate.providers import create_provider, prompts
 def test_native_translation_contracts(name, response):
     def handler(request):
         assert request.url.scheme in {"https", "http"}
+        if name == "lmstudio" and request.url.path == "/v1/models":
+            return httpx.Response(200, json={"data": [{"id": "test-model"}]})
         if name == "openai":
             body = json.loads(request.content)
             assert request.url.path == "/v1/responses"
@@ -73,6 +98,42 @@ def test_native_translation_contracts(name, response):
             provider.translate(TranslationRequest("Source", "ja", "en", "test-model")).text
             == "Translation"
         )
+    finally:
+        provider.close()
+
+
+@pytest.mark.parametrize("changed_during_request", [False, True])
+def test_lmstudio_rejects_fallback_when_selected_model_disappears(changed_during_request):
+    calls = []
+    available = ["selected-model"]
+
+    def handler(request):
+        calls.append(request.url.path)
+        if request.url.path == "/v1/models":
+            return httpx.Response(200, json={"data": [{"id": model} for model in available]})
+        # Real LM Studio may accept an unknown model key and use a loaded model.
+        return httpx.Response(
+            200,
+            json={
+                "model": "other-model" if changed_during_request else "selected-model",
+                "choices": [{"message": {"content": "Fallback"}}],
+            },
+        )
+
+    provider = create_provider("lmstudio", transport=httpx.MockTransport(handler))
+    try:
+        request = TranslationRequest("Authored text", "en", "es", "selected-model")
+        if changed_during_request:
+            with pytest.raises(ModelNotFoundError, match="used another model"):
+                provider.translate(request)
+            assert calls == ["/v1/models", "/v1/chat/completions"]
+            return
+        assert provider.translate(request).text == "Fallback"
+        available[:] = ["other-model"]
+        calls.clear()
+        with pytest.raises(ModelNotFoundError):
+            provider.translate(request)
+        assert calls == ["/v1/models"]
     finally:
         provider.close()
 
@@ -144,6 +205,27 @@ def test_malformed_responses(name):
     provider.close()
 
 
+@pytest.mark.parametrize(
+    "completion",
+    [
+        {"done": False},
+        {"done": True, "done_reason": "length"},
+        {"done": 1},
+        {"done": True, "done_reason": "unload"},
+    ],
+)
+def test_ollama_rejects_incomplete_or_truncated_generation(completion):
+    payload = {"message": {"content": "Incomplete authored translation"}, **completion}
+    provider = create_provider(
+        "ollama", transport=httpx.MockTransport(lambda request: httpx.Response(200, json=payload))
+    )
+    try:
+        with pytest.raises(TranslationError, match="incomplete"):
+            provider.translate(TranslationRequest("Authored source", "en", "es", "test"))
+    finally:
+        provider.close()
+
+
 def test_prompt_translates_questions_and_bounds_context():
     request = TranslationRequest(
         "Where did you hide the key?",
@@ -209,3 +291,43 @@ def test_catalog_filters_known_non_text_models_and_keeps_unknown_compatibility_i
     )
     assert [model.id for model in provider.models()] == ["mystery-text-model"]
     provider.close()
+
+
+@pytest.mark.parametrize(
+    "name,payload",
+    [
+        ("google", "unexpected"),
+        ("google", ["unexpected"]),
+        ("custom", {"choices": ["bad"]}),
+        ("anthropic", []),
+        ("gemini", {"candidates": ["bad"]}),
+    ],
+)
+def test_malformed_shapes_never_become_translation_or_raw_exception(name, payload):
+    provider = create_provider(
+        name,
+        "test",
+        transport=httpx.MockTransport(lambda request: httpx.Response(200, json=payload)),
+    )
+    try:
+        with pytest.raises(TranslationError):
+            provider.translate(TranslationRequest("authored text", "en", "ja", "model"))
+    finally:
+        provider.close()
+
+
+def test_libre_preserves_traditional_chinese_language_identity():
+    def handler(request):
+        body = json.loads(request.content)
+        assert body["source"] == "zh"
+        assert body["target"] == "zt"
+        return httpx.Response(200, json={"translatedText": "明天我們見面。"})
+
+    provider = create_provider("libre", transport=httpx.MockTransport(handler))
+    try:
+        assert (
+            provider.translate(TranslationRequest("明天我们见面。", "zh-CN", "zh-TW")).text
+            == "明天我們見面。"
+        )
+    finally:
+        provider.close()

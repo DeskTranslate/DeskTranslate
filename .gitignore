@@ -9,6 +9,8 @@ __pycache__/
 .test-tmp/
 .test-tmp-network/
 .test-tmp-*/
+.test-onboarding-tmp/
+.test-provider-tmp/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
@@ -28,3 +30,5 @@ credentials.*
 coverage.xml
 .coverage
 htmlcov/
+
+*.partial.json

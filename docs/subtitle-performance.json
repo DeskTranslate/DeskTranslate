@@ -1,0 +1,74 @@
+{
+  "native_windows_fonts": true,
+  "font": "Segoe UI",
+  "physical_scale_percent": 125,
+  "baseline_commit": "46ac123",
+  "runs": [
+    {
+      "implementation": "baseline",
+      "characters": 100,
+      "median_prepare_ms": 3.245,
+      "mask_bytes": 3960000,
+      "glyph_size": [
+        900,
+        275
+      ],
+      "effective_font_px": 22
+    },
+    {
+      "implementation": "current",
+      "characters": 100,
+      "median_prepare_ms": 1.386,
+      "mask_bytes": 1425600,
+      "glyph_size": [
+        900,
+        99
+      ],
+      "effective_font_px": 22
+    },
+    {
+      "implementation": "baseline",
+      "characters": 5000,
+      "median_prepare_ms": 176.211,
+      "mask_bytes": 3960000,
+      "glyph_size": [
+        900,
+        275
+      ],
+      "effective_font_px": 12
+    },
+    {
+      "implementation": "current",
+      "characters": 5000,
+      "median_prepare_ms": 19.285,
+      "mask_bytes": 1425600,
+      "glyph_size": [
+        900,
+        99
+      ],
+      "effective_font_px": 12
+    },
+    {
+      "implementation": "baseline",
+      "characters": 20000,
+      "median_prepare_ms": 653.627,
+      "mask_bytes": 3960000,
+      "glyph_size": [
+        900,
+        275
+      ],
+      "effective_font_px": 12
+    },
+    {
+      "implementation": "current",
+      "characters": 20000,
+      "median_prepare_ms": 84.629,
+      "mask_bytes": 1425600,
+      "glyph_size": [
+        900,
+        99
+      ],
+      "effective_font_px": 12
+    }
+  ]
+}

@@ -6,6 +6,14 @@ from urllib.parse import urlsplit
 from desktranslate.errors import ConfigurationError, CredentialError
 
 
+def is_loopback_endpoint(url: str) -> bool:
+    host = urlsplit(url).hostname or ""
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return host.lower() == "localhost"
+
+
 def validate_endpoint(url: str, local: bool = False) -> str:
     try:
         parts = urlsplit(url.strip())

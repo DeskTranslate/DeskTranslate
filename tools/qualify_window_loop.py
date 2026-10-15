@@ -17,6 +17,9 @@ TITLE = "DeskTranslate authored end-to-end target"
 
 
 def main():
+    from qualification_policy import require_interactive_desktop
+
+    require_interactive_desktop()
     from desktranslate.capture import enable_dpi_awareness
 
     enable_dpi_awareness()
@@ -95,7 +98,7 @@ def main():
     for path in (command_file, ready_file):
         path.unlink(missing_ok=True)
     target = subprocess.Popen(
-        [sys.executable, str(Path(__file__).resolve()), "--target"],
+        [sys.executable, str(Path(__file__).resolve()), "--interactive-desktop", "--target"],
         creationflags=subprocess.CREATE_NO_WINDOW,
     )
     window = None

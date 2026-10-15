@@ -25,8 +25,10 @@ def run_cancellable[T](
             raise Cancelled()
         task = asyncio.create_task(operation())
         watcher = asyncio.create_task(watch_cancel())
+        done: set[asyncio.Task[Any]] = set()
+        pending: set[asyncio.Task[Any]] = set()
         try:
-            done, _ = await asyncio.wait(
+            done, pending = await asyncio.wait(
                 (task, watcher), timeout=timeout, return_when=asyncio.FIRST_COMPLETED
             )
             if cancel.is_set():
@@ -38,10 +40,20 @@ def run_cancellable[T](
             task.cancel()
             watcher.cancel()
             await asyncio.gather(task, watcher, return_exceptions=True)
+            done.clear()
+            pending.clear()
+            del task, watcher
 
     loop = cast(asyncio.BaseEventLoop, asyncio.new_event_loop())
     try:
         return loop.run_until_complete(bounded())
+    except Exception as error:
+        # Release task→traceback→run_until_complete cycles at the sync boundary.
+        # The error still propagates with its original type and safe message.
+        error.__traceback__ = None
+        error.__context__ = None
+        error.__cause__ = None
+        raise error from None
     finally:
         try:
             loop.run_until_complete(loop.shutdown_asyncgens())

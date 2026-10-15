@@ -12,12 +12,37 @@ from desktranslate.shortcuts import parse_hotkey, validate_hotkeys
 
 class Hotkeys(QAbstractNativeEventFilter):
     def __init__(
-        self, actions: dict[str, Callable[[], None]], suspend: Callable[[], None] | None = None
+        self,
+        actions: dict[str, Callable[[], None]],
+        suspend: Callable[[], None] | None = None,
+        preferences_changed: Callable[[], None] | None = None,
     ) -> None:
         super().__init__()
         self.actions = actions
         self.registered: dict[int, str] = {}
         self.suspend = suspend
+        self.preferences_changed = preferences_changed
+        self.session_window: int | None = None
+
+    def watch_session(self, window: int) -> bool:
+        """Observe only our Windows session; never resume capture automatically."""
+        if os.name != "nt":
+            return False
+        self.unwatch_session()
+        library = ctypes.WinDLL("wtsapi32", use_last_error=True)
+        library.WTSRegisterSessionNotification.argtypes = [wintypes.HWND, wintypes.DWORD]
+        library.WTSRegisterSessionNotification.restype = wintypes.BOOL
+        if library.WTSRegisterSessionNotification(window, 0):
+            self.session_window = window
+            return True
+        return False
+
+    def unwatch_session(self) -> None:
+        if self.session_window is not None:
+            library = ctypes.WinDLL("wtsapi32", use_last_error=True)
+            library.WTSUnRegisterSessionNotification.argtypes = [wintypes.HWND]
+            library.WTSUnRegisterSessionNotification(self.session_window)
+            self.session_window = None
 
     def register(self, values: dict[str, str]) -> list[str]:
         validate_hotkeys(values)
@@ -39,6 +64,12 @@ class Hotkeys(QAbstractNativeEventFilter):
         self, event_type: QByteArray | bytes | bytearray | memoryview, message: int
     ) -> tuple[bool, int]:
         msg = wintypes.MSG.from_address(int(message))
+        if msg.message in {0x001A, 0x031A} and self.preferences_changed:
+            self.preferences_changed()
+            return False, 0
+        if msg.message == 0x02B1 and msg.wParam in {2, 4, 7} and self.suspend:
+            self.suspend()
+            return False, 0
         if msg.message == 0x0218 and msg.wParam == 4 and self.suspend:
             self.suspend()
             return False, 0

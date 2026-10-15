@@ -15,6 +15,7 @@ from desktranslate.algorithms import PRESETS, FrameGate, TextStabilizer, preproc
 from desktranslate.context import TranslationCache, TranslationContext, cache_key
 from desktranslate.errors import (
     Cancelled,
+    ConfigurationError,
     DeskTranslateError,
     OCRInferenceError,
     ProviderRateLimitError,
@@ -172,6 +173,7 @@ class CapturedWork:
     captured: float
     timings: dict[str, float]
     region: Rect | None = None
+    moving: bool = False
 
 
 @dataclass(frozen=True)
@@ -200,6 +202,7 @@ class Pipeline:
         self.once = once
         self.session = Session()
         self.cancel = Event()
+        self.cleanup_failed = Event()
         self.paused = Event()
         self.frames: LatestMailbox[CapturedWork] = LatestMailbox()
         self.texts: LatestMailbox[TextWork] = LatestMailbox()
@@ -216,6 +219,7 @@ class Pipeline:
         self.capture_region = settings.region
         # OCR acceptance is provisional until the current result reaches the UI.
         self.delivered_source = ""
+        self.motion_source = ""
         self.threads: list[Thread] = []
         self.counters = {
             "captures": 0,
@@ -264,6 +268,11 @@ class Pipeline:
             return
         safe = str(error) if isinstance(error, DeskTranslateError) else DeskTranslateError.message
         self.paused.set()
+        self.cancel.set()
+        if self.ocr and hasattr(self.ocr, "cancel_pending"):
+            self.ocr.cancel_pending()  # type: ignore[attr-defined]
+        if self.provider and hasattr(self.provider, "cancel_pending"):
+            self.provider.cancel_pending()  # type: ignore[attr-defined]
         self.enqueue(
             PipelineEvent(failed, SessionState.ERROR, error=safe, category=type(error).__name__)
         )
@@ -279,6 +288,10 @@ class Pipeline:
     def pause(self) -> None:
         if self.session.pause():
             self.paused.set()
+            if self.ocr and hasattr(self.ocr, "cancel_pending"):
+                self.ocr.cancel_pending()  # type: ignore[attr-defined]
+            if self.provider and hasattr(self.provider, "cancel_pending"):
+                self.provider.cancel_pending()  # type: ignore[attr-defined]
             self.emit(SessionState.PAUSED)
 
     def resume(self) -> None:
@@ -301,7 +314,10 @@ class Pipeline:
         self.cancel.set()
         self.session.stop()
         if self.ocr:
-            self.ocr.close()
+            if hasattr(self.ocr, "cancel_pending"):
+                self.ocr.cancel_pending()  # type: ignore[attr-defined]
+            else:
+                self.ocr.close()
         if self.provider and hasattr(self.provider, "cancel_pending"):
             self.provider.cancel_pending()  # type: ignore[attr-defined]
         # Native process reaping and bounded client cleanup occur in existing workers.
@@ -311,7 +327,16 @@ class Pipeline:
         deadline = time.monotonic() + timeout
         for thread in self.threads:
             thread.join(max(0.0, deadline - time.monotonic()))
-        return not any(thread.is_alive() for thread in self.threads)
+        return (
+            not any(thread.is_alive() for thread in self.threads)
+            and not self.cleanup_failed.is_set()
+        )
+
+    def cleanup_failure(self) -> None:
+        self.cleanup_failed.set()
+        logging.getLogger("desktranslate").error(
+            "", extra={"component": "pipeline", "category": "ResourceCleanupError"}
+        )
 
     def poll(self) -> list[PipelineEvent]:
         events = []
@@ -331,7 +356,7 @@ class Pipeline:
         try:
             capture = self.capture_factory()
             preset = PRESETS[self.settings.quality]
-            gate = FrameGate(preset.frame_settle)
+            gate = FrameGate(preset.frame_settle, motion_interval=1.5)
             last_paused = False
             unavailable = False
             while not self.cancel.is_set():
@@ -340,7 +365,7 @@ class Pipeline:
                     self.cancel.wait(0.1)
                     continue
                 if last_paused or self.reset_frames.is_set():
-                    gate = FrameGate(preset.frame_settle)
+                    gate = FrameGate(preset.frame_settle, motion_interval=1.5)
                     last_paused = False
                     self.reset_frames.clear()
                 start = time.perf_counter()
@@ -372,7 +397,7 @@ class Pipeline:
                 rebound = getattr(capture, "rebound", False)
                 if unavailable or actual != self.capture_region or rebound:
                     self.clear_context()
-                    gate = FrameGate(preset.frame_settle)
+                    gate = FrameGate(preset.frame_settle, motion_interval=1.5)
                     unavailable = False
                     self.capture_region = actual
                     if rebound:
@@ -388,11 +413,16 @@ class Pipeline:
                 captured = time.monotonic()
                 capture_ms = (time.perf_counter() - start) * 1000
                 start = time.perf_counter()
+                was_moving = gate.moving
                 decision = gate.observe(image, captured)
                 change_ms = (time.perf_counter() - start) * 1000
-                if decision.changed:
+                if (decision.changed and not decision.moving) or (
+                    was_moving and not decision.moving and decision.ready
+                ):
                     self.session.changed()
                     self.reset_text.set()
+                    if self.provider and getattr(self.provider, "pending", None) is not None:
+                        self.provider.cancel_pending()  # type: ignore[attr-defined]
                 if decision.ready or self.once or (self.confirm_frame.is_set() and gate.emitted):
                     self.confirm_frame.clear()
                     self.frames.put(
@@ -402,6 +432,7 @@ class Pipeline:
                             captured,
                             {"capture_ms": capture_ms, "change_ms": change_ms},
                             actual,
+                            decision.moving,
                         )
                     )
                     if self.once:
@@ -416,7 +447,10 @@ class Pipeline:
             self.fail(error)
         finally:
             if capture:
-                capture.close()
+                try:
+                    capture.close()
+                except Exception:
+                    self.cleanup_failure()
 
     def _recognize(self) -> None:
         acquired = acquire_slot(OCR_SLOTS, self.cancel)
@@ -455,6 +489,12 @@ class Pipeline:
                 self.counters["ocr"] += 1
                 try:
                     result = self.ocr.recognize(image, self.settings.source, self.settings.vertical)
+                except Cancelled:
+                    self.ocr.close()
+                    if hasattr(self.ocr, "reap"):
+                        self.ocr.reap()  # type: ignore[attr-defined]
+                    self.ocr = None
+                    continue
                 except OCRInferenceError as error:
                     self.ocr.close()
                     if hasattr(self.ocr, "reap"):
@@ -485,20 +525,48 @@ class Pipeline:
                     result.text
                     if self.once
                     else stabilizer.observe(
-                        result, time.monotonic(), settled_frame=self.settings.quality != "accuracy"
+                        result,
+                        time.monotonic(),
+                        settled_frame=not work.moving and self.settings.quality != "accuracy",
                     )
                 )
                 if not self.session.current(work.stamp):
                     self.counters["stale"] += 1
                     continue
-                if not result.text.strip():
-                    with self.session.lock:
-                        if work.stamp == Stamp(self.session.serial, self.session.generation):
-                            self.delivered_source = ""
-                if text and len(text) <= 5000:
+                emitted_stamp = work.stamp
+                confirmed_source = text if text else ("" if not result.text.strip() else None)
+                semantic_change = False
+                with self.session.lock:
+                    if work.stamp != Stamp(self.session.serial, self.session.generation):
+                        self.counters["stale"] += 1
+                        continue
+                    if confirmed_source is not None:
+                        if work.moving and confirmed_source != self.motion_source:
+                            self.session.generation += 1
+                            emitted_stamp = Stamp(self.session.serial, self.session.generation)
+                            stabilizer_stamp = emitted_stamp
+                            semantic_change = True
+                        self.motion_source = confirmed_source
+                    if not result.text.strip():
+                        self.delivered_source = ""
+                if (
+                    semantic_change
+                    and self.provider
+                    and getattr(self.provider, "pending", None) is not None
+                ):
+                    self.provider.cancel_pending()  # type: ignore[attr-defined]
+                if text and len(text) > 5000:
+                    self.fail(
+                        ConfigurationError(
+                            "Recognized text exceeds 5,000 characters. Select a smaller region before translating."
+                        ),
+                        emitted_stamp,
+                    )
+                    continue
+                if text:
                     now = time.monotonic()
                     self.texts.put(
-                        TextWork(work.stamp, text, work.captured, now, timings, work.region)
+                        TextWork(emitted_stamp, text, work.captured, now, timings, work.region)
                     )
                 else:
                     if result.text and stabilizer.candidate != stabilizer.accepted:
@@ -507,22 +575,28 @@ class Pipeline:
                         self.confirm_frame.set()
                     self.emit(
                         SessionState.WATCHING,
-                        work.stamp,
+                        emitted_stamp,
                         error="No readable text yet. Try a tighter region or subtitle preprocessing."
                         if self.once
                         else "",
                         clear=not bool(result.text),
                     )
+                    if self.once:
+                        self.cancel.set()
         except Cancelled:
             pass
         except Exception as error:
             self.fail(error)
         finally:
-            if self.ocr:
-                self.ocr.close()
-                if hasattr(self.ocr, "reap"):
-                    self.ocr.reap()  # type: ignore[attr-defined]
-            OCR_SLOTS.release()
+            try:
+                if self.ocr:
+                    self.ocr.close()
+                    if hasattr(self.ocr, "reap"):
+                        self.ocr.reap()  # type: ignore[attr-defined]
+            except Exception:
+                self.cleanup_failure()
+            finally:
+                OCR_SLOTS.release()
 
     def _translate(self) -> None:
         provider = None
@@ -539,6 +613,11 @@ class Pipeline:
                     continue
                 if not self.session.current(work.stamp):
                     continue
+                cancelled = getattr(provider, "cancelled", None)
+                if cancelled is not None and cancelled.is_set():
+                    provider.close()
+                    provider = self.provider_factory()
+                    self.provider = provider
                 self.emit(SessionState.TRANSLATING, work.stamp, region=work.region)
                 with self.context_lock:
                     context = self.context.snapshot() if provider.capabilities.context else ()
@@ -597,10 +676,16 @@ class Pipeline:
                     )
                     self.session.activity(SessionState.WATCHING, work.stamp)
                     self.enqueue(event)
+                    if self.once:
+                        self.cancel.set()  # Preserve the result stamp while retiring workers.
         except Exception as error:
             self.fail(error)
         finally:
-            if provider:
-                provider.close()
-            self.provider = None
-            PROVIDER_SLOTS.release()
+            try:
+                if provider:
+                    provider.close()
+            except Exception:
+                self.cleanup_failure()
+            finally:
+                self.provider = None
+                PROVIDER_SLOTS.release()

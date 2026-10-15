@@ -1,0 +1,147 @@
+{
+  "version": "2.0.0b2",
+  "server": "LM Studio llmster 0.0.25-1",
+  "runtime": "llama.cpp 2.41.0, gpu=off",
+  "model": "qwen2.5-1.5b",
+  "authored_content_only": true,
+  "isolated_test_profile": true,
+  "checks": {
+    "offline_before_start": true,
+    "real_model_discovery": true,
+    "adapter_response_nonempty_changed": true,
+    "context_response_nonempty": true,
+    "missing_model_rejected": true,
+    "model_unloaded": true,
+    "generation_after_reload": true,
+    "actual_generation_cancellation": true,
+    "mid_generation_disconnect_handled": true,
+    "offline_after_stop": true,
+    "discovery_after_restart": true,
+    "generation_after_restart": true,
+    "owned_server_stopped": true
+  },
+  "commands": [
+    {
+      "command": [
+        "import",
+        "[owned GGUF test file]",
+        "--copy",
+        "--user-repo",
+        "Qwen/Qwen2.5-1.5B-GGUF",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "load",
+        "qwen2.5-1.5b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--parallel",
+        "1",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "start",
+        "--port",
+        "56936",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "unload",
+        "--all"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "ps",
+        "--json"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "load",
+        "qwen2.5-1.5b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "load",
+        "qwen2.5-1.5b",
+        "--gpu",
+        "off",
+        "--context-length",
+        "4096",
+        "--parallel",
+        "1",
+        "--identifier",
+        "desktranslate-authored",
+        "--yes"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "start",
+        "--port",
+        "56936",
+        "--bind",
+        "127.0.0.1"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "server",
+        "stop"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "unload",
+        "--all"
+      ],
+      "exit": 0
+    }
+  ],
+  "resolved_model_ids": [
+    "desktranslate-authored",
+    "desktranslate-authored"
+  ],
+  "cold_translation_s": 9.34,
+  "authored_translation": "Hola mundo.\n\nTranslation:\nHello world. (English)\n¡Hola Mundo! (Spanish)",
+  "authored_context_translation": "Gracias. \n\nTranslation: Gracias. \n\nExplanation: The instruction specified that only the current text (\"Thank you.\") should be translated from English to Spanish, while preserving all details and original meaning, names (if any), tone, and meaningful line breaks. Here's how it was done:\n\n- \"Thank you\" is a common phrase in English.\n- In Spanish, this phrase translates literally as \"Gracias.\"\n  \nThe instruction specifically requested the translation only of the given current text without changing anything else in the context or introducing new elements.\n\nFinal Translation: Gracias. \n\nThis keeps the meaning and tone exactly as provided by the source while faithfully translating the English phrase to its Spanish equivalent.",
+  "missing_model_category": "ModelNotFoundError",
+  "cancellation_ms": 5.397,
+  "mid_generation_disconnect_category": "LocalServerUnavailableError",
+  "service_lifecycle_passed": true,
+  "translation_quality": "FAIL",
+  "quality_limitation": "Plain translation varied across runs: actual lifecycle run added labels/explanations, while a later controlled comparison produced plain text. No deterministic model-quality claim.",
+  "passed": false,
+  "private_paths_redacted": true
+}

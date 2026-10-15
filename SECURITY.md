@@ -6,4 +6,4 @@ Report vulnerabilities privately through [GitHub's vulnerability reporting](http
 
 Keys must remain in an OS-native credential vault. Remote endpoints require verified HTTPS; provider redirects and URL credentials are rejected. Local HTTP is restricted to loopback. OCR resources must match pinned SHA-256 values. Memory/cache/queue/context limits and native OCR process isolation are security boundaries worth regression testing.
 
-Binary hashes accompany releases, but this beta has no publisher code-signing certificate. Check that artifacts came from this repository. Build from source if organizational policy requires signed executables. See [privacy](docs/privacy.md) for data flows and cleanup.
+Binary hashes accompany release artifacts. Stable publication currently remains blocked because no publisher code-signing certificate is available. Internal unsigned builds do not establish publisher identity. Source builds also remain unsigned unless you configure an appropriate certificate. See [privacy](docs/privacy.md) for data flows and cleanup.

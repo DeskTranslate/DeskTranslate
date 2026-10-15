@@ -18,9 +18,27 @@ def normalize_text(text: str) -> str:
     )
 
 
-def reconstruct(lines: tuple[OCRLine, ...], vertical: bool = False) -> str:
+def reconstruct(lines: tuple[OCRLine, ...], vertical: bool = False, direction: str = "ltr") -> str:
     if vertical:
-        ordered = sorted(lines, key=lambda line: (-line.box.x, line.box.y))
+        columns: list[list[OCRLine]] = []
+        for line in sorted(lines, key=lambda line: -(line.box.x + line.box.width / 2)):
+            center = line.box.x + line.box.width / 2
+            column = next(
+                (
+                    column
+                    for column in columns
+                    if abs(center - (column[0].box.x + column[0].box.width / 2))
+                    <= min(line.box.width, column[0].box.width) * 0.5
+                ),
+                None,
+            )
+            if column is None:
+                columns.append([line])
+            else:
+                column.append(line)
+        ordered = [
+            line for column in columns for line in sorted(column, key=lambda line: line.box.y)
+        ]
         return normalize_text("\n".join(line.text for line in ordered))
     rows: list[list[OCRLine]] = []
     for line in sorted(lines, key=lambda line: (line.box.y + line.box.height / 2, line.box.x)):
@@ -40,7 +58,20 @@ def reconstruct(lines: tuple[OCRLine, ...], vertical: bool = False) -> str:
             row.append(line)
     return normalize_text(
         "\n".join(
-            " ".join(line.text for line in sorted(row, key=lambda line: line.box.x)) for row in rows
+            " ".join(
+                line.text
+                for line in sorted(
+                    row,
+                    key=lambda line: line.box.x,
+                    reverse=direction == "rtl"
+                    and any(
+                        unicodedata.bidirectional(character) in {"R", "AL"}
+                        for item in row
+                        for character in item.text
+                    ),
+                )
+            )
+            for row in rows
         )
     )
 
@@ -78,15 +109,22 @@ PRESETS = {
 class FrameDecision:
     changed: bool
     ready: bool
+    moving: bool = False
 
 
 class FrameGate:
-    def __init__(self, settle: float = 0.3, threshold: float = 1.2) -> None:
+    def __init__(
+        self, settle: float = 0.3, threshold: float = 1.2, motion_interval: float = 0.0
+    ) -> None:
         self.settle = settle
         self.threshold = threshold
         self.candidate: Image.Image | None = None
         self.since = 0.0
         self.emitted = False
+        self.motion_interval = motion_interval
+        self.unstable_since: float | None = None
+        self.last_sample = float("-inf")
+        self.moving = False
 
     def observe(self, image: Image.Image, now: float) -> FrameDecision:
         # The thumbnail retains aspect ratio, reducing work to at most ~32K pixels.
@@ -101,13 +139,27 @@ class FrameGate:
             significant = sum(histogram[20:]) / (sample.width * sample.height)
             changed = stats.mean[0] > self.threshold or significant > 0.008
         if changed:
+            if self.unstable_since is None:
+                self.unstable_since = now
             self.candidate = sample
             self.since = now
             self.emitted = False
-        ready = not self.emitted and now - self.since >= self.settle
+        quiet = now - self.since >= self.settle
+        ready = quiet and (not self.emitted or self.moving)
+        if quiet:
+            self.moving = False
+            self.unstable_since = None
+        elif (
+            self.motion_interval
+            and self.unstable_since is not None
+            and now - self.unstable_since >= self.motion_interval
+        ):
+            self.moving = True
+            ready = now - self.last_sample >= self.motion_interval
         if ready:
             self.emitted = True
-        return FrameDecision(changed, ready)
+            self.last_sample = now
+        return FrameDecision(changed, ready, self.moving)
 
 
 class TextStabilizer:
@@ -127,7 +179,10 @@ class TextStabilizer:
             self.accepted = ""
             return None
         if text != self.candidate:
-            similar = SequenceMatcher(None, text, self.candidate).ratio() >= 0.94
+            similar = (
+                self.candidate != self.accepted
+                and SequenceMatcher(None, text, self.candidate).ratio() >= 0.94
+            )
             if not similar:
                 self.since = now
                 self.count = 0

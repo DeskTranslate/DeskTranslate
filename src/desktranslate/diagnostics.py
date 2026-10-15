@@ -59,13 +59,14 @@ def diagnostic_metadata(
                 "expected_sha256": manager.catalog[model]["sha256"],
                 "present": manager.path(model).is_file(),
             }
-            for model in manager.required(settings.source)
+            for model in (manager.required(settings.source) if settings.ocr == "rapidocr" else [])
         ],
     }
     if (
         include_model
         and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:/-]{0,150}", settings.model)
-        and not settings.model.startswith(("/", "C:", "c:"))
+        and not settings.model.startswith("/")
+        and not re.match(r"[A-Za-z]:", settings.model)
     ):
         result["model"] = settings.model
     return result

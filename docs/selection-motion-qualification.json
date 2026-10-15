@@ -1,0 +1,74 @@
+{
+  "version": "2.0.0b2",
+  "system": "Windows-11-10.0.26200-SP0",
+  "authored_content_only": true,
+  "provider": "Real loopback HTTP, not cloud/model qualification",
+  "quality": "balanced",
+  "checks": {
+    "drag_selection": true,
+    "corner_resize": true,
+    "enter_accepts_and_closes": true,
+    "physical_capture_matches_frozen_selection": true,
+    "escape_cancels_and_closes": true,
+    "continuously_moving_background_translates": true,
+    "changed_dialogue_translates": true,
+    "blank_interval_recognized": true,
+    "same_dialogue_returns_after_blank": true,
+    "pipeline_workers_closed": true,
+    "ocr_children_closed": true
+  },
+  "display": {
+    "physical": [
+      0,
+      0,
+      1920,
+      1080
+    ],
+    "logical": [
+      0,
+      0,
+      1536,
+      864
+    ],
+    "dpr": 1.25,
+    "logical_dpi": 96.0,
+    "physical_monitor_count": 1
+  },
+  "selection_capture_mean_pixel_difference": 0.0,
+  "motion_results": [
+    {
+      "elapsed_s": 10.625,
+      "source": "Tomorrow we meet again.",
+      "total_ms": 2843.9999999973224
+    },
+    {
+      "elapsed_s": 15.375,
+      "source": "Good morning, N Mika.",
+      "total_ms": 1453.0000000086147
+    },
+    {
+      "elapsed_s": 18.875,
+      "source": "Good morning, Mika.",
+      "total_ms": 1797.0000000059372
+    },
+    {
+      "elapsed_s": 23.625,
+      "source": "Good morning, N Mika.",
+      "total_ms": 1843.0000000080327
+    },
+    {
+      "elapsed_s": 31.0,
+      "source": "Tomorrow we meet again.",
+      "total_ms": 1485.000000000582
+    }
+  ],
+  "motion_counters": {
+    "captures": 163,
+    "ocr": 17,
+    "translations": 5,
+    "stale": 0,
+    "cache_hits": 0,
+    "ocr_restarts": 0
+  },
+  "passed": true
+}

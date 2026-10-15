@@ -17,6 +17,11 @@ def test_token_signature_crosses_stream_boundary():
     assert "credential_signature" in scan_stream(io.BytesIO(body), signatures())[0]
 
 
+def test_google_and_deepl_key_signatures_are_detected_without_echoing_keys():
+    for token in (b"AI" + b"za" + b"a" * 35, b"a" * 32 + b":fx"):
+        assert "credential_signature" in scan_stream(io.BytesIO(token), signatures())[0]
+
+
 def test_vendor_metadata_never_exempts_application_source_or_changed_binaries():
     assert vendor_metadata("tree/src/desktranslate/app.py", "0" * 64, None) is None
     assert (
