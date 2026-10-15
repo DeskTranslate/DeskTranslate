@@ -31,7 +31,7 @@ Save a setup for each game, show or task, then load it when you're ready. The ex
 
 ## Install
 
-The planned stable distribution is **Windows x64**, primarily Windows 11. The runtime's technical minimum is Windows 10 build 19041; that minimum does not establish current Microsoft support or successful hardware qualification. Once qualified artifacts are published, download the versioned `Setup-x64.exe` from this repository's release page. Installation is per user and needs no administrator account. Normal users need no Python, pip, Visual Studio, Tesseract, or manual DLL installation. See the [acceptance matrix](docs/validation.md).
+The planned stable distribution is **Windows x64**, primarily Windows 11. The installer's configured minimum is Windows 10 build19041; that setting does not establish current Microsoft support or successful runtime/hardware qualification. Once qualified artifacts are published, download the versioned `Setup-x64.exe` from this repository's release page. Installation is per user and needs no administrator account. Normal users need no Python, pip, Visual Studio, Tesseract, or manual DLL installation. See the [acceptance matrix](docs/validation.md).
 
 For portable use, extract the **entire** ZIP into a writable folder and launch `DeskTranslate.exe`. Keep `_internal` and `portable-mode` beside it. Portable settings, logs, and downloaded models live in `DeskTranslateData` beside the executable; installed builds use `%LOCALAPPDATA%\DeskTranslate`. Credentials remain in your Windows account's vault. Move the entire folder to retain portable data.
 

@@ -4,7 +4,7 @@
 
 Archived 1.x source at `a687ad4` reads language CSVs as catalogs and keeps selection, languages, and appearance in memory. It has no persisted user-preference schema to migrate. Those CSVs are not saved user preferences. V2 starts with a new settings file and setup guide, preserves v1's translation target coverage, and offers optional Tesseract sources separately from managed OCR.
 
-The legacy package used NSIS and separately installed Tesseract. The v2 per-user Inno product identity is different. V2 does not silently uninstall the old application, modify its startup entries, delete its files, or remove Tesseract/traineddata. Install v2 separately, qualify your workflow, and remove the old application through its Windows uninstall entry when ready. Physical 1.1a-to-v2 installation/uninstall in a clean account remains NOT TESTED; beta-to-candidate reinstall is not a substitute.
+The published1.1a package identifies itself as InstallForge1.4.4 and requires separately configured Tesseract. The v2 per-user Inno product identity is different. V2 does not silently uninstall the old application, modify its startup entries, delete its files, or remove Tesseract/traineddata. Install v2 separately, qualify your workflow, and remove the old application through its Windows uninstall entry when ready. Physical 1.1a-to-v2 installation/uninstall in a clean account remains NOT TESTED; beta-to-candidate reinstall is not a substitute.
 
 V1 Pons/Linguee/MyMemory scraping choices and blocking speech are not retained as supported v2 adapters. V2 offers the documented conventional/AI providers. Speech remains deferred. These are deliberate compatibility limits, rather than successful migration claims.
 

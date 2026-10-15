@@ -1,0 +1,137 @@
+{
+  "run_id": 38755499473,
+  "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755499473",
+  "source_commit": "703ee15d960c861ce86479ef141b0157f339d975",
+  "recorded_at_utc": "2026-10-15T15:04:49.199354+00:00",
+  "overall_result": "NOT TESTED",
+  "workflow_status": "in_progress",
+  "steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:53:55Z",
+      "completed_at": "2026-10-15T14:53:56Z"
+    },
+    {
+      "name": "Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:53:56Z",
+      "completed_at": "2026-10-15T14:54:01Z"
+    },
+    {
+      "name": "Prepare pinned Python security runtime",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:54:01Z",
+      "completed_at": "2026-10-15T14:54:02Z"
+    },
+    {
+      "name": "Install and check",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:54:02Z",
+      "completed_at": "2026-10-15T14:55:10Z"
+    },
+    {
+      "name": "Import publisher certificate",
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-10-15T14:55:10Z",
+      "completed_at": "2026-10-15T14:55:10Z"
+    },
+    {
+      "name": "Prepare verified installer compiler",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:55:10Z",
+      "completed_at": "2026-10-15T14:55:13Z"
+    },
+    {
+      "name": "Prepare matching LGPL library sources",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:55:13Z",
+      "completed_at": "2026-10-15T14:55:27Z"
+    },
+    {
+      "name": "Compile installer and portable app",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:55:27Z",
+      "completed_at": "2026-10-15T14:57:08Z"
+    },
+    {
+      "name": "Smoke packaged runtime",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:57:08Z",
+      "completed_at": "2026-10-15T14:57:09Z"
+    },
+    {
+      "name": "Prepare verified synthetic OCR qualification",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:57:09Z",
+      "completed_at": "2026-10-15T14:57:13Z"
+    },
+    {
+      "name": "Installer lifecycle and artifact privacy",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:57:13Z",
+      "completed_at": "2026-10-15T14:58:39Z"
+    },
+    {
+      "name": "Attest hosted build artifacts",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:58:39Z",
+      "completed_at": "2026-10-15T14:58:41Z"
+    },
+    {
+      "name": "Prepare verified endurance models",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T14:58:41Z",
+      "completed_at": "2026-10-15T14:58:43Z"
+    },
+    {
+      "name": "Qualify two-hour steady endurance on the release runtime",
+      "status": "in_progress",
+      "conclusion": null,
+      "started_at": "2026-10-15T14:58:43Z",
+      "completed_at": null
+    },
+    {
+      "name": "Qualify thirty-minute fault endurance on the release runtime",
+      "status": "pending",
+      "conclusion": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "name": "Remove publisher certificate",
+      "status": "pending",
+      "conclusion": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+      "status": "pending",
+      "conclusion": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "status": "pending",
+      "conclusion": null,
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "scope": "API step receipts only while extended qualification is running. Successful installer/privacy/attestation steps do not establish completed endurance or independently verified final artifact reports. No stable release publication."
+}

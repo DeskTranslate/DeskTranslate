@@ -12,7 +12,7 @@ The final hardening phase fixes moving-background OCR starvation, stale setup/pi
 
 The intended stable artifacts are a per-user Windows x64 installer and a complete portable ZIP. Normal users will need no Python, pip, Visual Studio, mandatory Tesseract or manual DLL installation. Installer data lives under `%LOCALAPPDATA%\DeskTranslate`; portable data lives in adjacent `DeskTranslateData`. Credentials remain in the Windows account's vault. Uninstall retains user data; deleting a portable folder deletes its adjacent data. See [upgrade and retention](upgrade.md).
 
-V1 has language catalogs, not a persisted V2-compatible settings/credential format. V2 does not invent a migration from nonexistent V1 JSON settings or automatically remove the legacy NSIS/Tesseract installation. Earlier V2 settings are validated and migrated deliberately; corrupt settings are retained until an explicit recovery action.
+V1 has language catalogs, not a persisted V2-compatible settings/credential format. V2 does not invent a migration from nonexistent V1 JSON settings or automatically remove the legacy InstallForge/Tesseract installation. Earlier V2 settings are validated and migrated deliberately; corrupt settings are retained until an explicit recovery action.
 
 ## Qualification and remaining limits
 
