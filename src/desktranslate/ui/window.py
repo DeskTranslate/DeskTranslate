@@ -477,6 +477,23 @@ class MainWindow(QMainWindow):
         layout.addWidget(button("Cancel setup task", self.cancel_setup))
         page.addWidget(frame)
         frame, layout = card("DIALOGUE & TERMINOLOGY")
+        self.dialogue_options = QCheckBox("Customize dialogue and names · optional")
+        layout.addWidget(self.dialogue_options)
+        self.dialogue_box = QWidget()
+        dialogue_layout = QVBoxLayout(self.dialogue_box)
+        dialogue_layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self.dialogue_box)
+        self.dialogue_options.toggled.connect(self.dialogue_box.setVisible)
+        self.dialogue_box.hide()
+        self.dialogue_options.setChecked(
+            bool(
+                self.settings.story_context
+                or self.settings.glossary
+                or self.settings.instructions
+                or self.settings.style != "natural"
+            )
+        )
+        outer_layout, layout = layout, dialogue_layout
         self.style_combo = combo(
             [
                 ("Natural", "natural"),
@@ -495,6 +512,17 @@ class MainWindow(QMainWindow):
         self.instructions_edit.setMaximumHeight(85)
         self.instructions_edit.setAccessibleName("Optional custom translation style instructions")
         layout.addWidget(self.instructions_edit)
+        layout.addWidget(label("Story notes · optional, for contextual AI"))
+        self.story_context_edit = QPlainTextEdit(self.settings.story_context)
+        self.story_context_edit.setPlaceholderText(
+            "Characters, pronouns and world background for this title. Up to 2,000 characters. Saved locally; shared only with your selected contextual provider."
+        )
+        self.story_context_edit.setAccessibleName("Optional story context for this title")
+        self.story_context_edit.setMaximumHeight(95)
+        layout.addWidget(self.story_context_edit)
+        clear_story = button("Clear story notes", self.story_context_edit.clear)
+        clear_story.setToolTip("Clears this draft. Apply translation settings to save it.")
+        layout.addWidget(clear_story)
         self.glossary_edit = QPlainTextEdit(editor_content(self.settings.glossary))
         self.glossary_edit.setPlaceholderText(
             "Optional glossary · one source = translation per line"
@@ -502,8 +530,10 @@ class MainWindow(QMainWindow):
         self.glossary_edit.setMaximumHeight(100)
         self.glossary_edit.setAccessibleName("Optional dialogue glossary")
         layout.addWidget(self.glossary_edit)
+        self.glossary_scope = label("", "muted")
+        layout.addWidget(self.glossary_scope)
         layout.addLayout(exchange_controls(self.glossary_edit, self.notice))
-        layout.addWidget(button("Apply translation settings", self.save_provider))
+        outer_layout.addWidget(button("Apply translation settings", self.save_provider))
         page.addWidget(frame)
         page.addStretch()
         self.provider_combo.currentIndexChanged.connect(self.provider_changed)
@@ -731,6 +761,8 @@ class MainWindow(QMainWindow):
         self.settings_revision += 1
         if activate:
             self.sync_controls()
+        elif hasattr(self, "glossary_scope"):
+            self.update_provider_info()
         return True
 
     def build_diagnostics(self) -> None:
@@ -1271,7 +1303,7 @@ class MainWindow(QMainWindow):
             self.latest = event.result.text
             self.result_source.setText(event.source)
             self.result_translation.setText(event.result.text)
-            self.transcript_page.append(event.source, event.result.text)
+            self.transcript_page.append(event.source, event.result.text, event.replaces_source)
             self.overlay.display(event.source, event.result.text)
             if self.pipeline:
                 self.pipeline.delivered_source = event.source
@@ -1396,10 +1428,25 @@ class MainWindow(QMainWindow):
         elif selected in {"custom", "libre"}:
             text = "Your endpoint determines privacy: localhost stays local; remote HTTPS sends recognized text to that server."
         else:
-            text = "Cloud · recognized text is sent to this provider. AI APIs may charge usage fees. Screenshots stay on your machine."
+            text = "Cloud · recognized text is sent to this provider. Screenshots stay on your machine."
+            if spec.capabilities.context:
+                text += " AI APIs may charge usage fees."
         if selected == "google":
             text += " Quick translation uses Google's public web endpoint; availability is not guaranteed. DeepL is the supported API alternative."
         self.provider_info.setText(text)
+        self.story_context_edit.setEnabled(spec.capabilities.context)
+        pair = (self.settings.glossary_source, self.settings.glossary_target)
+        current_pair = (self.settings.source, self.settings.target)
+        scope = self.settings.active_profile or "current setup"
+        self.glossary_scope.setText(
+            f"Saved with {scope}. "
+            + (
+                f"Terms belong to {pair[0]} → {pair[1]}; not applied to the current language pair. "
+                if self.settings.glossary and pair != current_pair
+                else ""
+            )
+            + "Apply saves terms for the current language pair. AI receives relevant terms; quick translation uses exact whole-term matches only."
+        )
         active = self.settings.provider
         active_spec = SPECS[active]
         local = active_spec.capabilities.local or (
@@ -1434,7 +1481,13 @@ class MainWindow(QMainWindow):
             updated.provider_endpoints[selected] = endpoint
             updated.style = self.style_combo.currentData()
             updated.instructions = self.instructions_edit.toPlainText().strip()
+            updated.story_context = self.story_context_edit.toPlainText().strip()
             updated.glossary = glossary
+            updated.glossary_source, updated.glossary_target = updated.source, updated.target
+            if updated.active_profile:
+                from desktranslate.profiles import profile_values
+
+                updated.profiles[updated.active_profile] = profile_values(updated)
             updated.validate()
             new_key = self.key_edit.text().strip()
             account = self.credential_account(selected, endpoint)
@@ -1773,6 +1826,15 @@ class MainWindow(QMainWindow):
         self.model_combo.setCurrentText(self.settings.model)
         self.glossary_edit.setPlainText(editor_content(self.settings.glossary))
         self.instructions_edit.setPlainText(self.settings.instructions)
+        self.story_context_edit.setPlainText(self.settings.story_context)
+        self.dialogue_options.setChecked(
+            bool(
+                self.settings.story_context
+                or self.settings.glossary
+                or self.settings.instructions
+                or self.settings.style != "natural"
+            )
+        )
         self.vertical_check.setChecked(self.settings.vertical)
         self.click_check.setChecked(self.settings.overlay_click_through)
         self.font_spin.setValue(self.settings.overlay_size)

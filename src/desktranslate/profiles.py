@@ -29,6 +29,9 @@ BASE_KEYS = {
     "style",
     "instructions",
     "glossary",
+    "glossary_source",
+    "glossary_target",
+    "story_context",
     "context_entries",
     "context_chars",
     "recent_region",
@@ -63,8 +66,13 @@ def validate_profile(raw: Any) -> dict[str, Any]:
     # Unknown fields are ignored for forward additions. Secrets and unsupported
     # nested objects are never round-tripped into persistent settings.
     values = {key: copy.deepcopy(value) for key, value in raw.items() if key in PROFILE_KEYS}
+    values.setdefault("story_context", "")
+    values.setdefault("instructions", "")
+    values.setdefault("glossary", {})
     candidate = Settings(**values)
     candidate.validate()
+    values["glossary_source"] = candidate.glossary_source
+    values["glossary_target"] = candidate.glossary_target
     if candidate.endpoint:
         validate_endpoint(candidate.endpoint, candidate.provider in {"ollama", "lmstudio"})
     if len(json.dumps(values, ensure_ascii=False).encode("utf-8")) > 60_000:

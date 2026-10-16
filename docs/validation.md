@@ -10,10 +10,15 @@ See [testing.md](testing.md) for the non-invasive routine/pre-deployment path an
 
 ## Automated engineering and security
 
+The current media/context implementation is assessed in [media-engineering.md](media-engineering.md). Its final source-only pre-deployment gate passes463 tests; its actual OCR/controller report matches current application hashes. The sequence replay precedes only the final optional-editor UI change, with recognition components unchanged. Older package/hosted/endurance rows remain baseline evidence, not qualification of the modified pipeline. No physical desktop test was repeated in this phase.
+
 | Test | Environment | Result | Evidence | Remaining limitation |
 |---|---|---|---|---|
-| Full regression suite / complete headless pre-deployment gates | Locked Windows runtime, current product source | PASS | 445 tests,60.63s; Ruff lint/format89 files, mypy44 modules, smoke/pip check/audit/history scan/wheel/sdist all pass; private JUnit retained | Frozen rebuild and hosted exact-commit checks tracked separately |
-| Ruff lint / format, mypy | Same runtime | PASS | 89 files formatted;44 source modules typed | Rerun after further edits |
+| Full regression suite / complete headless pre-deployment gates | Locked Windows runtime, current media/context source | PASS |463 tests,67.39s; Ruff lint/format93 files, mypy45 modules, smoke/pip check/audit/history scan/wheel/sdist pass; private JUnit retained | New frozen/installer/endurance qualification awaits architecture stabilization |
+| Ruff lint / format, mypy | Same runtime | PASS |93 files formatted;45 source modules typed | Rerun after further edits |
+| Progressive/brief/name/spacing OCR sequence replay |23 authored frames, actual isolated OCR, replayed timestamps | FAIL overall | [Sequence report](media-sequence-experiment.json):7/7 horizontal complete lines retained;2/2 vertical lines fail; Japanese prefixes5→1 proposal, Korean spacing3→2 | Not live capture, real-time deadline or semantic provider qualification |
+| Story/title/language isolation and conventional exact-term routing | Offscreen durable UI tests and pipeline/provider fixtures | PASS | Legacy/title load/delete/save failure, active title persistence, relevant term bounds, intact sentences, mismatched target pair and10 adapter payloads covered | Real capable-model context quality remains NOT TESTED |
+| Current OCR→HTTP→controller/overlay journeys and negative backgrounds | Offscreen authored captures; actual OCR/owned fixture HTTP | FAIL overall | [Current report](product-component-media.json): five journeys PASS;0 remaining children;20/24 negatives empty | Four ambiguous shape false positives; no physical media/provider meaning |
 | Fresh hashed install, pip check, application smoke | Isolated pinned runtime, no system site packages | PASS | Bootstrap4 +76 locked distributions, editable install, smoke | Development OS, not clean consumer Windows |
 | Dependency vulnerability audit | Complete Windows lock | PASS | [dependency-audit.json](dependency-audit.json), no known findings | Database coverage finite; refresh before publication |
 | Settings/profiles/corruption/write failures/vault rollback | Deterministic regressions | PASS | Core, UI and profile tests; [upgrade.md](upgrade.md) | Legacy installer coexistence remains separate |

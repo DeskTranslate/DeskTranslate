@@ -43,6 +43,10 @@ For a matching packaged runtime, `python tools/qualify_frozen_instance.py --comp
 
 ## Extended background qualification
 
+`python tools/evaluate_media.py --ocr-experiment --output .audit/media-sequences.json` recognizes23 authored changing-frame images in owned background OCR workers, then replays their capture timestamps through temporal reconciliation. It measures exact complete-line retention, proposal counts, observed recognition errors and OCR stage/call costs. The240-second supervisor owns cleanup. This is not paced media, desktop capture, semantic translation or real-time throughput qualification. An exact-line failure returns nonzero and remains in the report. See [the current engineering checkpoint](media-engineering.md).
+
+`python tools/profile_ocr.py --ocr-experiment --output .audit/ocr-stages.json` separately compares current and experimental natural-scale detection on44 authored positives/short inputs. `--cases ja-game en-small` narrows the probe. It requires verified existing models, uses a300-second owned deadline and changes no product detector default. Individual observations are not warm medians. Both tools reject invocation without their opt-in before loading a model and are excluded from routine pytest/pre-deployment.
+
 Extended OCR/HTTP/resource stress is opt-in and excluded from routine validation. Prefer a hosted/disposable runner. The fixture soak forces offscreen Qt and uses authored in-memory frames, isolated CPU OCR and loopback HTTP; it never captures the desktop or plays video.
 
 For the complete controller journey without the desktop:

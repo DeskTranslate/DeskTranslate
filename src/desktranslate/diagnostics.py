@@ -50,7 +50,17 @@ def diagnostic_metadata(
         "counters": {
             key: value
             for key, value in counters.items()
-            if key in {"captures", "ocr", "translations", "stale", "cache_hits", "ocr_restarts"}
+            if key
+            in {
+                "captures",
+                "ocr",
+                "translations",
+                "stale",
+                "cache_hits",
+                "ocr_restarts",
+                "glossary_hits",
+                "temporal_suppressed",
+            }
             and type(value) is int
         },
         "models": [

@@ -65,8 +65,8 @@ class TranscriptPage(QWidget):
         self.transcript.clear()
         self.refresh()
 
-    def append(self, source: str, translation: str) -> None:
-        self.transcript.append(source, translation)
+    def append(self, source: str, translation: str, replaces_source: str = "") -> None:
+        self.transcript.append(source, translation, replaces_source)
         self.refresh()
 
     def refresh(self) -> None:

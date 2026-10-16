@@ -141,6 +141,21 @@ def test_extended_stress_requires_explicit_opt_in_before_starting():
     assert b"--long-running" in result.stderr
 
 
+@pytest.mark.parametrize("script", ["profile_ocr.py", "evaluate_media.py"])
+def test_background_ocr_benchmarks_require_explicit_opt_in(script, tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    output = tmp_path / "not-created.json"
+    result = subprocess.run(
+        [sys.executable, str(root / "tools" / script), "--output", str(output)],
+        cwd=root,
+        capture_output=True,
+        timeout=15,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+    )
+    assert result.returncode == 2 and b"--ocr-experiment" in result.stderr
+    assert not output.exists()
+
+
 def test_real_ocr_product_probe_is_an_explicit_separate_command(tmp_path):
     root = Path(__file__).resolve().parents[1]
     output = tmp_path / "not-created.json"

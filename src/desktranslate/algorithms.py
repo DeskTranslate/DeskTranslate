@@ -3,12 +3,11 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
-from difflib import SequenceMatcher
 
 from PIL import Image, ImageChops, ImageEnhance, ImageStat
 
 from desktranslate.errors import ConfigurationError
-from desktranslate.models import OCRLine, OCRResult
+from desktranslate.models import OCRLine
 
 
 def normalize_text(text: str) -> str:
@@ -96,12 +95,13 @@ class QualityPreset:
     frame_settle: float
     text_settle: float
     idle_cadence: float
+    motion_interval: float
 
 
 PRESETS = {
-    "fast": QualityPreset(0.15, 0.15, 0.0, 0.30),
-    "balanced": QualityPreset(0.20, 0.30, 0.25, 0.50),
-    "accuracy": QualityPreset(0.30, 0.50, 0.50, 0.80),
+    "fast": QualityPreset(0.15, 0.15, 0.0, 0.30, 0.45),
+    "balanced": QualityPreset(0.20, 0.30, 0.25, 0.50, 0.60),
+    "accuracy": QualityPreset(0.30, 0.50, 0.50, 0.80, 0.75),
 }
 
 
@@ -160,44 +160,3 @@ class FrameGate:
             self.emitted = True
             self.last_sample = now
         return FrameDecision(changed, ready, self.moving)
-
-
-class TextStabilizer:
-    def __init__(self, settle: float = 0.25) -> None:
-        self.settle = settle
-        self.candidate = ""
-        self.since = 0.0
-        self.count = 0
-        self.accepted = ""
-        self.confidence = 0.0
-
-    def observe(self, result: OCRResult, now: float, settled_frame: bool = False) -> str | None:
-        text = normalize_text(result.text)
-        if not text:
-            self.candidate = ""
-            self.count = 0
-            self.accepted = ""
-            return None
-        if text != self.candidate:
-            similar = (
-                self.candidate != self.accepted
-                and SequenceMatcher(None, text, self.candidate).ratio() >= 0.94
-            )
-            if not similar:
-                self.since = now
-                self.count = 0
-            if not similar or result.confidence >= self.confidence:
-                self.candidate = text
-                self.confidence = result.confidence
-        self.count += 1
-        if self.candidate == self.accepted:
-            return None
-        if (
-            self.count >= 2
-            or self.settle == 0
-            or (settled_frame and result.confidence >= 0.85)
-            or (result.confidence >= 0.85 and now - self.since >= self.settle)
-        ):
-            self.accepted = self.candidate
-            return self.candidate
-        return None

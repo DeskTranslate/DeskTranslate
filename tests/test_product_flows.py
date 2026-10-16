@@ -136,6 +136,70 @@ def test_local_endpoint_privacy_and_cancelled_setup_are_truthful(product):
     assert not product.setup_suspended and product.return_setup_button.isHidden()
 
 
+def test_title_context_apply_reload_and_delete_are_durable_and_visible(product, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    from desktranslate.profiles import profile_values
+
+    settings = copy.deepcopy(product.settings)
+    settings.profiles["Fantasy"] = profile_values(settings)
+    settings.profiles["Other title"] = {"source": "ko", "target": "en"}
+    settings.active_profile = "Fantasy"
+    assert product.commit_settings(settings)
+    assert not product.dialogue_options.isChecked() and product.dialogue_box.isHidden()
+    product.dialogue_options.click()
+    assert not product.dialogue_box.isHidden()
+    product.story_context_edit.setPlainText("Aurelia is female. The reactor powers the city.")
+    product.instructions_edit.setPlainText("Keep character names consistent.")
+    product.glossary_edit.setPlainText("魔導炉 = Mana Reactor")
+    assert product.save_provider()
+    saved = product.store.load()
+    assert saved.profiles["Fantasy"]["story_context"] == saved.story_context
+    assert saved.profiles["Fantasy"]["glossary"] == {"魔導炉": "Mana Reactor"}
+    assert "Fantasy" in product.glossary_scope.text()
+
+    page = product.profile_page
+    page.refresh("Other title")
+    page.activate()
+    assert product.settings.active_profile == "Other title"
+    assert not product.settings.story_context and not product.settings.glossary
+    assert not product.settings.instructions
+    assert not product.story_context_edit.toPlainText()
+    page.refresh("Fantasy")
+    page.activate()
+    assert product.story_context_edit.toPlainText() == saved.story_context
+    assert product.dialogue_options.isChecked() and not product.dialogue_box.isHidden()
+    assert product.settings.glossary == saved.glossary
+    monkeypatch.setattr(QMessageBox, "question", lambda *args: QMessageBox.StandardButton.Yes)
+    page.delete()
+    reloaded = product.store.load()
+    assert "Fantasy" not in reloaded.profiles and not reloaded.active_profile
+    assert not reloaded.story_context and not reloaded.glossary and not reloaded.instructions
+    assert not product.story_context_edit.toPlainText()
+    assert not product.dialogue_options.isChecked() and product.dialogue_box.isHidden()
+    assert "current setup" in page.active_label.text()
+
+
+def test_failed_title_context_save_preserves_saved_profile_and_draft(product, monkeypatch):
+    from desktranslate.profiles import profile_values
+
+    settings = copy.deepcopy(product.settings)
+    settings.story_context = "Saved story"
+    settings.profiles["Fantasy"] = profile_values(settings)
+    settings.active_profile = "Fantasy"
+    assert product.commit_settings(settings)
+    product.story_context_edit.setPlainText("Unsaved draft")
+
+    def cannot_save(settings):
+        raise OSError("authored unavailable storage")
+
+    monkeypatch.setattr(product.store, "save", cannot_save)
+    assert not product.save_provider()
+    assert product.settings.story_context == "Saved story"
+    assert product.settings.profiles["Fantasy"]["story_context"] == "Saved story"
+    assert product.story_context_edit.toPlainText() == "Unsaved draft"
+
+
 @pytest.fixture
 def pack_download(product, monkeypatch):
     installed, callbacks, starts = [], [], []

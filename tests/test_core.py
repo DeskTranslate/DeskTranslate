@@ -6,7 +6,7 @@ from itertools import pairwise
 import pytest
 from PIL import Image, ImageDraw
 
-from desktranslate.algorithms import FrameGate, TextStabilizer, normalize_text, reconstruct
+from desktranslate.algorithms import FrameGate, normalize_text, reconstruct
 from desktranslate.context import TranslationCache, TranslationContext, cache_key
 from desktranslate.errors import ConfigurationError
 from desktranslate.hotkeys import Hotkeys, parse_hotkey, validate_hotkeys
@@ -23,6 +23,7 @@ from desktranslate.models import (
 )
 from desktranslate.security import validate_endpoint
 from desktranslate.settings import Settings, SettingsStore
+from desktranslate.temporal import TemporalTextTracker
 
 
 @pytest.mark.parametrize(
@@ -128,7 +129,7 @@ def test_live_motion_sampling_is_bounded_and_returns_to_static_suppression():
 
 
 def test_confirmed_text_can_change_by_one_character_at_lower_confidence():
-    stabilizer = TextStabilizer()
+    stabilizer = TemporalTextTracker()
     assert (
         stabilizer.observe(
             OCRResult("Dialogue line abc100", confidence=0.99), 0, settled_frame=True
@@ -157,15 +158,15 @@ def test_reconstruction_reading_order():
 
 
 def test_stabilization_corrects_fluctuation_and_suppresses_duplicates():
-    stabilizer = TextStabilizer()
+    stabilizer = TemporalTextTracker()
     assert stabilizer.observe(OCRResult("I don't kn0w.", confidence=0.6), 0) is None
-    assert stabilizer.observe(OCRResult("I don't know.", confidence=0.95), 0.2) is None
-    assert stabilizer.observe(OCRResult("I don't know.", confidence=0.95), 0.5) == "I don't know."
+    assert stabilizer.observe(OCRResult("I don't know.", confidence=0.95), 0.2) == "I don't know."
+    assert stabilizer.observe(OCRResult("I don't know.", confidence=0.95), 0.5) is None
     assert stabilizer.observe(OCRResult("I don't know.", confidence=0.95), 0.9) is None
 
 
 def test_high_confidence_settled_frame_needs_no_duplicate_inference():
-    stabilizer = TextStabilizer()
+    stabilizer = TemporalTextTracker()
     assert (
         stabilizer.observe(OCRResult("Stable dialogue", confidence=0.95), 0, settled_frame=True)
         == "Stable dialogue"

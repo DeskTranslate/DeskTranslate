@@ -174,7 +174,7 @@ def render_fixture(sample: dict, destination: Path) -> None:
         gradient.setColorAt(0.5, QColor("#294158"))
         gradient.setColorAt(1, QColor("#dda262"))
         painter.fillRect(image.rect(), gradient)
-        for x in range(0, 660, 35):
+        for x in range(int(sample.get("background_phase", 0)) % 35, 660, 35):
             painter.fillRect(QRectF(x, 0, 8, 160), QColor(240, 160, 80, 35))
     font = QFont(
         {
@@ -196,6 +196,7 @@ def render_fixture(sample: dict, destination: Path) -> None:
             f"Fixture font lacks glyphs for {sample['id']}; do not publish an invalid corpus"
         )
     painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+    painter.translate(int(sample.get("offset_x", 0)), int(sample.get("offset_y", 0)))
     if sample.get("vertical"):
         painter.setFont(font)
         painter.setPen(QColor(sample["fg"]))

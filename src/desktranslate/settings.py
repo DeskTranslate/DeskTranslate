@@ -54,7 +54,11 @@ class Settings:
     vertical: bool = False
     style: str = "natural"
     instructions: str = ""
+    story_context: str = ""
+    active_profile: str = ""
     glossary: dict[str, str] = field(default_factory=dict)
+    glossary_source: str = ""
+    glossary_target: str = ""
     theme: str = "dark"
     onboarding_done: bool = False
     recent_region: list[int] | None = None
@@ -102,6 +106,10 @@ class Settings:
     context_chars: int = 6000
     timeout: int = 25
     profiles: dict[str, dict[str, Any]] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if self.glossary and not self.glossary_source and not self.glossary_target:
+            self.glossary_source, self.glossary_target = self.source, self.target
 
     @property
     def region(self) -> Rect | None:
@@ -197,17 +205,31 @@ class Settings:
                 r"#[0-9a-fA-F]{6}", getattr(self, name)
             ):
                 raise ValueError("Use a color in #RRGGBB format")
+        if (
+            not isinstance(self.story_context, str)
+            or len(self.story_context) > 2000
+            or not isinstance(self.glossary_source, str)
+            or not isinstance(self.glossary_target, str)
+            or (self.glossary_source and self.glossary_source not in REGISTRY)
+            or (self.glossary_target and self.glossary_target not in REGISTRY)
+            or bool(self.glossary_source) != bool(self.glossary_target)
+        ):
+            raise ValueError("Invalid story context or glossary language pair")
         for name in ("glossary", "provider_models", "provider_endpoints", "hotkeys"):
             value = getattr(self, name)
             if (
                 not isinstance(value, dict)
-                or len(value) > 100
+                or len(value) > (1000 if name == "glossary" else 100)
                 or any(
                     not isinstance(k, str) or not isinstance(v, str) or len(k) + len(v) > 2000
                     for k, v in value.items()
                 )
             ):
                 raise ValueError("Invalid mapping")
+        if len(json.dumps(self.glossary, ensure_ascii=False).encode("utf-8")) > 50_000:
+            raise ValueError("Glossary is too large. Split it between title profiles.")
+        if any(not key.strip() or not value.strip() for key, value in self.glossary.items()):
+            raise ValueError("Glossary terms and translations cannot be empty")
         self.hotkeys = {**DEFAULT_HOTKEYS, **self.hotkeys}
         if set(self.hotkeys) != set(DEFAULT_HOTKEYS):
             raise ValueError("Unknown shortcut action")
@@ -226,6 +248,10 @@ class Settings:
                 Rect(*value)
         if not isinstance(self.profiles, dict) or len(self.profiles) > 30:
             raise ValueError("Invalid profiles")
+        if not isinstance(self.active_profile, str) or (
+            self.active_profile and self.active_profile not in self.profiles
+        ):
+            raise ValueError("Invalid active title profile")
         if self.profiles:
             from desktranslate.profiles import valid_name, validate_profile
 

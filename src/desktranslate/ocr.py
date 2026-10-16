@@ -254,6 +254,7 @@ class RapidEngine:
         # Screens are already upright. The document angle classifier can rotate
         # valid Hangul subtitles by 180 degrees, destroying otherwise accurate OCR.
         result: Any = self.engine(np.asarray(image)[:, :, ::-1], use_cls=False)
+        stages = getattr(result, "elapse_list", None) or []
         lines = []
         if result.boxes is not None:
             for box, text, score in zip(result.boxes, result.txts, result.scores, strict=True):
@@ -268,12 +269,26 @@ class RapidEngine:
                 )
         output = tuple(lines)
         confidence = sum(line.confidence for line in output) / len(output) if output else 0.0
+        reconstruct_start = time.perf_counter()
+        text = reconstruct(output, vertical, REGISTRY[language].direction)
         return OCRResult(
-            reconstruct(output, vertical, REGISTRY[language].direction),
+            text,
             output,
             confidence,
             language,
             (time.perf_counter() - start) * 1000,
+            {
+                **{
+                    name: float(value) * 1000
+                    for name, value in zip(
+                        ("ocr_detect_ms", "ocr_classify_ms", "ocr_recognize_ms"),
+                        stages,
+                        strict=False,
+                    )
+                    if isinstance(value, (int, float))
+                },
+                "ocr_reconstruct_ms": (time.perf_counter() - reconstruct_start) * 1000,
+            },
         )
 
     def close(self) -> None:

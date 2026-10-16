@@ -559,3 +559,139 @@ def test_overlong_recognition_stops_with_actionable_error_and_sends_no_text():
     errors = [event for event in pipeline.poll() if event.category]
     assert len(errors) == 1 and "smaller region" in errors[0].error
     assert pipeline.session.state == SessionState.ERROR
+
+
+def test_obsolete_pixels_supply_progressive_evidence_but_never_a_translation():
+    from threading import Thread
+
+    from desktranslate.models import Rect
+    from desktranslate.pipeline import CapturedWork
+
+    first_started, release = Event(), Event()
+    calls = []
+
+    class ProgressiveOCR(OCR):
+        def recognize(self, image, *args):
+            value = image.getpixel((0, 0))[0]
+            calls.append(value)
+            if value == 0:
+                first_started.set()
+                assert release.wait(2)
+            return OCRResult(
+                {0: "彼女", 1: "彼女は昨日", 2: "彼女は昨日ここに来た。"}[value], confidence=0.99
+            )
+
+    pipeline = Pipeline(Settings(), Capture, ProgressiveOCR, SlowProvider)
+    pipeline.session.start()
+    thread = Thread(target=pipeline._recognize)
+    pipeline.threads = [thread]
+    thread.start()
+
+    def frame(value, captured):
+        pipeline.frames.put(
+            CapturedWork(
+                pipeline.session.stamp(),
+                Image.new("RGB", (20, 20), (value,) * 3),
+                captured,
+                {},
+                Rect(0, 0, 20, 20),
+                control_generation=pipeline.session.control_generation,
+            )
+        )
+
+    try:
+        frame(0, 0)
+        assert first_started.wait(2)
+        pipeline.session.changed()
+        frame(1, 0.1)
+        release.set()
+        until(lambda: len(calls) == 2)
+        # Wait for a fresh confirmation request: inference has been reconciled.
+        until(pipeline.confirm_frame.is_set)
+        assert pipeline.texts.queue.empty()
+        assert pipeline.counters["stale"] == 1
+        frame(2, 0.2)
+        until(lambda: not pipeline.texts.queue.empty())
+        assert pipeline.texts.get().text == "彼女は昨日ここに来た。"
+    finally:
+        release.set()
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
+def test_pause_during_capture_revokes_pixels_even_after_immediate_resume():
+    captured, release = Event(), Event()
+
+    class InterruptedCapture(Capture):
+        calls = 0
+
+        def capture(self, region):
+            self.calls += 1
+            if self.calls == 1:
+                captured.set()
+                assert release.wait(2)
+                return Image.new("RGB", (120, 80), (0,) * 3)
+            return Image.new("RGB", (120, 80), (200,) * 3)
+
+    capture, provider = InterruptedCapture(), SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        OCR,
+        lambda: provider,
+    )
+    pipeline.start()
+    try:
+        assert captured.wait(2)
+        pipeline.pause()
+        pipeline.resume()
+        release.set()
+        until(lambda: any(event.result for event in pipeline.poll()))
+        assert provider.calls == ["C"]
+    finally:
+        release.set()
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
+@pytest.mark.parametrize(
+    "text,target,expected,calls",
+    [
+        ("魔導炉", "en", "Mana Reactor", 0),
+        ("魔導炉を止める。", "en", "Provider result", 1),
+        ("魔導炉", "es", "Provider result", 1),
+    ],
+)
+def test_conventional_glossary_is_exact_and_language_scoped(text, target, expected, calls):
+    from desktranslate.models import Capabilities
+
+    class AuthoredOCR(OCR):
+        def recognize(self, *args):
+            return OCRResult(text, confidence=0.99)
+
+    class Conventional(SlowProvider):
+        capabilities = Capabilities(context=False)
+
+        def translate(self, request):
+            self.calls.append(request)
+            assert not request.context and not request.glossary and not request.story_context
+            return TranslationResult("Provider result")
+
+    settings = Settings(
+        glossary={"魔導炉": "Mana Reactor"},
+        story_context="A fantasy world.",
+        recent_region=[0, 0, 120, 80],
+    )
+    settings.target = target  # English-approved terms must not become Spanish terms.
+    provider = Conventional()
+    pipeline = Pipeline(settings, Capture, AuthoredOCR, lambda: provider, once=True)
+    pipeline.start()
+    try:
+        assert pipeline.wait_closed(3)
+        results = [event.result.text for event in pipeline.poll() if event.result]
+        assert results == [expected]
+        assert len(provider.calls) == calls
+        assert pipeline.counters["glossary_hits"] == (not calls)
+    finally:
+        pipeline.stop()

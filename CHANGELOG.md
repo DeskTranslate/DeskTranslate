@@ -23,6 +23,8 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Preserve configured providers and draft language choices through setup/provider editing. Swap languages with one durable transaction; explicitly install missing packs and continue only while the original request remains current.
 - Keep capture status visible across pages and notices, synchronize pause/retry actions in the window, overlay and tray, and stop pipeline polling when no work remains. Remove an unused, unimplemented speech setting without discarding older preferences.
 - Prevent competing launches from overwriting the same preferences; relaunch restores the existing window while separate portable data folders stay independent. Reject delayed setup/new jobs after Quit, keep ownership through cleanup, and make verification/startup errors offscreen and non-activating.
+- Track bounded dialogue evidence across changing frames, suppress progressive/spacing churn and treat completed text as a revision of its provisional fragment. Revoke pixels captured across pause/resume and sample moving backgrounds sooner while keeping pending work bounded.
+- Add optional per-title story notes and locally retrieved, language-bound terminology. Separate recent dialogue from caching; conventional translation uses exact whole-term matches and preserves complete sentences. Retain title-context save/load/delete recovery and explicit privacy controls.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.
 

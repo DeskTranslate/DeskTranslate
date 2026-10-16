@@ -47,6 +47,9 @@ class ProfilePage(QWidget):
         )
         description.setWordWrap(True)
         layout.addWidget(description)
+        self.active_label = QLabel()
+        self.active_label.setWordWrap(True)
+        layout.addWidget(self.active_label)
         self.list = QListWidget()
         self.list.setAccessibleName("Saved profiles")
         self.list.itemDoubleClicked.connect(lambda: self.activate())
@@ -69,6 +72,10 @@ class ProfilePage(QWidget):
         self.refresh()
 
     def refresh(self, selected: str = "") -> None:
+        self.active_label.setText(
+            "Current title: "
+            + (self.get_settings().active_profile or "No title profile · current setup")
+        )
         self.list.clear()
         self.list.addItems(list(self.get_settings().profiles))
         matches = self.list.findItems(selected, Qt.MatchFlag.MatchExactly)
@@ -95,8 +102,8 @@ class ProfilePage(QWidget):
             self.notice(str(error))
             return None
 
-    def store(self, settings: Settings, selected: str = "") -> bool:
-        if self.commit(settings, False):
+    def store(self, settings: Settings, selected: str = "", activate: bool = False) -> bool:
+        if self.commit(settings, activate):
             self.refresh(selected)
             self.notice("Profile saved.")
             return True
@@ -106,6 +113,7 @@ class ProfilePage(QWidget):
         if name := self.name():
             updated = copy.deepcopy(self.get_settings())
             updated.profiles[name] = profile_values(updated)
+            updated.active_profile = name
             self.store(updated, name)
 
     def update_selected(self) -> None:
@@ -118,7 +126,9 @@ class ProfilePage(QWidget):
         if name := self.selected():
             try:
                 updated = apply_profile(self.get_settings(), self.get_settings().profiles[name])
+                updated.active_profile = name
                 if self.commit(updated, True):
+                    self.refresh(name)
                     self.notice(
                         f"Profile loaded: {name}. Dialogue context cleared; start when ready."
                     )
@@ -135,6 +145,8 @@ class ProfilePage(QWidget):
         if (selected := self.selected()) and (name := self.name(selected)):
             updated = copy.deepcopy(self.get_settings())
             updated.profiles[name] = updated.profiles.pop(selected)
+            if updated.active_profile == selected:
+                updated.active_profile = name
             self.store(updated, name)
 
     def delete(self) -> None:
@@ -146,8 +158,19 @@ class ProfilePage(QWidget):
                 return
             updated = copy.deepcopy(self.get_settings())
             updated.profiles.pop(name)
-            if self.store(updated):
-                self.notice("Profile deleted. The currently applied settings remain available.")
+            active = updated.active_profile == name
+            if active:
+                updated.active_profile = ""
+                updated.story_context = ""
+                updated.instructions = ""
+                updated.glossary = {}
+                updated.glossary_source = updated.glossary_target = ""
+            if self.store(updated, activate=active):
+                self.notice(
+                    "Profile deleted. Its story notes and terms have been cleared."
+                    if active
+                    else "Profile deleted. The current title is unchanged."
+                )
 
     def import_file(self) -> None:
         filename, _ = QFileDialog.getOpenFileName(
@@ -180,7 +203,7 @@ class ProfilePage(QWidget):
         fit_to_screen(dialog, 640, 520)
         layout = QVBoxLayout(dialog)
         description = QLabel(
-            "This file includes your glossary and style instructions. Review them for sensitive content. It excludes API keys. Capture coordinates and window identity are excluded unless you choose to include them."
+            "This file includes story notes, glossary and style instructions. Review them for sensitive content. It excludes API keys and captured dialogue history. Capture coordinates and window identity are excluded unless you choose to include them."
         )
         description.setWordWrap(True)
         layout.addWidget(description)

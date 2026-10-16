@@ -33,6 +33,9 @@ After building, require `python tools/qualify_frozen_instance.py --component-tes
 
 ## OCR, providers and native desktop
 
+- Inspect [media/context engineering](media-engineering.md) and the authored sequence report. Require actual complete-line retention, missed-brief-subtitle and request/latency evidence for the stabilized pipeline, beyond unit checks. Vertical/mixed layout failures and absent semantic model qualification remain blockers. Do not use replay timestamps as wall-clock latency or a mock payload pass as model-quality evidence.
+- Preserve d5f56dc and earlier artifact/endurance reports as baselines. Finish the media architecture before scheduling another definitive package/endurance qualification. Exact-source evidence must match the final application; docs-only changes do not require repeating a long run.
+
 - Run `python tools/qualify_product.py --component-test --output docs/product-component-qualification.json` for real OCR→loopback HTTP→main-window/overlay journeys without the desktop. Inspect each journey and negative-background result separately; retain failures and source/harness hashes. Ambiguous shapes are an accuracy limitation, not evidence that every text-free image is safe. This opted-in CPU probe is excluded from the routine suite.
 - Run `python tools/evaluate.py --repeats 3 --output docs/ocr-benchmark.json` with verified packs. Retain all 35 fixtures and every preprocessing result, including errors. Regeneration requires installed fonts with glyph verification; do not replace native fixtures with tofu images. Authored assets are redistributable; OS font programs and game/video content are not bundled.
 - Run `python tools/qualify_samples.py` for all 19 bundled first-run languages. It preserves partial OCR results, does not send a below-threshold sample, and stops subsequent network requests after a service failure. No paid request is made implicitly.

@@ -87,6 +87,7 @@ class OCRResult:
     confidence: float = 0.0
     language: str = "auto"
     duration_ms: float = 0.0
+    timings: dict[str, float] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -146,6 +147,8 @@ class TranslationRequest:
     context: tuple[ContextPair, ...] = ()
     glossary: tuple[tuple[str, str], ...] = ()
     instructions: str = ""
+    story_context: str = ""
+    speaker: str = ""
 
 
 @dataclass(frozen=True)
@@ -205,3 +208,4 @@ class PipelineEvent:
     clear: bool = False
     region: Rect | None = None
     created: float = field(default_factory=time.monotonic)
+    replaces_source: str = ""

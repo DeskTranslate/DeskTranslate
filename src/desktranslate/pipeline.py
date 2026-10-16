@@ -11,8 +11,8 @@ from typing import TypeVar
 
 from PIL import Image
 
-from desktranslate.algorithms import PRESETS, FrameGate, TextStabilizer, preprocess
-from desktranslate.context import TranslationCache, TranslationContext, cache_key
+from desktranslate.algorithms import PRESETS, FrameGate, preprocess
+from desktranslate.context import ContextEngine, TranslationCache, TranslationContext, cache_key
 from desktranslate.errors import (
     Cancelled,
     ConfigurationError,
@@ -29,9 +29,10 @@ from desktranslate.models import (
     SessionState,
     Stamp,
     TranslationProvider,
-    TranslationRequest,
+    TranslationResult,
 )
 from desktranslate.settings import Settings
+from desktranslate.temporal import TemporalTextTracker
 
 T = TypeVar("T")
 
@@ -81,6 +82,7 @@ class Session:
         self.lock = Lock()
         self.serial = 0
         self.generation = 0
+        self.control_generation = 0
         self.state = SessionState.IDLE
 
     def start(self) -> Stamp:
@@ -89,6 +91,7 @@ class Session:
                 raise ValueError("Stop the current session before starting another")
             self.serial += 1
             self.generation = 0
+            self.control_generation = 0
             self.state = SessionState.STARTING
             return Stamp(self.serial, self.generation)
 
@@ -113,6 +116,15 @@ class Session:
         with self.lock:
             return self.state in ACTIVE and stamp == Stamp(self.serial, self.generation)
 
+    def recognition_current(self, stamp: Stamp, control_generation: int) -> bool:
+        """Visual revisions can supply evidence, but lifecycle changes cannot."""
+        with self.lock:
+            return (
+                self.state in ACTIVE
+                and stamp.session == self.serial
+                and control_generation == self.control_generation
+            )
+
     def failure(self, stamp: Stamp | None = None) -> Stamp | None:
         with self.lock:
             current = Stamp(self.serial, self.generation)
@@ -120,6 +132,7 @@ class Session:
                 return None
             self.state = SessionState.ERROR
             self.generation += 1
+            self.control_generation += 1
             return Stamp(self.serial, self.generation)
 
     def pause(self) -> bool:
@@ -128,6 +141,7 @@ class Session:
                 return False
             self.state = SessionState.PAUSED
             self.generation += 1
+            self.control_generation += 1
             return True
 
     def resume(self) -> bool:
@@ -140,6 +154,7 @@ class Session:
     def stop(self) -> None:
         with self.lock:
             self.generation += 1
+            self.control_generation += 1
             self.state = SessionState.IDLE
 
     def transition(self, target: SessionState) -> None:
@@ -164,6 +179,7 @@ class Session:
             self.state = target
             if target in {SessionState.PAUSED, SessionState.ERROR, SessionState.STOPPING}:
                 self.generation += 1
+                self.control_generation += 1
 
 
 @dataclass(frozen=True)
@@ -174,6 +190,7 @@ class CapturedWork:
     timings: dict[str, float]
     region: Rect | None = None
     moving: bool = False
+    control_generation: int = 0
 
 
 @dataclass(frozen=True)
@@ -184,6 +201,7 @@ class TextWork:
     queued: float
     timings: dict[str, float]
     region: Rect | None = None
+    replaces_source: str = ""
 
 
 class Pipeline:
@@ -212,6 +230,15 @@ class Pipeline:
         self.reset_frames = Event()
         self.confirm_frame = Event()
         self.context = TranslationContext(settings.context_entries, settings.context_chars)
+        glossary = (
+            settings.glossary
+            if (
+                settings.glossary_source == settings.source
+                and settings.glossary_target == settings.target
+            )
+            else {}
+        )
+        self.context_engine = ContextEngine(self.context, glossary, settings.story_context)
         self.context_lock = Lock()
         self.cache = TranslationCache()
         self.ocr: OCREngine | None = None
@@ -228,6 +255,8 @@ class Pipeline:
             "stale": 0,
             "cache_hits": 0,
             "ocr_restarts": 0,
+            "glossary_hits": 0,
+            "temporal_suppressed": 0,
         }
 
     def start(self) -> None:
@@ -306,6 +335,7 @@ class Pipeline:
             self.context.clear()
             # Invalidate work and its presentation receipt in one transition.
             self.session.generation += 1
+            self.session.control_generation += 1
             self.delivered_source = ""
             self.reset_text.set()
             self.reset_frames.set()
@@ -346,7 +376,9 @@ class Pipeline:
                 with self.context_lock, self.session.lock:
                     if event.stamp == Stamp(self.session.serial, self.session.generation):
                         if event.result and self.session.state in ACTIVE:
-                            self.context.accept(event.source, event.result.text)
+                            self.context.accept(
+                                event.source, event.result.text, event.replaces_source
+                            )
                         events.append(event)
             except Empty:
                 return events
@@ -356,7 +388,7 @@ class Pipeline:
         try:
             capture = self.capture_factory()
             preset = PRESETS[self.settings.quality]
-            gate = FrameGate(preset.frame_settle, motion_interval=1.5)
+            gate = FrameGate(preset.frame_settle, motion_interval=preset.motion_interval)
             last_paused = False
             unavailable = False
             while not self.cancel.is_set():
@@ -365,13 +397,15 @@ class Pipeline:
                     self.cancel.wait(0.1)
                     continue
                 if last_paused or self.reset_frames.is_set():
-                    gate = FrameGate(preset.frame_settle, motion_interval=1.5)
+                    gate = FrameGate(preset.frame_settle, motion_interval=preset.motion_interval)
                     last_paused = False
                     self.reset_frames.clear()
                 start = time.perf_counter()
                 region = self.settings.region
                 if region is None:
                     return
+                with self.session.lock:
+                    capture_control = self.session.control_generation
                 try:
                     image = capture.capture(region)
                 except TargetUnavailableError as error:
@@ -394,10 +428,15 @@ class Pipeline:
                     self.cancel.wait(0.5)
                     continue
                 actual = getattr(capture, "region", region) or region
+                with self.session.lock:
+                    if capture_control != self.session.control_generation:
+                        continue  # A pause/reset during capture revokes those pixels.
                 rebound = getattr(capture, "rebound", False)
                 if unavailable or actual != self.capture_region or rebound:
                     self.clear_context()
-                    gate = FrameGate(preset.frame_settle, motion_interval=1.5)
+                    with self.session.lock:
+                        capture_control = self.session.control_generation
+                    gate = FrameGate(preset.frame_settle, motion_interval=preset.motion_interval)
                     unavailable = False
                     self.capture_region = actual
                     if rebound:
@@ -433,6 +472,7 @@ class Pipeline:
                             {"capture_ms": capture_ms, "change_ms": change_ms},
                             actual,
                             decision.moving,
+                            capture_control,
                         )
                     )
                     if self.once:
@@ -457,8 +497,9 @@ class Pipeline:
         if not acquired:
             return
         try:
-            stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
+            stabilizer = TemporalTextTracker(PRESETS[self.settings.quality].text_settle)
             stabilizer_stamp: Stamp | None = None
+            control_stamp: tuple[int, int] | None = None
             recoveries: list[float] = []
             while not self.cancel.is_set():
                 try:
@@ -471,8 +512,13 @@ class Pipeline:
                     with self.session.lock:
                         if work.stamp != Stamp(self.session.serial, self.session.generation):
                             continue
-                        stabilizer = TextStabilizer(PRESETS[self.settings.quality].text_settle)
-                        stabilizer.accepted = self.delivered_source
+                        current_control = (self.session.serial, self.session.control_generation)
+                        if current_control != control_stamp:
+                            stabilizer = TemporalTextTracker(
+                                PRESETS[self.settings.quality].text_settle
+                            )
+                            control_stamp = current_control
+                        stabilizer.rebase_delivery(self.delivered_source)
                         stabilizer_stamp = work.stamp
                     # A concurrent reset cannot be lost: its newer stamp also
                     # requires fresh stabilization when that work is consumed.
@@ -487,6 +533,7 @@ class Pipeline:
                 image = preprocess(work.image, self.settings.preprocessing)
                 timings = {**work.timings, "preprocess_ms": (time.perf_counter() - start) * 1000}
                 self.counters["ocr"] += 1
+                inference_start = time.perf_counter()
                 try:
                     result = self.ocr.recognize(image, self.settings.source, self.settings.vertical)
                 except Cancelled:
@@ -523,8 +570,10 @@ class Pipeline:
                         error="Recognition restarted after a worker failure. Retrying locally.",
                     )
                     continue
+                timings.update(result.timings)
                 timings["ocr_ms"] = result.duration_ms
-                if not self.session.current(work.stamp):
+                timings["ocr_call_ms"] = (time.perf_counter() - inference_start) * 1000
+                if not self.session.recognition_current(work.stamp, work.control_generation):
                     self.counters["stale"] += 1
                     continue
                 text = (
@@ -532,7 +581,7 @@ class Pipeline:
                     if self.once
                     else stabilizer.observe(
                         result,
-                        time.monotonic(),
+                        work.captured,
                         settled_frame=not work.moving and self.settings.quality != "accuracy",
                     )
                 )
@@ -572,10 +621,19 @@ class Pipeline:
                 if text:
                     now = time.monotonic()
                     self.texts.put(
-                        TextWork(emitted_stamp, text, work.captured, now, timings, work.region)
+                        TextWork(
+                            emitted_stamp,
+                            text,
+                            work.captured,
+                            now,
+                            timings,
+                            work.region,
+                            "" if self.once else stabilizer.replaces_source,
+                        )
                     )
                 else:
-                    if result.text and stabilizer.candidate != stabilizer.accepted:
+                    if result.text and stabilizer.needs_confirmation:
+                        self.counters["temporal_suppressed"] += 1
                         # Confirmation must use a fresh captured frame, not run the
                         # deterministic recognizer twice on identical frozen pixels.
                         self.confirm_frame.set()
@@ -625,23 +683,31 @@ class Pipeline:
                     provider = self.provider_factory()
                     self.provider = provider
                 self.emit(SessionState.TRANSLATING, work.stamp, region=work.region)
+                lookup_start = time.perf_counter()
                 with self.context_lock:
-                    context = self.context.snapshot() if provider.capabilities.context else ()
-                request = TranslationRequest(
-                    work.text,
-                    self.settings.source,
-                    self.settings.target,
-                    self.settings.model,
-                    self.settings.style,
-                    context,
-                    tuple(sorted(self.settings.glossary.items())),
-                    self.settings.instructions,
-                )
+                    request = self.context_engine.request(
+                        work.text,
+                        self.settings.source,
+                        self.settings.target,
+                        contextual=provider.capabilities.context,
+                        model=self.settings.model,
+                        style=self.settings.style,
+                        instructions=self.settings.instructions,
+                        replaces_source=work.replaces_source,
+                    )
+                work.timings["context_ms"] = (time.perf_counter() - lookup_start) * 1000
                 key = cache_key(self.settings.provider, self.settings.endpoint, request)
                 result = self.cache.get(key)
                 start = time.monotonic()
+                exact_term = self.context_engine.terminology.exact(work.text)
+                if result is None and exact_term is not None:
+                    result = TranslationResult(exact_term)
+                    self.counters["glossary_hits"] += 1
                 if result:
-                    self.counters["cache_hits"] += 1
+                    if result.cached:
+                        self.counters["cache_hits"] += 1
+                    else:
+                        self.cache.put(key, result)
                 else:
                     self.counters["translations"] += 1
                     try:
@@ -679,6 +745,7 @@ class Pipeline:
                         result,
                         timings=timings,
                         region=work.region,
+                        replaces_source=work.replaces_source,
                     )
                     self.session.activity(SessionState.WATCHING, work.stamp)
                     self.enqueue(event)

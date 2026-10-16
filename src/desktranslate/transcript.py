@@ -26,7 +26,7 @@ class SessionTranscript:
         if not enabled:
             self.clear()
 
-    def append(self, source: str, translation: str) -> None:
+    def append(self, source: str, translation: str, replaces_source: str = "") -> None:
         if not self.enabled or len(source) + len(translation) > self.chars:
             return
         if self.entries and (self.entries[-1].source, self.entries[-1].translation) == (
@@ -34,6 +34,9 @@ class SessionTranscript:
             translation,
         ):
             return
+        if self.entries and replaces_source and self.entries[-1].source == replaces_source:
+            previous = self.entries.pop()
+            self.size -= len(previous.source) + len(previous.translation)
         self.entries.append(
             TranscriptEntry(datetime.now(UTC).isoformat(timespec="seconds"), source, translation)
         )

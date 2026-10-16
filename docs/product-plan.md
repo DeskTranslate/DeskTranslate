@@ -23,6 +23,20 @@ The key journeys are quick region translation, continuous subtitles/dialogue, fo
 
 ## Priority order for this pass
 
+The latest media-product request supersedes the previous qualification-first ordering below. The d5f56dc application and completed hosted quality remain preserved baseline evidence; its existing candidate may finish, but cannot qualify the new implementation. Do not repeat long endurance/build work until the media architecture stabilizes.
+
+Current implementation sequence:
+
+1. Separate bounded temporal dialogue evidence from visual invalidation and lifecycle ownership. Validate progressive reveal, brief complete subtitles, character/spacing noise and pause-during-capture below the desktop boundary.
+2. Separate translation cache from recent dialogue and approved terminology. Add explicit editable per-title notes, relevant-term retrieval, language-pair isolation and conservative conventional-provider behavior. Preserve durable-save failure recovery.
+3. Measure authored sequence OCR and detector/recognizer stages. Keep fast detector regressions and vertical failures visible. Natural-scale detection is an experiment, not a shipped quality shortcut. Research vertical/mixed-layout recognition without forcing whole-image rotation into the default path.
+4. Improve actual recognition and provider semantic quality using representative sequences; real local model recommendations require new measured results. Prior tiny-model service success remains a semantic failure, not a recommendation.
+5. Re-run non-disruptive product flows and final automated gates, then qualify the stabilized candidate on isolated Windows. Physical display/media and signing requirements remain explicit.
+
+The first implementation now has bounded temporal tracking, revision-aware recent dialogue/transcript, title notes and locally retrieved terminology. Source-native OCR stage metrics distinguish detector, recognizer, reconstruction and total IPC call time. The authored replay benchmark explicitly excludes live capture/provider meaning and real-time deadlines. Vertical Japanese remains a known quality blocker; the current detector incorrectly groups characters across columns. A whole-image rotation probe improves the two vertical samples but damages ordinary horizontal/mixed text, so it is not applied globally.
+
+### Preserved earlier hardening order
+
 1. Verify hosted artifacts/provenance, actual installer report and full resource/latency distributions. Preserve earlier failed evidence.
 2. Fix language transaction correctness and first-run provider continuity; cover the full leave/configure/resume/retest flow offscreen.
 3. Make capture/session status and available actions truthful and persistent across ordinary notices, pause, error, one-shot completion and shutdown. Remove idle timer work without reducing event delivery.

@@ -78,6 +78,11 @@ def test_native_translation_contracts(name, response):
         assert request.url.scheme in {"https", "http"}
         if name == "lmstudio" and request.url.path == "/v1/models":
             return httpx.Response(200, json={"data": [{"id": "test-model"}]})
+        if name not in {"google", "deepl", "libre"}:
+            assert b"Authored story reference" in request.content
+            assert b"speaker" in request.content
+        else:
+            assert b"Authored story reference" not in request.content
         if name == "openai":
             body = json.loads(request.content)
             assert request.url.path == "/v1/responses"
@@ -95,7 +100,16 @@ def test_native_translation_contracts(name, response):
     provider = create_provider(name, "test-key", transport=httpx.MockTransport(handler))
     try:
         assert (
-            provider.translate(TranslationRequest("Source", "ja", "en", "test-model")).text
+            provider.translate(
+                TranslationRequest(
+                    "Source",
+                    "ja",
+                    "en",
+                    "test-model",
+                    story_context="Authored story reference",
+                    speaker="Mika",
+                )
+            ).text
             == "Translation"
         )
     finally:
