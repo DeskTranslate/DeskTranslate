@@ -494,6 +494,12 @@ class Pipeline:
                     if hasattr(self.ocr, "reap"):
                         self.ocr.reap()  # type: ignore[attr-defined]
                     self.ocr = None
+                    # Pause can cancel an idle native worker. Its cancellation
+                    # is first observed on the next frame after resume; retry a
+                    # fresh capture rather than leaving a static region emitted
+                    # forever with no replacement recognition work.
+                    self.reset_text.set()
+                    self.reset_frames.set()
                     continue
                 except OCRInferenceError as error:
                     self.ocr.close()

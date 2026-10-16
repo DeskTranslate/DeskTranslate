@@ -5,6 +5,7 @@ import hashlib
 import html
 import time
 from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any
 
 from PySide6.QtCore import QSize, Qt, QTimer, QUrl
@@ -29,6 +30,7 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QSpinBox,
     QStackedWidget,
     QSystemTrayIcon,
@@ -44,6 +46,7 @@ from desktranslate.metrics import LatencyMetrics
 from desktranslate.models import PipelineEvent, Rect, SessionState, Stamp, TranslationRequest
 from desktranslate.ocr import IsolatedOCR, ModelManager
 from desktranslate.pipeline import Pipeline
+from desktranslate.presentation import session_presentation
 from desktranslate.providers import SPECS, create_provider
 from desktranslate.security import CredentialStore, is_loopback_endpoint, validate_endpoint
 from desktranslate.settings import Settings, SettingsStore
@@ -118,6 +121,13 @@ def card(title: str) -> tuple[QFrame, QVBoxLayout]:
     return frame, layout
 
 
+@dataclass(frozen=True)
+class StartIntent:
+    once: bool
+    revision: int
+    command: int
+
+
 class MainWindow(QMainWindow):
     def __init__(self, store: SettingsStore, demo: bool = False) -> None:
         super().__init__()
@@ -137,7 +147,9 @@ class MainWindow(QMainWindow):
         self.exit_code = 0
         self.setup_dialog: Onboarding
         self.command_serial = 0
+        self.pending_start: StartIntent | None = None
         self.selected_action = "select"
+        self.setup_suspended = False
         self.relative_selection = False
         self.last_provider = self.settings.provider
         self.jobs = Jobs()
@@ -224,7 +236,7 @@ class MainWindow(QMainWindow):
         self.display_relayout.timeout.connect(self.overlay.place)
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.poll_pipeline)
-        self.timer.start(60)
+        self.timer.setInterval(60)
         self.hotkeys = Hotkeys(
             {
                 "once": lambda: self.select("once"),
@@ -261,6 +273,7 @@ class MainWindow(QMainWindow):
         self.tray = QSystemTrayIcon(icon(), self)
         self.tray.setToolTip("DeskTranslate 2")
         menu = QMenu()
+        self.tray_actions: dict[str, QAction] = {}
         for title, callback in [
             ("Open DeskTranslate", self.showNormal),
             ("Translate once", lambda: self.select("once")),
@@ -273,6 +286,7 @@ class MainWindow(QMainWindow):
             action = QAction(title, self)
             action.triggered.connect(callback)
             menu.addAction(action)
+            self.tray_actions[title] = action
         self.tray.setContextMenu(menu)
         self.tray.activated.connect(
             lambda reason: (
@@ -286,6 +300,7 @@ class MainWindow(QMainWindow):
         self.update_region()
         self.update_provider_info()
         self.update_ocr_status()
+        self.refresh_session_view()
         for screen in QApplication.screens():
             screen.geometryChanged.connect(self.display_changed)
             screen.logicalDotsPerInchChanged.connect(self.display_changed)
@@ -356,12 +371,14 @@ class MainWindow(QMainWindow):
         row = QHBoxLayout()
         row.addWidget(button("Select region", lambda: self.select("select")))
         row.addWidget(button("Translate once", self.once, True))
-        row.addWidget(button("Start live", self.live))
+        self.live_button = button("Start live", self.live)
+        row.addWidget(self.live_button)
         layout.addLayout(row)
         row = QHBoxLayout()
-        self.pause_button = button("Pause / resume", self.pause)
+        self.pause_button = button("Pause", self.pause)
         row.addWidget(self.pause_button)
-        row.addWidget(button("Stop", self.stop))
+        self.stop_button = button("Stop", self.stop)
+        row.addWidget(self.stop_button)
         row.addWidget(button("Clear context", self.clear_context))
         layout.addLayout(row)
         self.privacy_label = label("", "muted")
@@ -369,6 +386,12 @@ class MainWindow(QMainWindow):
         page.addWidget(frame)
         frame, layout = card("03  /  YOUR TRANSLATION")
         self.status_label = label("Ready when you are.", "muted")
+        self.session_status = label("Ready · not capturing")
+        self.session_status.setWordWrap(False)
+        self.session_status.setAccessibleName("Capture and translation status")
+        self.session_status.setMinimumWidth(0)
+        self.session_status.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        self.statusBar().addPermanentWidget(self.session_status, 1)
         self.result_source = label("Recognized text appears here.", "muted")
         self.result_translation = label("A little window into another language.")
         self.result_translation.setStyleSheet("font-size: 23px; font-weight: 550;")
@@ -395,6 +418,9 @@ class MainWindow(QMainWindow):
             "Choose how to translate.",
             "Quick translation for speed. Contextual AI for dialogue. Local AI for privacy.",
         )
+        self.return_setup_button = button("Return to first translation setup", self.resume_setup)
+        self.return_setup_button.hide()
+        page.addWidget(self.return_setup_button)
         frame, layout = card("TRANSLATION PROVIDER")
         self.provider_combo = combo(
             [(spec.name, key) for key, spec in SPECS.items()], self.settings.provider
@@ -513,7 +539,7 @@ class MainWindow(QMainWindow):
         row = QHBoxLayout()
         self.install_button = button("Install recognition models", self.install_models, True)
         row.addWidget(self.install_button)
-        row.addWidget(button("Cancel download", self.jobs.cancel.set))
+        row.addWidget(button("Cancel download", self.cancel_setup))
         layout.addLayout(row)
         page.addWidget(frame)
         frame, layout = card("TUNE FOR YOUR CONTENT")
@@ -698,6 +724,9 @@ class MainWindow(QMainWindow):
             return False
         if activate:
             self.stop()
+        elif self.pending_start:
+            self.clear_start_intent()
+            self.refresh_session_view()
         self.settings = updated
         self.settings_revision += 1
         if activate:
@@ -764,6 +793,8 @@ class MainWindow(QMainWindow):
             self.notice("Wait for the current setup task to finish, or cancel its download.")
 
     def cancel_setup(self) -> None:
+        self.clear_start_intent()
+        self.refresh_session_view()
         if self.jobs.busy:
             self.jobs.cancel.set()
             self.notice("Setup cancellation requested. Waiting for cleanup…")
@@ -795,9 +826,9 @@ class MainWindow(QMainWindow):
             )
             return
         if self.settings.source != "auto":
-            source, target = self.settings.source, self.settings.target
-            self.source_combo.setCurrentIndex(self.source_combo.findData(target))
-            self.target_combo.setCurrentIndex(self.target_combo.findData(source))
+            updated = copy.deepcopy(self.settings)
+            updated.source, updated.target = updated.target, updated.source
+            self.commit_settings(updated)
 
     def language_input_valid(self) -> bool:
         valid = True
@@ -897,11 +928,13 @@ class MainWindow(QMainWindow):
         self.selector = RegionSelector()
         self.selector.selected.connect(self.region_selected)
         self.selector.cancelled.connect(self.selection_cancelled)
+        self.refresh_session_view()
         # Let the compositor remove our windows before freezing display images.
         QTimer.singleShot(200, self.selector.start)
 
     def region_selected(self, region: Rect) -> None:
         self.selector = None
+        self.refresh_session_view()
         updated = copy.deepcopy(self.settings)
         if self.relative_selection:
             probe = None
@@ -932,6 +965,7 @@ class MainWindow(QMainWindow):
 
     def selection_cancelled(self) -> None:
         self.selector = None
+        self.refresh_session_view()
         self.showNormal()
         self.notice("Selection cancelled. Your recent region is still available.")
 
@@ -1011,7 +1045,14 @@ class MainWindow(QMainWindow):
                 if focus_on_error:
                     self.showNormal()
                 self.navigation.setCurrentRow(2)
-                self.notice("Install recognition for your source language, then start again.")
+                self.pending_start = StartIntent(once, self.settings_revision, self.command_serial)
+                self.install_button.setText(
+                    "Install pack and translate once" if once else "Install pack and start live"
+                )
+                self.refresh_session_view()
+                self.notice(
+                    "This language needs a recognition pack. Review the download size, then install to continue. Stop cancels automatic continuation."
+                )
                 return
             spec = SPECS[self.settings.provider]
             if spec.capabilities.context and not self.settings.model:
@@ -1054,6 +1095,7 @@ class MainWindow(QMainWindow):
                 once,
             )
             self.pipeline.start()
+            self.refresh_session_view()
             self.overlay.status.setText("DESKTRANSLATE  /  STARTING")
             if not self.overlay.suppressed:
                 self.overlay.show()
@@ -1064,6 +1106,7 @@ class MainWindow(QMainWindow):
 
     def stop(self) -> None:
         self.command_serial += 1
+        self.clear_start_intent()
         self.presentation_serial += 1
         if self.selector:
             self.selector.cleanup()
@@ -1081,6 +1124,7 @@ class MainWindow(QMainWindow):
             self.overlay.status.setText("DESKTRANSLATE  /  STOPPED")
             self.overlay.capture_region = None
             self.overlay.suppressed = False
+        self.refresh_session_view()
 
     def pause(self) -> None:
         if self.overlay.editing and self.pipeline and self.pipeline.paused.is_set():
@@ -1098,6 +1142,7 @@ class MainWindow(QMainWindow):
                 self.pipeline.resume()
             else:
                 self.pipeline.pause()
+        self.refresh_session_view()
 
     def clear_context(self) -> None:
         if self.pipeline:
@@ -1120,12 +1165,60 @@ class MainWindow(QMainWindow):
         self.collect_retired()
         pipeline = self.pipeline
         if pipeline is None:
+            self.refresh_session_view()
             return
         for event in pipeline.poll():
             with pipeline.session.lock:
                 if event.stamp != Stamp(pipeline.session.serial, pipeline.session.generation):
                     continue
                 self.handle_pipeline_event(event)
+        self.refresh_session_view()
+
+    def refresh_session_view(self) -> None:
+        pipeline = self.pipeline
+        completed = bool(pipeline and pipeline.once and pipeline.cancel.is_set())
+        view = session_presentation(
+            pipeline.session.state if pipeline else None,
+            selecting=self.selector is not None,
+            retiring=bool(self.retiring),
+            completed=completed,
+            has_result=bool(pipeline and pipeline.delivered_source),
+            preparation=("downloading" if self.jobs.busy else "needed")
+            if self.pending_start
+            else None,
+        )
+        self.session_status.setText(view.summary)
+        self.session_status.setToolTip(view.summary)
+        self.session_status.setAccessibleDescription(view.summary)
+        self.pause_button.setText(view.pause_text)
+        self.pause_button.setEnabled(view.can_pause)
+        self.overlay.pause_button.setText(view.pause_text)
+        self.overlay.pause_button.setEnabled(view.can_pause)
+        self.stop_button.setEnabled(view.can_stop)
+        running_live = bool(pipeline and not pipeline.once and not pipeline.cancel.is_set())
+        self.live_button.setEnabled(not running_live)
+        self.live_button.setText("Live is running" if running_live else "Start live")
+        if hasattr(self, "tray_actions"):
+            self.tray_actions["Pause / resume"].setText(view.pause_text)
+            self.tray_actions["Pause / resume"].setEnabled(view.can_pause)
+            self.tray_actions["Stop"].setEnabled(view.can_stop)
+            self.tray.setToolTip("DeskTranslate 2 · " + view.summary)
+        needs_poll = bool(self.retiring) or bool(
+            pipeline
+            and (
+                not pipeline.cancel.is_set()
+                or any(thread.is_alive() for thread in pipeline.threads)
+                or not pipeline.events.empty()
+            )
+        )
+        if needs_poll and not self.closing:
+            interval = 250 if pipeline and pipeline.paused.is_set() else 60
+            if self.timer.interval() != interval:
+                self.timer.setInterval(interval)
+            if not self.timer.isActive():
+                self.timer.start()
+        else:
+            self.timer.stop()
 
     def handle_pipeline_event(self, event: PipelineEvent) -> None:
         if event.region:
@@ -1250,6 +1343,7 @@ class MainWindow(QMainWindow):
             )
             return
         self.overlay.toggle_visibility()
+        self.notice("Overlay shown." if self.overlay.isVisible() else "Overlay hidden.")
 
     def copy_latest(self) -> None:
         QApplication.clipboard().setText(self.latest)
@@ -1486,18 +1580,47 @@ class MainWindow(QMainWindow):
         if self.jobs.busy:
             self.notice("Wait for the current setup task, or cancel its download first.")
             return
+        intent = self.pending_start
+        if intent and (
+            intent.revision != self.settings_revision or intent.command != self.command_serial
+        ):
+            intent = None
         self.stop()
+        if intent:
+            self.pending_start = StartIntent(
+                intent.once, self.settings_revision, self.command_serial
+            )
+        continuation = self.pending_start
         language = self.settings.source
         manager = ModelManager()
+        self.install_button.setEnabled(False)
         self.progress.show()
         self.progress.setValue(0)
         self.ocr_status.setText("Downloading verified recognition models…")
 
         def complete(result: object, error: str) -> None:
+            self.install_button.setEnabled(True)
             self.progress.hide()
             self.update_ocr_status()
+            resume = (
+                not error
+                and not self.closing
+                and continuation is not None
+                and self.pending_start == continuation
+                and continuation.revision == self.settings_revision
+                and continuation.command == self.command_serial
+                and manager.installed(language)
+            )
+            if self.pending_start == continuation:
+                self.clear_start_intent()
+            self.refresh_session_view()
             if error:
                 self.ocr_status.setText(error)
+            if resume and continuation is not None:
+                self.navigation.setCurrentRow(0)
+                self.notice("Recognition is ready. Starting your selected translation.")
+                self.queue_start(continuation.once)
+                return
             self.notice(
                 error
                 or (
@@ -1510,6 +1633,11 @@ class MainWindow(QMainWindow):
         self.job(
             lambda: manager.install(language, self.jobs.cancel, self.jobs.progress.emit), complete
         )
+        self.refresh_session_view()
+
+    def clear_start_intent(self) -> None:
+        self.pending_start = None
+        self.install_button.setText("Install recognition models")
 
     def download_progress(self, model: str, downloaded: int, total: int) -> None:
         self.progress.setRange(0, 100 if total else 0)
@@ -1566,6 +1694,7 @@ class MainWindow(QMainWindow):
         if not self.overlay.editing and self.pipeline and not self.pipeline.paused.is_set():
             self.pipeline.pause()
         self.overlay.toggle_edit()
+        self.refresh_session_view()
         self.notice(
             "Edit with drag and resize. Ctrl + Alt + E finishes editing; resume translation when ready."
         )
@@ -1689,6 +1818,9 @@ class MainWindow(QMainWindow):
 
     def onboarding(self) -> None:
         if hasattr(self, "setup_dialog"):
+            if self.setup_suspended:
+                self.resume_setup()
+                return
             if self.setup_dialog.isVisible():
                 self.setup_dialog.raise_()
                 self.setup_dialog.activateWindow()
@@ -1702,7 +1834,27 @@ class MainWindow(QMainWindow):
         self.setup_dialog = Onboarding(
             lambda: self.settings, self.commit_settings, self.provider_factory, self
         )
+        self.setup_dialog.configure_provider_requested.connect(self.configure_setup_provider)
+        self.setup_dialog.finished.connect(self.setup_finished)
         self.setup_dialog.show()
+
+    def configure_setup_provider(self) -> None:
+        self.setup_suspended = True
+        self.setup_dialog.hide()
+        self.return_setup_button.show()
+        self.navigation.setCurrentRow(1)
+        self.showNormal()
+
+    def resume_setup(self) -> None:
+        if not self.setup_suspended or self.closing:
+            return
+        self.setup_suspended = False
+        self.return_setup_button.hide()
+        self.setup_dialog.resume_provider_setup()
+
+    def setup_finished(self, result: int) -> None:
+        self.setup_suspended = False
+        self.return_setup_button.hide()
 
     def quit(self) -> None:
         if self.closing:

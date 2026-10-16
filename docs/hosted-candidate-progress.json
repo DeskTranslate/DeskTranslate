@@ -2,9 +2,9 @@
   "run_id": 38755499473,
   "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755499473",
   "source_commit": "703ee15d960c861ce86479ef141b0157f339d975",
-  "recorded_at_utc": "2026-10-15T15:04:49.199354+00:00",
-  "overall_result": "NOT TESTED",
-  "workflow_status": "in_progress",
+  "recorded_at_utc": "2026-10-16T05:24:29.880620+00:00",
+  "overall_result": "PASS",
+  "workflow_status": "completed",
   "steps": [
     {
       "name": "Set up job",
@@ -99,39 +99,46 @@
     },
     {
       "name": "Qualify two-hour steady endurance on the release runtime",
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
       "started_at": "2026-10-15T14:58:43Z",
-      "completed_at": null
+      "completed_at": "2026-10-15T16:58:44Z"
     },
     {
       "name": "Qualify thirty-minute fault endurance on the release runtime",
-      "status": "pending",
-      "conclusion": null,
-      "started_at": null,
-      "completed_at": null
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T16:58:44Z",
+      "completed_at": "2026-10-15T17:28:45Z"
     },
     {
       "name": "Remove publisher certificate",
-      "status": "pending",
-      "conclusion": null,
-      "started_at": null,
-      "completed_at": null
+      "status": "completed",
+      "conclusion": "skipped",
+      "started_at": "2026-10-15T17:28:45Z",
+      "completed_at": "2026-10-15T17:28:45Z"
     },
     {
       "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
-      "status": "pending",
-      "conclusion": null,
-      "started_at": null,
-      "completed_at": null
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T17:28:45Z",
+      "completed_at": "2026-10-15T17:28:52Z"
     },
     {
       "name": "Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
-      "status": "pending",
-      "conclusion": null,
-      "started_at": null,
-      "completed_at": null
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T17:28:52Z",
+      "completed_at": "2026-10-15T17:28:54Z"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-10-15T17:28:54Z",
+      "completed_at": "2026-10-15T17:28:54Z"
     }
   ],
-  "scope": "API step receipts only while extended qualification is running. Successful installer/privacy/attestation steps do not establish completed endurance or independently verified final artifact reports. No stable release publication."
+  "scope": "API step receipts only. Independent baseline artifact verification is recorded in hosted-candidate-703ee15.json. No stable release publication."
 }

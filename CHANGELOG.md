@@ -18,6 +18,9 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Reject endurance evidence with missing start/end/internal observations, including laptop standby gaps. Record verified upstream wheel build metadata separately from private-content findings without exempting changed binaries or credential signatures.
 - Wait for observable uninstaller cleanup before reinstall qualification; a missing expected uninstaller now fails. Keep hosted steady and fault endurance independent so an unrelated qualification failure does not suppress their results.
 - Reject LM Studio's silent fallback to another model when the selected model is missing or replaced. Bound detector tensors for thin screen regions while preserving ordinary-region OCR pixels and benchmark outputs.
+- Recover correctly after pausing an idle OCR worker: resuming onto static changed text now schedules fresh recognition instead of waiting indefinitely for another screen change.
+- Preserve configured providers and draft language choices through setup/provider editing. Swap languages with one durable transaction; explicitly install missing packs and continue only while the original request remains current.
+- Keep capture status visible across pages and notices, synchronize pause/retry actions in the window, overlay and tray, and stop pipeline polling when no work remains. Remove an unused, unimplemented speech setting without discarding older preferences.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.
 

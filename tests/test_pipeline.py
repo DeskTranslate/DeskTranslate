@@ -420,6 +420,54 @@ def test_pause_cancels_pending_provider_and_resume_uses_fresh_client():
         assert pipeline.wait_closed()
 
 
+def test_resume_reads_static_changed_content_after_idle_ocr_was_cancelled():
+    from desktranslate.errors import Cancelled
+
+    engines = []
+
+    class CancellableOCR(OCR):
+        def __init__(self):
+            self.cancelled = False
+            engines.append(self)
+
+        def cancel_pending(self):
+            self.cancelled = True
+
+        def recognize(self, *args, **kwargs):
+            if self.cancelled:
+                raise Cancelled()
+            return super().recognize(*args, **kwargs)
+
+    capture, provider = Capture(), SlowProvider()
+    provider.release.set()
+    pipeline = Pipeline(
+        Settings(quality="fast", recent_region=[0, 0, 120, 80]),
+        lambda: capture,
+        CancellableOCR,
+        lambda: provider,
+    )
+    pipeline.start()
+    try:
+        until(lambda: any(event.result for event in pipeline.poll()))
+        pipeline.delivered_source = "A"
+        pipeline.pause()
+        assert engines[0].cancelled
+        capture.color = 200  # New content stays still after resuming.
+        pipeline.resume()
+        results = []
+
+        def received_new_text():
+            results.extend(event.result.text for event in pipeline.poll() if event.result)
+            return "C translated" in results
+
+        until(received_new_text)
+        assert len(engines) == 2
+        assert pipeline.counters["ocr_restarts"] == 0
+    finally:
+        pipeline.stop()
+        assert pipeline.wait_closed()
+
+
 def test_continuous_motion_translates_and_new_confirmed_text_rejects_old_request():
     class Moving(Capture):
         tick = 0

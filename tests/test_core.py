@@ -214,6 +214,21 @@ def test_cache_bounded_lru():
     assert cache.get("b") is None
 
 
+def test_retired_unimplemented_speech_field_does_not_discard_existing_preferences(tmp_path):
+    import json
+
+    from desktranslate.settings import SettingsStore
+
+    store = SettingsStore(tmp_path)
+    store.path.write_text(
+        json.dumps({"version": 2, "source": "ko", "target": "es", "speak": True}), encoding="utf-8"
+    )
+    settings = store.load()
+    assert not store.recovered and (settings.source, settings.target) == ("ko", "es")
+    store.save(settings)
+    assert "speak" not in json.loads(store.path.read_text(encoding="utf-8"))
+
+
 @pytest.mark.parametrize(
     "url",
     [

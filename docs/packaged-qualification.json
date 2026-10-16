@@ -1,6 +1,6 @@
 {
   "version": "2.0.0b2",
-  "artifact_sha256": "ca0cd4a80f090640b025b77a0384d4a94be80062cdaee37217ac7c08f2f21fee",
+  "artifact_sha256": "55f62c95a3092b31306a78add32c777bba95ecd0151b78c448d8538db14c2df9",
   "actual_windows": true,
   "desktop_capture_or_playback": false,
   "clean_machine": false,
@@ -26,7 +26,7 @@
     "credential_roundtrip": true,
     "credential_cleanup": true,
     "ocr_exact": true,
-    "ocr_ms": 2277.976600002148,
+    "ocr_ms": 2113.210400000753,
     "ocr_cleanup": true
   },
   "qt_backend": "offscreen",

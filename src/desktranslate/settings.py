@@ -98,7 +98,6 @@ class Settings:
     reduced_motion: bool = False
     hotkeys: dict[str, str] = field(default_factory=lambda: dict(DEFAULT_HOTKEYS))
     close_to_tray: bool = False
-    speak: bool = False
     context_entries: int = 8
     context_chars: int = 6000
     timeout: int = 25
@@ -175,7 +174,6 @@ class Settings:
             "onboarding_done",
             "overlay_click_through",
             "close_to_tray",
-            "speak",
             "overlay_italic",
             "overlay_shadow",
             "overlay_locked",

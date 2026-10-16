@@ -8,6 +8,7 @@ os.environ["QT_QPA_PLATFORM"] = "offscreen"
 from PIL import Image, ImageOps
 from PySide6.QtWidgets import QApplication
 
+from desktranslate.profiles import profile_values
 from desktranslate.settings import Settings, SettingsStore
 from desktranslate.ui.window import MainWindow
 
@@ -18,7 +19,13 @@ def main() -> None:
     directory.mkdir(parents=True, exist_ok=True)
     for theme in ("dark", "light"):
         store = SettingsStore(Path(".test-data/previews") / theme)
-        store.save(Settings(theme=theme))
+        settings = Settings(theme=theme)
+        settings.profiles = {
+            "Visual novel · Japanese → English": profile_values(Settings(style="game")),
+            "Subtitles · Korean → English": profile_values(Settings(source="ko", style="subtitle")),
+            "Menus · Spanish → English": profile_values(Settings(source="es", style="literal")),
+        }
+        store.save(settings)
         window = MainWindow(store, demo=True)
         window.resize(1000, 800)
         window.show()

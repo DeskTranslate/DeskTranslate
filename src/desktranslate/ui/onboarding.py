@@ -113,6 +113,8 @@ class SamplePreview(QLabel):
 
 
 class Onboarding(QWizard):
+    configure_provider_requested = Signal()
+
     def __init__(
         self,
         get_settings: Callable[[], Settings],
@@ -206,10 +208,18 @@ class Onboarding(QWizard):
         self.method = QComboBox()
         self.method.addItem("Google · online · no API key", "google")
         self.method.addItem("Use my currently configured provider", "configured")
+        self.method.setCurrentIndex(0 if get_settings().provider == "google" else 1)
         self.method.setAccessibleName("Setup translation method")
         provider.content.addWidget(self.method)
+        self.provider_summary = QLabel()
+        self.provider_summary.setTextFormat(Qt.TextFormat.PlainText)
+        self.provider_summary.setWordWrap(True)
+        provider.content.addWidget(self.provider_summary)
+        self.configure_provider_button = QPushButton("Configure translation…")
+        self.configure_provider_button.clicked.connect(self.configure_provider)
+        provider.content.addWidget(self.configure_provider_button)
         description = QLabel(
-            "Google uses a public web endpoint; availability is not guaranteed. For a local model or a paid API, configure and test it in Providers first, then reopen this guide using Preferences. This guide never silently changes your provider."
+            "Google uses a public web endpoint; availability is not guaranteed. Configure a local model or another provider here, then return to this guide without losing your language choices. Your selected provider is never silently replaced."
         )
         description.setWordWrap(True)
         provider.content.addWidget(description)
@@ -250,6 +260,39 @@ class Onboarding(QWizard):
         self.currentIdChanged.connect(self.enter_page)
         self.selection_changed()
 
+    def configure_provider(self) -> None:
+        if self.jobs.busy:
+            self.test_status.setText(
+                "Wait for the current task to finish before changing providers."
+            )
+            return
+        self.configure_provider_requested.emit()
+
+    def resume_provider_setup(self) -> None:
+        self.method.setCurrentIndex(self.method.findData("configured"))
+        self.selection_changed()
+        self.show()
+
+    def update_provider_summary(self) -> None:
+        from desktranslate.providers import SPECS
+        from desktranslate.security import is_loopback_endpoint
+
+        settings = self.snapshot()
+        spec = SPECS[settings.provider]
+        local = spec.capabilities.local or (
+            settings.provider in {"libre", "custom"}
+            and is_loopback_endpoint(settings.endpoint or spec.endpoint)
+        )
+        self.provider_summary.setText(
+            spec.name
+            + (" · " + settings.model if settings.model else "")
+            + (
+                " · recognized text stays on this device"
+                if local
+                else " · recognized text is sent to the selected service"
+            )
+        )
+
     def selection_changed(self) -> None:
         self.selection_serial += 1
         self.tested = False
@@ -263,10 +306,13 @@ class Onboarding(QWizard):
         else:
             self.sample_preview.sample(QPixmap())
         self.update_model_status()
+        self.update_provider_summary()
 
     def enter_page(self, page: int) -> None:
         if page == 2:
             self.update_model_status()
+        if page == 3:
+            self.update_provider_summary()
 
     def update_model_status(self) -> None:
         source = self.source.currentData()

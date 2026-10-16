@@ -23,23 +23,23 @@
     "no_prior_contamination": true
   },
   "artifact_hashes": {
-    "DeskTranslate-2.0.0b2-build-sbom.json": "0d5b2b8724a7969dbea213837da2aff5a0c10cf51cfb5e872d2a25185c2a9814",
+    "DeskTranslate-2.0.0b2-build-sbom.json": "d34467812d576886db09aa72f4d0be89d6ccc71ccc54d7947364609e8346587e",
     "DeskTranslate-2.0.0b2-LibrarySources.zip": "fb471b860fbc93f44a2e1a6002a89b256bfca663856b81f68789778be12010f7",
-    "DeskTranslate-2.0.0b2-Portable-x64.zip": "ca0cd4a80f090640b025b77a0384d4a94be80062cdaee37217ac7c08f2f21fee",
-    "DeskTranslate-2.0.0b2-provenance.json": "cde2cbe51859afa80e5f496aaef47fac664040081ae55f801f7af9ef3b497495",
-    "DeskTranslate-2.0.0b2-runtime-sbom.json": "3c9187045846da94b4bb0806d78f5987eb34d2e1d88f9656305e394430474605",
-    "DeskTranslate-2.0.0b2-Setup-x64.exe": "5a8ac6a5fc14e46d6cab7eb13f14dc8e1b121a6a86970343645f6e51dc3b22b2"
+    "DeskTranslate-2.0.0b2-Portable-x64.zip": "55f62c95a3092b31306a78add32c777bba95ecd0151b78c448d8538db14c2df9",
+    "DeskTranslate-2.0.0b2-provenance.json": "9017c158ce1fa7528268835763620d5ccde747d7d23a6c65253a400ffb4b3ba7",
+    "DeskTranslate-2.0.0b2-runtime-sbom.json": "eb0e5e5b143a47b50d089708bbcd72b267ec88f7d73e05b6fc29a1394d59cfa7",
+    "DeskTranslate-2.0.0b2-Setup-x64.exe": "514c4811775a0656186ab36524a4893592a06b1a075a3e3f711c68d7a595832f"
   },
   "build_info": {
     "version": "2.0.0b2",
     "windows_version": "2.0.0.10002",
-    "git_commit": "46ac123b69ad4844b1eb16563e7a8f97144e4a94",
+    "git_commit": "d526fc661b1fb61dac5bc22475b33f315808e0ac",
     "working_tree_dirty": true,
-    "source_sha256": "c38414ff9af8ce503cf0a32784c8003ed52612f3e8bd83087feed5ec3d798a80",
+    "source_sha256": "f60562c1b0f139ddda2bf314d70501085d057652f481ed1cf2684c6abab88a50",
     "publisher_signed": false,
     "python_version": "3.12.15",
     "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
-    "python_distribution": "python-build-standalone 20261009 CPython3.12.15 windows-x64 install_only",
+    "python_distribution": "local interpreter",
     "python_archive_sha256": "11ed9f8a6ac64fb1b5a55e40e305a6744a3f77a70863c8f8197a6e4349abc64a",
     "ocr_backend": "CPUExecutionProvider"
   },

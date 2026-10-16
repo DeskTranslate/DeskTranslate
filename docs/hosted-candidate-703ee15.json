@@ -1,0 +1,68 @@
+{
+  "run_id": 38755499473,
+  "source_commit": "703ee15d960c861ce86479ef141b0157f339d975",
+  "artifact_archive_digest_verified": true,
+  "release_file_hashes_verified": true,
+  "provenance": {
+    "version": "2.0.0b2",
+    "windows_version": "2.0.0.10002",
+    "git_commit": "703ee15d960c861ce86479ef141b0157f339d975",
+    "working_tree_dirty": false,
+    "source_sha256": "c38414ff9af8ce503cf0a32784c8003ed52612f3e8bd83087feed5ec3d798a80",
+    "publisher_signed": false,
+    "python_version": "3.12.15",
+    "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
+    "python_distribution": "astral-sh/python-build-standalone/20261009",
+    "python_archive_sha256": "11ed9f8a6ac64fb1b5a55e40e305a6744a3f77a70863c8f8197a6e4349abc64a",
+    "ocr_backend": "CPUExecutionProvider",
+    "builder": "tools/build.py",
+    "build_environment_sbom": "DeskTranslate-2.0.0b2-build-sbom.json",
+    "runtime_sbom": "DeskTranslate-2.0.0b2-runtime-sbom.json",
+    "claim": "Local build statement; not a hosted or signed attestation"
+  },
+  "attestations": [
+    {
+      "name": "DeskTranslate-2.0.0b2-LibrarySources.zip",
+      "verified": true,
+      "sha256": "34c3be1ccd2613dda5b99278f1c6f36ccfb5078bdaa2415c33264cb0f6f8932e"
+    },
+    {
+      "name": "DeskTranslate-2.0.0b2-Portable-x64.zip",
+      "verified": true,
+      "sha256": "fceb4042c087b6fbde9be45e4878a3567590d9796a708c77b8563155c41b2c6b"
+    },
+    {
+      "name": "DeskTranslate-2.0.0b2-Setup-x64.exe",
+      "verified": true,
+      "sha256": "1729e61cb25c62a3dc8f64e853fe6cb2027ca679528efdc551a56a1d9fa1165b"
+    }
+  ],
+  "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755499473",
+  "environment": "GitHub-hosted windows-2022, CPython3.12.15",
+  "result": "PASS",
+  "scope": "Exact 703ee15 baseline only. Later product changes require their own source-matched qualification. Hosted runner is not a clean consumer Windows/no-Python or physical display test.",
+  "reports": {
+    "soak-2h-hosted.json": {
+      "file": "soak-2h-hosted-703ee15.json",
+      "sha256": "b00beb7ba479ff1ec7b34844cbed39467bf67cd2bef0a0175b90b8fa6fcea4ed",
+      "elapsed_s": 7200.12,
+      "result": "PASS"
+    },
+    "soak-chaos-hosted.json": {
+      "file": "soak-chaos-hosted-703ee15.json",
+      "sha256": "623719ee07a547c61aa525c86c831de359b318178619ee80c869945006aa5419",
+      "elapsed_s": 1800.27,
+      "result": "PASS"
+    },
+    "installer-qualification.json": {
+      "file": "installer-hosted-703ee15.json",
+      "sha256": "45d1c6af71a883866dd171849f9d11055af2c6d63928a0040f43cc451bea408d",
+      "result": "PASS"
+    },
+    "privacy-scan.json": {
+      "file": "privacy-hosted-703ee15.json",
+      "sha256": "f9f3d146c166f43b9943e642b96bf8ac89e10d865281ce60808f9dd052a41806",
+      "result": "PASS"
+    }
+  }
+}

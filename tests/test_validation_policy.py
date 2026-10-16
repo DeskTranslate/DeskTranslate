@@ -141,6 +141,20 @@ def test_extended_stress_requires_explicit_opt_in_before_starting():
     assert b"--long-running" in result.stderr
 
 
+def test_real_ocr_product_probe_is_an_explicit_separate_command(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    output = tmp_path / "not-created.json"
+    result = subprocess.run(
+        [sys.executable, str(root / "tools/qualify_product.py"), "--output", str(output)],
+        cwd=root,
+        capture_output=True,
+        timeout=15,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+    )
+    assert result.returncode == 2 and b"--component-test" in result.stderr
+    assert not output.exists()
+
+
 @pytest.mark.skipif(os.name != "nt", reason="Owned Windows supervisor lifecycle")
 def test_manual_probe_timeout_terminates_owned_worker_tree(monkeypatch, tmp_path):
     monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "tools"))

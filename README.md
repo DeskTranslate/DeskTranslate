@@ -42,7 +42,7 @@ V1 did not persist language preferences. V2 starts with new settings and does no
 ## Your first translation
 
 1. Launch DeskTranslate and follow **Your first translation**. Choose your reading and translation languages; choose Japanese or Korean explicitly when reading those scripts.
-2. Choose **Google · online · no API key** for simple setup, or use your configured provider. Google uses a public web endpoint whose availability is not guaranteed. Recognition stays local; the guide never silently switches providers.
+2. Choose **Google · online · no API key** for simple setup, or use your configured provider. **Configure translation…** opens Providers; **Return to first translation setup** resumes your language choices and requires a new sample test. An existing local-provider choice stays selected when you reopen setup. Google uses a public web endpoint whose availability is not guaranteed.
 3. Install the selected language pack and press **Translate sample**. Downloads show progress, support cancellation, and must pass SHA-256 verification. Setup is complete only after an actual successful sample or screen translation. You can reopen it in Preferences.
 4. Press **Ctrl+Alt+T**, drag tightly around the text, and press **Enter**. **Escape** cancels. Resize a selection using its corners.
 5. Read the overlay. For continuing dialogue, use **Ctrl+Alt+L** and select the dialogue area.
@@ -50,6 +50,8 @@ V1 did not persist language preferences. V2 starts with new settings and does no
 For a moving game or video window, choose **Choose application**, then **Region inside application** and select its subtitle area. Keep the area visible. A covered, minimized, missing or ambiguous target waits safely; it never falls back to another application's pixels. Fixed regions and entire-monitor one-shot capture remain available.
 
 Use a tight text region for changing video backgrounds. DeskTranslate keeps the overlay outside that region to prevent it from translating itself. If a region leaves no space for an overlay, use a smaller region or one-shot mode; the result can appear in the main window.
+
+The status at the bottom of every page tells you whether capture is running, paused or stopped. Pause becomes **Resume**; a failed request offers **Retry translation**. If a language pack is missing, review its size and choose **Install pack and start live** or **Install pack and translate once**. Downloads start only after that click. Stop, cancellation or a settings change cancels automatic continuation.
 
 | Action | Default shortcut |
 |---|---|

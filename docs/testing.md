@@ -40,6 +40,16 @@ Normal GitHub CI uses this headless path on a hosted Windows runner, followed by
 
 Extended OCR/HTTP/resource stress is opt-in and excluded from routine validation. Prefer a hosted/disposable runner. The fixture soak forces offscreen Qt and uses authored in-memory frames, isolated CPU OCR and loopback HTTP; it never captures the desktop or plays video.
 
+For the complete controller journey without the desktop:
+
+```powershell
+python tools/qualify_product.py --component-test --output .audit/product-component.json
+```
+
+This explicitly opted-in, 240-second bounded command uses already verified Japanese/English/Korean/Chinese packs, authored images, real isolated OCR, real owned HTTP and the offscreen main window/overlay. It checks one-shot delivery, pause/capture suppression/resume onto changed content, provider outage/retry, atomic language switching, stop cleanup and preference/content-retention boundaries. It also retains 24 negative OCR results, including ambiguous geometric backgrounds; a failed quality criterion remains a failure and returns nonzero. No paid service, desktop capture, global shortcut registration, installation or visible playback occurs. Partial reports retain the successful checks and failure category. This is component evidence, not physical-media or provider semantic-quality qualification.
+
+`python tools/evaluate_confidence.py --ocr-experiment --output .audit/ocr-confidence.json` separately compares four confidence cutoffs on the35 original positives plus nine authored short-text/digit/punctuation cases. It uses one native worker at a time, existing verified packs and offscreen fonts, with a300-second owned deadline. It changes no application default and makes no network requests. Inspect regressions as well as improvements; discarding genuine short text is not a quality fix.
+
 ```powershell
 $env:DESKTRANSLATE_DATA_DIR = "$PWD/.test-data"
 python tools/soak.py --long-running --mode chaos --duration 1800 --stop-file .audit/stop-chaos --output docs/soak-chaos.json

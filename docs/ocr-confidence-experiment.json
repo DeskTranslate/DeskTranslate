@@ -1,0 +1,1311 @@
+{
+  "authored_only": true,
+  "physical_media": false,
+  "scope": "Post-recognition confidence filtering on original RGB: 35 existing positives plus nine short-text cases. No application threshold changed.",
+  "source_hashes": {
+    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
+    "algorithms.py": "89b77b42079aa39b4f4746912f71fcd2fe9ab2e7c9ec2c99a30b1bff9b5d1f2f",
+    "app.py": "aa5871e8dc0242e35fd33335d7b7d272f0e9876da38a86846d21e04c761225a8",
+    "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
+    "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
+    "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
+    "assets/models.json": "445593aa092719625f87f17161a28c7ddbf43f7cf7c074c7a5e8a3c1bed77fbc",
+    "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
+    "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "assets/samples/es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "assets/samples/fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "assets/samples/hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "assets/samples/id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "assets/samples/it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "assets/samples/ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "assets/samples/ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "assets/samples/nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "assets/samples/pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "assets/samples/pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "assets/samples/ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "assets/samples/tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "assets/samples/uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "assets/samples/vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+    "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
+    "context.py": "d1f7fd7c34932a7ffc317706a0b40e430afd9398422184eb95823bee27b8dd74",
+    "diagnostics.py": "2af30568b78d98f6e375be759d67caa512e46d32e9ea9a8181c8f94b7af071ed",
+    "errors.py": "2094c09ebd08bbeeadc9cdb2e037e5c11c6162b2db16f479b59b2270e23f1cdc",
+    "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
+    "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
+    "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
+    "models.py": "b1cdec4d50bd1829fbb589b0ad5f24e3eb8a8ef0cfd4582a7900c061ce68539d",
+    "network.py": "702b617972b83b71099568a573a468ec149b56347ceeffa5003e92e337611b02",
+    "ocr.py": "5d22e4230f958ab423830f9409f0bcd9dee6c9c1a8dd9f9fc2a14f050fca5233",
+    "pipeline.py": "ea56a5b3e0597d055919b8517a8e3259386d07a409d2f4601955fe30d45ced33",
+    "presentation.py": "5691999b146a207598a471a81609d15144fcdef637cb9885cea86ed6ae674665",
+    "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
+    "profiles.py": "2fbd02b8e67050b794e6cef5499cff45af740ee452896d29bdecdeee15e29be3",
+    "providers.py": "c6f4bc8f31c47a516adef0e3c7a391cd9893d669e96fa1360d290b8ef6dd6a65",
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
+    "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
+    "settings.py": "d432d3808bb1089e491cb775810d9bb82915c804b08eaad5f4175d8465848d67",
+    "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
+    "transcript.py": "28afb150ac86e6ceda4e8305ae046fb20c6f73785be9ef849291d7b432f65d64",
+    "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
+    "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
+    "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
+    "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
+    "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
+    "ui/onboarding.py": "a99d5b86a363249b444f44ec5b364474822c21b778d105d92e2b22a2142e939e",
+    "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
+    "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
+    "ui/profiles.py": "b1b108d1da6c90aa85f28bf97226280b1daea0381b84dddc9c633c27f64446d2",
+    "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
+    "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
+    "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
+    "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
+    "ui/transcript.py": "f7de5d1ecfc60b069891db875a71d1a0d625039db06c50e36acee718a503c848",
+    "ui/window.py": "7836c0d21d857e1cc32acc6403f3103d5fa3dc57cf473398ee60efbad9b21d14",
+    "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
+    "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
+  },
+  "harness_sha256": "1c76b56358bc13f6c4011f483663a549be68c9fc4dac18f7e49e16858f6a8cc6",
+  "fixtures": [
+    {
+      "id": "ar-setup",
+      "source": "ar",
+      "expected": "مرحبا بالعالم",
+      "variants": {
+        "0.5": {
+          "cer": 0.0833,
+          "text": "مرحبا العالم"
+        },
+        "0.7": {
+          "cer": 0.0833,
+          "text": "مرحبا العالم"
+        },
+        "0.8": {
+          "cer": 0.0833,
+          "text": "مرحبا العالم"
+        },
+        "0.9": {
+          "cer": 0.0833,
+          "text": "مرحبا العالم"
+        }
+      },
+      "image_sha256": "2bc748a3ac021cc8c04ecfad39df012275f4f3f93d8bb990e318a7e80044251a",
+      "line_confidences": [
+        0.90424
+      ]
+    },
+    {
+      "id": "ar-mixed-digits",
+      "source": "ar",
+      "expected": "مرحبا مريم 42\nHP 120 / MP 45",
+      "variants": {
+        "0.5": {
+          "cer": 0.0952,
+          "text": "مرحبا مريم 2\nHP 120 / I MP 45"
+        },
+        "0.7": {
+          "cer": 0.0952,
+          "text": "مرحبا مريم 2\nHP 120 / I MP 45"
+        },
+        "0.8": {
+          "cer": 0.1429,
+          "text": "مرحبا مريم\nHP 120 / I MP 45"
+        },
+        "0.9": {
+          "cer": 0.1429,
+          "text": "مرحبا مريم\nHP 120 / I MP 45"
+        }
+      },
+      "image_sha256": "046fd568df2d5837f7620726078f43f051f7c1fd8f7cf5e1fe509aa95c9966b3",
+      "line_confidences": [
+        0.78535,
+        0.94549,
+        0.99993,
+        0.9066,
+        0.98479
+      ]
+    },
+    {
+      "id": "ar-multiline",
+      "source": "ar",
+      "expected": "مرحبا بالعالم\nنلتقي غدا",
+      "variants": {
+        "0.5": {
+          "cer": 0.15,
+          "text": "مرحبا العالم\nنلتقعدا"
+        },
+        "0.7": {
+          "cer": 0.15,
+          "text": "مرحبا العالم\nنلتقعدا"
+        },
+        "0.8": {
+          "cer": 0.15,
+          "text": "مرحبا العالم\nنلتقعدا"
+        },
+        "0.9": {
+          "cer": 0.45,
+          "text": "مرحبا العالم"
+        }
+      },
+      "image_sha256": "aae2d8f3a988d554740c873cbc76d9dd0b4edccff15a1168d1b96af4b625aae1",
+      "line_confidences": [
+        0.9595,
+        0.88988
+      ]
+    },
+    {
+      "id": "de-setup",
+      "source": "de",
+      "expected": "Wähle einen Bereich zum Übersetzen.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        }
+      },
+      "image_sha256": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+      "line_confidences": [
+        0.99962,
+        0.99998,
+        0.99576,
+        0.99998
+      ]
+    },
+    {
+      "id": "en-ui",
+      "source": "en",
+      "expected": "Select a region to translate.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Select a region to translate."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Select a region to translate."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Select a region to translate."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Select a region to translate."
+        }
+      },
+      "image_sha256": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+      "line_confidences": [
+        0.99996
+      ]
+    },
+    {
+      "id": "en-small",
+      "source": "en",
+      "expected": "The door is locked. Find another way.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "The door is locked. Find another way."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "The door is locked. Find another way."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "The door is locked. Find another way."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "The door is locked. Find another way."
+        }
+      },
+      "image_sha256": "08568f7b566e1586908b7945c7a5641f86dffd00476872ca210357438cb3f972",
+      "line_confidences": [
+        0.99213
+      ]
+    },
+    {
+      "id": "en-outlined",
+      "source": "en",
+      "expected": "Where did you hide the key?",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Where did you hide the key?"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Where did you hide the key?"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Where did you hide the key?"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Where did you hide the key?"
+        }
+      },
+      "image_sha256": "016f91e60750f00e6d338168803b048558c7f6d031a4c0e19647a8fb609a823b",
+      "line_confidences": [
+        0.98815
+      ]
+    },
+    {
+      "id": "en-large-shadow",
+      "source": "en",
+      "expected": "Mika, wait! 42 seconds.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Mika, wait! 42 seconds."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Mika, wait! 42 seconds."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Mika, wait! 42 seconds."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Mika, wait! 42 seconds."
+        }
+      },
+      "image_sha256": "705ec5657d01439f6f9bf1b2adc6a78d074f7c0dbb3957c540c87e436654766c",
+      "line_confidences": [
+        0.99333
+      ]
+    },
+    {
+      "id": "en-low-contrast",
+      "source": "en",
+      "expected": "The gate opens at 07:30.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "The gate opens at 07:30."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "The gate opens at 07:30."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "The gate opens at 07:30."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "The gate opens at 07:30."
+        }
+      },
+      "image_sha256": "274293dc85d8276be4a3a9fe05554f73e03ed167c1be61550877757a2c76fc15",
+      "line_confidences": [
+        0.99126
+      ]
+    },
+    {
+      "id": "en-translucent",
+      "source": "en",
+      "expected": "We can meet tomorrow.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "We can meet tomorrow."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "We can meet tomorrow."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "We can meet tomorrow."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "We can meet tomorrow."
+        }
+      },
+      "image_sha256": "b9555549621c3f739db11f4e3c8b0fd65f7b61e5bf5fd265a3aca4b7846e24e3",
+      "line_confidences": [
+        0.97554
+      ]
+    },
+    {
+      "id": "en-single-pronoun",
+      "source": "en",
+      "expected": "I",
+      "variants": {
+        "0.5": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.7": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.8": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.9": {
+          "cer": 1.0,
+          "text": ""
+        }
+      },
+      "image_sha256": "343d8eb82d5d67e36ed0676ae63bf8630c20d4f84712fd1a85efbf045ef121c6",
+      "line_confidences": []
+    },
+    {
+      "id": "en-number",
+      "source": "en",
+      "expected": "7",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "7"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "7"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "7"
+        },
+        "0.9": {
+          "cer": 1.0,
+          "text": ""
+        }
+      },
+      "image_sha256": "2ae2969d1d4bd9efd86a577599de58922849d83c8d98dff53a0486972b084cfa",
+      "line_confidences": [
+        0.84913
+      ]
+    },
+    {
+      "id": "en-punctuation",
+      "source": "en",
+      "expected": "?",
+      "variants": {
+        "0.5": {
+          "cer": 2.0,
+          "text": "~."
+        },
+        "0.7": {
+          "cer": 2.0,
+          "text": "~."
+        },
+        "0.8": {
+          "cer": 2.0,
+          "text": "~."
+        },
+        "0.9": {
+          "cer": 1.0,
+          "text": ""
+        }
+      },
+      "image_sha256": "1db09b0ddb115ea6fcb61c17ed1cb62a270284c5964590c1254cfdc293e113ab",
+      "line_confidences": [
+        0.80058
+      ]
+    },
+    {
+      "id": "en-tiny-ui",
+      "source": "en",
+      "expected": "HP 7 / MP 3",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "HP 7 / MP 3"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "HP 7 / MP 3"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "HP 7 / MP 3"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "HP 7 / MP 3"
+        }
+      },
+      "image_sha256": "b7eb2be2adc87fbaab42d281b71c7be153b0bde1020417633fd68911d0299a71",
+      "line_confidences": [
+        0.94562
+      ]
+    },
+    {
+      "id": "es-ui",
+      "source": "es",
+      "expected": "Selecciona una región para traducir.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Selecciona una región para traducir."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Selecciona una región para traducir."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Selecciona una región para traducir."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Selecciona una región para traducir."
+        }
+      },
+      "image_sha256": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+      "line_confidences": [
+        0.9838
+      ]
+    },
+    {
+      "id": "es-punctuation",
+      "source": "es",
+      "expected": "¿Dónde está Lucía? ¡Aquí! 2026.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        }
+      },
+      "image_sha256": "4734064a0d19e77e09c4727bf6477456e9634567c00e108c802977e8038f03c5",
+      "line_confidences": [
+        0.99526
+      ]
+    },
+    {
+      "id": "es-short-answer",
+      "source": "es",
+      "expected": "¡Sí!",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "¡Sí!"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "¡Sí!"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "¡Sí!"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "¡Sí!"
+        }
+      },
+      "image_sha256": "ac07fc6a98758ac2432326fc9a5025b6f8383fe2ee68ed30ab0ef8b059110ba6",
+      "line_confidences": [
+        0.99986
+      ]
+    },
+    {
+      "id": "fr-setup",
+      "source": "fr",
+      "expected": "Sélectionnez une région à traduire.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Sélectionnez une région à traduire."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Sélectionnez une région à traduire."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Sélectionnez une région à traduire."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Sélectionnez une région à traduire."
+        }
+      },
+      "image_sha256": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+      "line_confidences": [
+        0.99804
+      ]
+    },
+    {
+      "id": "hi-setup",
+      "source": "hi",
+      "expected": "नमस्ते दुनिया",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "नमस्ते दुनिया"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "नमस्ते दुनिया"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "नमस्ते दुनिया"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "नमस्ते दुनिया"
+        }
+      },
+      "image_sha256": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+      "line_confidences": [
+        0.99564
+      ]
+    },
+    {
+      "id": "id-setup",
+      "source": "id",
+      "expected": "Pilih wilayah untuk diterjemahkan.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        }
+      },
+      "image_sha256": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+      "line_confidences": [
+        0.99734
+      ]
+    },
+    {
+      "id": "it-setup",
+      "source": "it",
+      "expected": "Seleziona una regione da tradurre.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Seleziona una regione da tradurre."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Seleziona una regione da tradurre."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Seleziona una regione da tradurre."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Seleziona una regione da tradurre."
+        }
+      },
+      "image_sha256": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+      "line_confidences": [
+        0.99419
+      ]
+    },
+    {
+      "id": "ja-game",
+      "source": "ja",
+      "expected": "明日、またここで会おう。",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "明日、またここで会おう。"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "明日、またここで会おう。"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "明日、またここで会おう。"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "明日、またここで会おう。"
+        }
+      },
+      "image_sha256": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+      "line_confidences": [
+        0.99496
+      ]
+    },
+    {
+      "id": "ja-multiline",
+      "source": "ja",
+      "expected": "この町の名前を覚えている？\nもう一度、教えて。",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "この町の名前を覚えている？\nもう一度、教えて。"
+        }
+      },
+      "image_sha256": "4687ceb33486b013026ea6c801ff606cc1ec082452c5367336b048b077c674ab",
+      "line_confidences": [
+        0.99996,
+        0.99962
+      ]
+    },
+    {
+      "id": "ja-vertical-dialogue",
+      "source": "ja",
+      "expected": "この町の\n名前を\n覚えている",
+      "variants": {
+        "0.5": {
+          "cer": 0.5833,
+          "text": "の\nの\n覚名こ\n前\nを町\n;\nいる"
+        },
+        "0.7": {
+          "cer": 0.5833,
+          "text": "の\nの\n覚名こ\n前\nを町\nいる"
+        },
+        "0.8": {
+          "cer": 0.5833,
+          "text": "の\nの\n覚名こ\n前\nを町\nいる"
+        },
+        "0.9": {
+          "cer": 0.75,
+          "text": "の\nの\n覚名こ\n前\nを町"
+        }
+      },
+      "image_sha256": "edcdfbff21827ae5ff585ee678dd704ea2e630d441db6ae3fa9510e334e5db4d",
+      "line_confidences": [
+        0.99913,
+        0.99998,
+        0.50612,
+        0.99992,
+        0.99996,
+        0.87836,
+        0.99964
+      ]
+    },
+    {
+      "id": "ja-vertical",
+      "source": "ja",
+      "expected": "明日また\n会おう",
+      "variants": {
+        "0.5": {
+          "cer": 0.4286,
+          "text": "日また\n会明"
+        },
+        "0.7": {
+          "cer": 0.4286,
+          "text": "日また\n会明"
+        },
+        "0.8": {
+          "cer": 0.4286,
+          "text": "日また\n会明"
+        },
+        "0.9": {
+          "cer": 0.4286,
+          "text": "日また\n会明"
+        }
+      },
+      "image_sha256": "0978e13b59e6743c4ed28f3ae7044efae0f9cd1c525a09438c69554b9ecaa446",
+      "line_confidences": [
+        0.99976,
+        0.96856
+      ]
+    },
+    {
+      "id": "ja-katakana-pixel",
+      "source": "ja",
+      "expected": "ドラゴンの城へ行こう！",
+      "variants": {
+        "0.5": {
+          "cer": 0.3636,
+          "text": "ドラゴンの城ー行ニラ「"
+        },
+        "0.7": {
+          "cer": 0.3636,
+          "text": "ドラゴンの城ー行ニラ「"
+        },
+        "0.8": {
+          "cer": 0.3636,
+          "text": "ドラゴンの城ー行ニラ「"
+        },
+        "0.9": {
+          "cer": 1.0,
+          "text": ""
+        }
+      },
+      "image_sha256": "d067ffb32bbdec5a54ac141cfed3a3b5393467241e77153e8fa16f8b8a71d19f",
+      "line_confidences": [
+        0.8519
+      ]
+    },
+    {
+      "id": "ja-mixed-names",
+      "source": "ja",
+      "expected": "ミカ：HP 120 / MP 45\nレベル 7 — QUEST 03",
+      "variants": {
+        "0.5": {
+          "cer": 0.16,
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3"
+        },
+        "0.7": {
+          "cer": 0.16,
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3"
+        },
+        "0.8": {
+          "cer": 0.16,
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3"
+        },
+        "0.9": {
+          "cer": 0.16,
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3"
+        }
+      },
+      "image_sha256": "d344eca3caadb610c40361abc13e9d18430fbeb4bf84090ed92abb230a649d6a",
+      "line_confidences": [
+        0.92921,
+        0.94702
+      ]
+    },
+    {
+      "id": "ja-single-question",
+      "source": "ja",
+      "expected": "え？",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "え？"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "え？"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "え？"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "え？"
+        }
+      },
+      "image_sha256": "8bd506e20364bb40d13484a02f171ff13fc15879ebe7f61ad211d4eb9d652a09",
+      "line_confidences": [
+        0.99757
+      ]
+    },
+    {
+      "id": "ja-single-glyph",
+      "source": "ja",
+      "expected": "の",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "の"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "の"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "の"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "の"
+        }
+      },
+      "image_sha256": "7ab49dd51c20835e66730985d1c40205e98107139097958e57b05de1eb46614f",
+      "line_confidences": [
+        0.99865
+      ]
+    },
+    {
+      "id": "ko-subtitle",
+      "source": "ko",
+      "expected": "내일 다시 만나요.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "내일 다시 만나요."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "내일 다시 만나요."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "내일 다시 만나요."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "내일 다시 만나요."
+        }
+      },
+      "image_sha256": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+      "line_confidences": [
+        0.99593
+      ]
+    },
+    {
+      "id": "ko-multiline-shadow",
+      "source": "ko",
+      "expected": "미카, 문이 열렸어요!\n내일 오후 3시에 만나요.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        }
+      },
+      "image_sha256": "f26f22af28a0bdb8fd38559f1391f20c5aa48632cb49739bffe49bebd34a858e",
+      "line_confidences": [
+        0.98066,
+        0.9293
+      ]
+    },
+    {
+      "id": "ko-single-glyph",
+      "source": "ko",
+      "expected": "문",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "문"
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "문"
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "문"
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "문"
+        }
+      },
+      "image_sha256": "e6f39507bb7785f82abf463075334d66c3e25e68df9c5cf50d4cba6cce198b0d",
+      "line_confidences": [
+        0.9975
+      ]
+    },
+    {
+      "id": "nl-setup",
+      "source": "nl",
+      "expected": "Selecteer een gebied om te vertalen.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Selecteer een gebied om te vertalen."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Selecteer een gebied om te vertalen."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Selecteer een gebied om te vertalen."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Selecteer een gebied om te vertalen."
+        }
+      },
+      "image_sha256": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+      "line_confidences": [
+        0.99997,
+        0.98802
+      ]
+    },
+    {
+      "id": "pl-setup",
+      "source": "pl",
+      "expected": "Wybierz obszar do tłumaczenia.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Wybierz obszar do tłumaczenia."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Wybierz obszar do tłumaczenia."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Wybierz obszar do tłumaczenia."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Wybierz obszar do tłumaczenia."
+        }
+      },
+      "image_sha256": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+      "line_confidences": [
+        0.99997,
+        0.98923
+      ]
+    },
+    {
+      "id": "pt-setup",
+      "source": "pt",
+      "expected": "Selecione uma região para traduzir.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0323,
+          "text": "Selecione uma região o para traduzir."
+        },
+        "0.7": {
+          "cer": 0.0323,
+          "text": "Selecione uma região o para traduzir."
+        },
+        "0.8": {
+          "cer": 0.0323,
+          "text": "Selecione uma região o para traduzir."
+        },
+        "0.9": {
+          "cer": 0.0323,
+          "text": "Selecione uma região o para traduzir."
+        }
+      },
+      "image_sha256": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+      "line_confidences": [
+        0.99997,
+        0.97972
+      ]
+    },
+    {
+      "id": "ru-setup",
+      "source": "ru",
+      "expected": "Выберите область для перевода.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Выберите область для перевода."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Выберите область для перевода."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Выберите область для перевода."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Выберите область для перевода."
+        }
+      },
+      "image_sha256": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+      "line_confidences": [
+        0.99979
+      ]
+    },
+    {
+      "id": "tr-setup",
+      "source": "tr",
+      "expected": "Çevirmek için bir alan seçin.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Çevirmek için bir alan seçin."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Çevirmek için bir alan seçin."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Çevirmek için bir alan seçin."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Çevirmek için bir alan seçin."
+        }
+      },
+      "image_sha256": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+      "line_confidences": [
+        0.98529
+      ]
+    },
+    {
+      "id": "uk-setup",
+      "source": "uk",
+      "expected": "Виберіть область для перекладу.",
+      "variants": {
+        "0.5": {
+          "cer": 0.0,
+          "text": "Виберіть область для перекладу."
+        },
+        "0.7": {
+          "cer": 0.0,
+          "text": "Виберіть область для перекладу."
+        },
+        "0.8": {
+          "cer": 0.0,
+          "text": "Виберіть область для перекладу."
+        },
+        "0.9": {
+          "cer": 0.0,
+          "text": "Виберіть область для перекладу."
+        }
+      },
+      "image_sha256": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+      "line_confidences": [
+        0.98481
+      ]
+    },
+    {
+      "id": "vi-setup",
+      "source": "vi",
+      "expected": "Chọn một vùng để dịch.",
+      "variants": {
+        "0.5": {
+          "cer": 0.2778,
+          "text": "Chąn mt vùng dê dich."
+        },
+        "0.7": {
+          "cer": 0.2778,
+          "text": "Chąn mt vùng dê dich."
+        },
+        "0.8": {
+          "cer": 0.2778,
+          "text": "Chąn mt vùng dê dich."
+        },
+        "0.9": {
+          "cer": 0.2778,
+          "text": "Chąn mt vùng dê dich."
+        }
+      },
+      "image_sha256": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+      "line_confidences": [
+        0.92878
+      ]
+    },
+    {
+      "id": "zh-dialogue",
+      "source": "zh-CN",
+      "expected": "明天我们在这里见面。",
+      "variants": {
+        "0.5": {
+          "cer": 0.1,
+          "text": "明天我们在这里见面"
+        },
+        "0.7": {
+          "cer": 0.1,
+          "text": "明天我们在这里见面"
+        },
+        "0.8": {
+          "cer": 0.1,
+          "text": "明天我们在这里见面"
+        },
+        "0.9": {
+          "cer": 0.1,
+          "text": "明天我们在这里见面"
+        }
+      },
+      "image_sha256": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+      "line_confidences": [
+        0.99923
+      ]
+    },
+    {
+      "id": "zh-punctuation",
+      "source": "zh-CN",
+      "expected": "你好，明天见！\n时间：12:30。",
+      "variants": {
+        "0.5": {
+          "cer": 0.125,
+          "text": "你好，日 明天见！\n时间： 12:30"
+        },
+        "0.7": {
+          "cer": 0.125,
+          "text": "你好，日 明天见！\n时间： 12:30"
+        },
+        "0.8": {
+          "cer": 0.125,
+          "text": "你好，日 明天见！\n时间： 12:30"
+        },
+        "0.9": {
+          "cer": 0.125,
+          "text": "你好，日 明天见！\n时间： 12:30"
+        }
+      },
+      "image_sha256": "cab4b6e2adcd38f8f57bbc8ce48b488f4f99072c2855d04b4412dacae1a77fd1",
+      "line_confidences": [
+        0.96389,
+        0.99116,
+        0.99952,
+        0.96009
+      ]
+    },
+    {
+      "id": "zh-single-glyph",
+      "source": "zh-CN",
+      "expected": "一",
+      "variants": {
+        "0.5": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.7": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.8": {
+          "cer": 1.0,
+          "text": ""
+        },
+        "0.9": {
+          "cer": 1.0,
+          "text": ""
+        }
+      },
+      "image_sha256": "8e5bcb6e6a1724d739739918aa07971112d4e600a3aa0d44e08f257e7956b8a3",
+      "line_confidences": []
+    },
+    {
+      "id": "zh-traditional",
+      "source": "zh-TW",
+      "expected": "明天我們在這裡見面。",
+      "variants": {
+        "0.5": {
+          "cer": 0.2,
+          "text": "明天我們在這裸見面"
+        },
+        "0.7": {
+          "cer": 0.2,
+          "text": "明天我們在這裸見面"
+        },
+        "0.8": {
+          "cer": 0.2,
+          "text": "明天我們在這裸見面"
+        },
+        "0.9": {
+          "cer": 0.2,
+          "text": "明天我們在這裸見面"
+        }
+      },
+      "image_sha256": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+      "line_confidences": [
+        0.91288
+      ]
+    },
+    {
+      "id": "zh-traditional-characters",
+      "source": "zh-TW",
+      "expected": "這裡的門還沒開。\n請記住我們的名字！",
+      "variants": {
+        "0.5": {
+          "cer": 0.1765,
+          "text": "這褸的門還沒開\n請記住我們的名字!"
+        },
+        "0.7": {
+          "cer": 0.1765,
+          "text": "這褸的門還沒開\n請記住我們的名字!"
+        },
+        "0.8": {
+          "cer": 0.1765,
+          "text": "這褸的門還沒開\n請記住我們的名字!"
+        },
+        "0.9": {
+          "cer": 0.5294,
+          "text": "請記住我們的名字!"
+        }
+      },
+      "image_sha256": "6e3207b4e807b3c66f295842122fcc1d92369daa05f6f1a04312590585435819",
+      "line_confidences": [
+        0.88102,
+        0.94263
+      ]
+    }
+  ],
+  "comparison": {
+    "0.7": {
+      "improved": [],
+      "regressed": []
+    },
+    "0.8": {
+      "improved": [],
+      "regressed": [
+        "ar-mixed-digits"
+      ]
+    },
+    "0.9": {
+      "improved": [
+        "en-punctuation"
+      ],
+      "regressed": [
+        "ar-mixed-digits",
+        "ar-multiline",
+        "en-number",
+        "ja-vertical-dialogue",
+        "ja-katakana-pixel",
+        "zh-traditional-characters"
+      ]
+    }
+  }
+}
