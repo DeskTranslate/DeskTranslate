@@ -74,7 +74,9 @@ Hosted [Windows quality38752944599](https://github.com/DeskTranslate/DeskTransla
 
 Replacement baseline703ee15: [quality38755463595](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755463595) PASS,405 tests35.941s with a [verified report archive](hosted-quality-703ee15.json). [Candidate38755499473](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755499473) completed PASS, including build/runtime, actual installer lifecycle/privacy and both extended workloads. Archive/release hashes, clean provenance and all three hosted attestations were independently verified against the exact source and signer workflow. [Verified baseline](hosted-candidate-703ee15.json); it does not qualify the subsequent product changes.
 
-Product baseline a2a2544: [quality38878667343](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38878667343) PASS,427 tests39.742s; [archive digest verified](hosted-quality-a2a2544.json). Candidate38878684115 was cancelled during build, before endurance, because the shutdown defect changed application bytes. That cancellation is not a completed qualification. Current startup/shutdown/cleanup source requires a new exact-commit hosted run.
+Product baseline a2a2544: [quality38878667343](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38878667343) PASS,427 tests39.742s; [archive digest verified](hosted-quality-a2a2544.json). Candidate38878684115 was cancelled during build, before endurance, because the shutdown defect changed application bytes. That cancellation is not a completed qualification. Replacement source-matched runs are recorded below.
+
+Final application source d5f56dc: [Windows quality38904252980](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38904252980) **PASS**,445 tests46.421s, build/frozen startup/crash recovery/OCR/vault/HTTP/privacy, zero dependency findings. Its [report archive digest is independently verified](hosted-quality-d5f56dc.json); the frozen application source digest matches the local final build and the ownership harness hash matches the committed tool. [Candidate38904299648](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38904299648) is still in progress, with unsigned/no-tag/stable=false inputs. At the last inspection, installer lifecycle/privacy was running; endurance and final artifact verification were not completed. Subsequent evidence-only documentation commits do not change application bytes or replace the recorded build commit.
 
 ## Windows qualification
 
@@ -159,7 +161,7 @@ All 23 bodies and 35 available comments were reviewed. The final read-only refre
 
 No known P0 is intentionally left unresolved; this is not a claim that untested environments have no P0 defects. No P1 qualification gap has an implicit waiver. Required remaining work:
 
-1. Complete passing exact-source/harness hosted quality, final installer and continuous 2h/30min resource runs; review all report distributions and attestations.
+1. Complete the current exact-source candidate's installer and continuous2h/30min runs, then independently verify artifact hashes/provenance/attestations and review all distributions. Current source-matched hosted quality already passes; it is not an installer/endurance pass.
 2. Qualify physical mixed-DPI/multi-monitor layouts, topology/session transitions, actual supported fullscreen/media workflows and accessibility on a reserved rig/session, without returning invasive tests to the routine laptop loop.
 3. Qualify clean supported Windows/no-Python/standard-account/non-ASCII-user and legacy install/coexistence/upgrade paths on a disposable OS.
 4. Obtain representative local-model quality and configured cloud/Libre/custom-provider accounts where exposed claims require them; retain observed OCR limitations and complete representative media accuracy testing.

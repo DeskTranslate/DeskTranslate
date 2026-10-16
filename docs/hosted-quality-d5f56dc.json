@@ -1,0 +1,109 @@
+{
+  "run_id": 38904252980,
+  "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/38904252980",
+  "source_commit": "d5f56dcb58de98222878adb8d1e83cf21ca0dab7",
+  "workflow": "Windows quality",
+  "environment": "GitHub-hosted windows-2022, pinned CPython3.12.15",
+  "result": "PASS",
+  "report_archive_sha256": "f5be21a800ff2d7146e356dd04596e1417cb9314c6d09a83ff30a388eb46e662",
+  "report_archive_digest_verified": true,
+  "pytest": {
+    "tests": "445",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "46.421"
+  },
+  "runtime": {
+    "qt": true,
+    "assets": true,
+    "http_provider_roundtrip": true,
+    "credential_roundtrip": true,
+    "credential_cleanup": true,
+    "ocr_exact": true,
+    "ocr_ms": 1035.3476000000228,
+    "ocr_cleanup": true
+  },
+  "frozen_ownership": {
+    "version": "2.0.0b2",
+    "source_sha256": "feb65ee42a09eabdf5612d0bc3e2478bbc219778c951dd79b43540771bad1ba2",
+    "executable_sha256": "5c247f5b390bf2cc837ce839d94348090bfc1c2c35994cab3d7ca98512fab10e",
+    "harness_sha256": "c25e65d664bdc4fc9661f425b02f23a714975fbb4edc7bc5d00af723793c4a0d",
+    "scope": "Actual frozen executable, offscreen Qt, owned local pipes, system-only PATH and isolated authored preferences. No desktop input/capture/media or installation. Native foreground restore, cross-account ACL and clean consumer Windows not tested.",
+    "checks": {
+      "relaunch_existing_frozen_owner": true,
+      "verification_refuses_active_data_without_activation": true,
+      "frozen_dead_owner_recovery": true,
+      "ownership_removed_after_clean_exit": true,
+      "preferences_retained": true
+    },
+    "passed": true
+  },
+  "privacy": {
+    "version": "2.0.0b2",
+    "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
+    "counts": {
+      "tree_files": 327,
+      "history_blobs": 747,
+      "artifact_members": 403,
+      "release_files": 6,
+      "release_archive_members": 410,
+      "frozen_modules": 1483
+    },
+    "findings": [],
+    "verified_upstream_metadata": [
+      {
+        "location": "app/_internal/bidi/bidi.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "python-bidi",
+        "version": "0.6.11",
+        "source_sha256": "8f286fa2b62aade1c55d68a7a8ff33e066414c4e0d365df817164dd2e5d38540"
+      },
+      {
+        "location": "app/_internal/shapely/_geometry_helpers.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "707cb47e19233d313681192f086b22268e72b98adcc21c41e131891c51569180"
+      },
+      {
+        "location": "app/_internal/shapely/_geos.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "5de4fb9704e89549eab873cc7b0e92b49e602d407f61d8eb8d2575a67edd83cd"
+      },
+      {
+        "location": "frozen/numpy.__config__",
+        "category": "published_upstream_build_metadata",
+        "package": "numpy",
+        "version": "2.5.3",
+        "source_sha256": "54309fe4a6792ef381020e258d4bf370b08f833af7463c99bd5d24de68786730"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/bidi/bidi.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "python-bidi",
+        "version": "0.6.11",
+        "source_sha256": "8f286fa2b62aade1c55d68a7a8ff33e066414c4e0d365df817164dd2e5d38540"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/shapely/_geometry_helpers.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "707cb47e19233d313681192f086b22268e72b98adcc21c41e131891c51569180"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/shapely/_geos.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "5de4fb9704e89549eab873cc7b0e92b49e602d407f61d8eb8d2575a67edd83cd"
+      }
+    ],
+    "passed": true
+  },
+  "dependency_vulnerability_count": 0,
+  "scope": "Exact recorded commit: quality/build/offscreen frozen OCR/vault/HTTP/artifact privacy. Not installer, consumer Windows, physical hardware, signing or endurance qualification."
+}
