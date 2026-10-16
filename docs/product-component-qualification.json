@@ -4,7 +4,7 @@
     "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
     "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
     "algorithms.py": "89b77b42079aa39b4f4746912f71fcd2fe9ab2e7c9ec2c99a30b1bff9b5d1f2f",
-    "app.py": "aa5871e8dc0242e35fd33335d7b7d272f0e9876da38a86846d21e04c761225a8",
+    "app.py": "eaf1210358be8bbf1321dff838f5710a8231bebeadc15ac6e9954aa938349cc7",
     "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
     "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
     "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
@@ -34,6 +34,7 @@
     "errors.py": "2094c09ebd08bbeeadc9cdb2e037e5c11c6162b2db16f479b59b2270e23f1cdc",
     "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
     "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "instance.py": "e57b9bd91fb2a16d0b99139157255de51a0771e61423b0c38d70a1bb60a4c309",
     "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
     "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
     "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
@@ -41,7 +42,7 @@
     "network.py": "702b617972b83b71099568a573a468ec149b56347ceeffa5003e92e337611b02",
     "ocr.py": "5d22e4230f958ab423830f9409f0bcd9dee6c9c1a8dd9f9fc2a14f050fca5233",
     "pipeline.py": "ea56a5b3e0597d055919b8517a8e3259386d07a409d2f4601955fe30d45ced33",
-    "presentation.py": "5691999b146a207598a471a81609d15144fcdef637cb9885cea86ed6ae674665",
+    "presentation.py": "47dbfaeb97ebe5381bcb0fea3fe969839e31fafe96af77d76b49ddb0d86d32e9",
     "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
     "profiles.py": "2fbd02b8e67050b794e6cef5499cff45af740ee452896d29bdecdeee15e29be3",
     "providers.py": "c6f4bc8f31c47a516adef0e3c7a391cd9893d669e96fa1360d290b8ef6dd6a65",
@@ -65,7 +66,7 @@
     "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
     "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
     "ui/transcript.py": "f7de5d1ecfc60b069891db875a71d1a0d625039db06c50e36acee718a503c848",
-    "ui/window.py": "7836c0d21d857e1cc32acc6403f3103d5fa3dc57cf473398ee60efbad9b21d14",
+    "ui/window.py": "152e0ca1bd98ef39e155e4be26f82d6cc0d6d511ee3a7fc2c8fb4c29cc04781a",
     "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
     "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
   },
@@ -90,7 +91,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1860.54,
+      "ocr_ms": 1617.22,
       "result": "PASS"
     },
     {
@@ -99,7 +100,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1018.21,
+      "ocr_ms": 927.81,
       "result": "PASS"
     },
     {
@@ -108,7 +109,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1000.29,
+      "ocr_ms": 921.87,
       "result": "PASS"
     },
     {
@@ -117,7 +118,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 972.37,
+      "ocr_ms": 986.4,
       "result": "PASS"
     },
     {
@@ -126,7 +127,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1001.8,
+      "ocr_ms": 901.47,
       "result": "PASS"
     },
     {
@@ -135,7 +136,7 @@
       "characters": 5,
       "text": "\u3068 \u306e\n-",
       "confidence": 0.7874,
-      "ocr_ms": 1526.14,
+      "ocr_ms": 1530.97,
       "result": "FAIL"
     },
     {
@@ -144,7 +145,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1720.66,
+      "ocr_ms": 1713.26,
       "result": "PASS"
     },
     {
@@ -153,7 +154,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1047.39,
+      "ocr_ms": 993.1,
       "result": "PASS"
     },
     {
@@ -162,7 +163,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 955.23,
+      "ocr_ms": 1051.32,
       "result": "PASS"
     },
     {
@@ -171,7 +172,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 968.48,
+      "ocr_ms": 1078.78,
       "result": "PASS"
     },
     {
@@ -180,7 +181,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1011.46,
+      "ocr_ms": 1100.95,
       "result": "PASS"
     },
     {
@@ -189,7 +190,7 @@
       "characters": 1,
       "text": "O",
       "confidence": 0.532,
-      "ocr_ms": 1526.65,
+      "ocr_ms": 1577.39,
       "result": "FAIL"
     },
     {
@@ -198,7 +199,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1679.17,
+      "ocr_ms": 1753.01,
       "result": "PASS"
     },
     {
@@ -207,7 +208,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 975.64,
+      "ocr_ms": 929.28,
       "result": "PASS"
     },
     {
@@ -216,7 +217,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 994.61,
+      "ocr_ms": 1030.41,
       "result": "PASS"
     },
     {
@@ -225,7 +226,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 974.3,
+      "ocr_ms": 969.91,
       "result": "PASS"
     },
     {
@@ -234,7 +235,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1022.71,
+      "ocr_ms": 985.93,
       "result": "PASS"
     },
     {
@@ -243,7 +244,7 @@
       "characters": 1,
       "text": "\u2013",
       "confidence": 0.6522,
-      "ocr_ms": 1376.47,
+      "ocr_ms": 1350.3,
       "result": "FAIL"
     },
     {
@@ -252,7 +253,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1676.77,
+      "ocr_ms": 1782.21,
       "result": "PASS"
     },
     {
@@ -261,7 +262,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 988.93,
+      "ocr_ms": 1016.33,
       "result": "PASS"
     },
     {
@@ -270,7 +271,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 972.43,
+      "ocr_ms": 974.5,
       "result": "PASS"
     },
     {
@@ -279,7 +280,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 1032.4,
+      "ocr_ms": 982.99,
       "result": "PASS"
     },
     {
@@ -288,7 +289,7 @@
       "characters": 0,
       "text": "",
       "confidence": 0.0,
-      "ocr_ms": 990.88,
+      "ocr_ms": 948.77,
       "result": "PASS"
     },
     {
@@ -297,16 +298,16 @@
       "characters": 5,
       "text": "Q Q \u4e00",
       "confidence": 0.6649,
-      "ocr_ms": 1668.22,
+      "ocr_ms": 1552.47,
       "result": "FAIL"
     }
   ],
   "passed": false,
-  "one_shot_ms": 5937.4,
-  "live_first_result_ms": 5554.39,
-  "resume_changed_text_ms": 5993.08,
-  "retry_result_ms": 5974.21,
-  "language_switch_result_ms": 5355.12,
+  "one_shot_ms": 5190.54,
+  "live_first_result_ms": 5247.62,
+  "resume_changed_text_ms": 5617.59,
+  "retry_result_ms": 5205.27,
+  "language_switch_result_ms": 4903.2,
   "requests": 6,
   "remaining_children": 0
 }

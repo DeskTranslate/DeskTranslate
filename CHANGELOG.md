@@ -9,6 +9,7 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Conventional translation and native/compatible cloud or local AI adapters, discovered model catalogs, bounded dialogue context, cancellable requests and clear recoverable errors. No cloud fallback.
 - One-shot and live translation, styled Unicode overlays, edit/click-through controls, light/dark themes, configurable shortcuts, profiles, guided setup, tray controls and privacy-safe diagnostics.
 - Bounded work queues, stale-result rejection, OCR crash recovery, Windows process-tree containment and explicit cleanup failure reporting. Moving backgrounds now receive bounded OCR samples instead of starving recognition indefinitely.
+- Cleanup failures retain a clear restart-required state, including after completed one-shot work, rather than leaving an apparent success until the next action.
 - Transactional settings/profile changes, safe corrupt-configuration recovery, credential rollback on failed saves and portable data isolation. Installer reinstalls remove obsolete owned runtime files while retaining user data.
 - Improved Latin, Cyrillic and Devanagari recognizers, corrected Arabic logical text order, and a 35-fixture authored multilingual regression corpus. Chinese punctuation, stylized Japanese and vertical-text limitations remain documented.
 - Faster long-subtitle layout with bounded glyph caches, safer provider parsing and endpoint handling, locked dependency hashes, supply-chain notices/SBOM/provenance, stronger CI and separate steady-worker/fault soak gates.
@@ -21,6 +22,7 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Recover correctly after pausing an idle OCR worker: resuming onto static changed text now schedules fresh recognition instead of waiting indefinitely for another screen change.
 - Preserve configured providers and draft language choices through setup/provider editing. Swap languages with one durable transaction; explicitly install missing packs and continue only while the original request remains current.
 - Keep capture status visible across pages and notices, synchronize pause/retry actions in the window, overlay and tray, and stop pipeline polling when no work remains. Remove an unused, unimplemented speech setting without discarding older preferences.
+- Prevent competing launches from overwriting the same preferences; relaunch restores the existing window while separate portable data folders stay independent. Reject delayed setup/new jobs after Quit, keep ownership through cleanup, and make verification/startup errors offscreen and non-activating.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.
 

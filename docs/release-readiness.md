@@ -13,9 +13,11 @@ The [product review and plan](product-plan.md) starts with quick translation, co
 - **Durable language switching:** swap saves one pair and invalidates the session once. A failed save leaves both controls, stored settings and active work intact.
 - **Missing-model recovery:** an explicit Install pack and continue action replaces repeated setup. Size/progress remain visible; Stop, cancel or any successful configuration change invalidates the continuation. An older download cannot restart capture or erase a newer request.
 - **Clearer session UX and idle ownership:** capture status remains visible across pages and notices. Main window, overlay and tray share pause/resume/retry actions. Completed one-shots deliver queued results before stopping their timer; stopped sessions have no pipeline polling. Overlay visibility changes give immediate feedback. Synthetic dark/light previews are refreshed.
+- **Startup ownership:** reserve the resolved data folder before logging/settings open. Relaunch activates the existing owner; closing owners decline activation and retain the lock. Separate portable folders remain independent. Fixed user-only IPC is bounded and cannot carry capture commands/content. Automated modes force offscreen Qt and never activate another window. Actual offscreen CLI/frozen processes pass relaunch, crash recovery, preferences and clean unlock.
+- **Shutdown and cleanup truth:** reject delayed first-run/new setup/selection after Quit. Cleanup failure uses controller Stop to retire replacement capture and cancel pending starts/selection, then permanently shows Restart required. Capture actions check that state before hiding the window or opening a picker. Completed-work success cannot conceal the failure. These paths were reproduced RED before their fixes.
 - **Dead code:** remove the unimplemented `speak` setting. Earlier files still retain useful preferences; no exposed speech feature was removed.
 
-[Current component evidence](product-component-qualification.json) passes five real-OCR main-window journeys and verifies zero surviving OCR children. It uses authored captures and real owned loopback HTTP with fixture replies; it does not establish semantic provider quality, native capture or physical display behavior. Source-mode cold one-shot/start/resume/retry/language-change delivery takes roughly5.4–6.0s on this host; these include process/model loading and are not warm-OCR measurements.
+[Current component evidence](product-component-qualification.json) passes five real-OCR main-window journeys and verifies zero surviving OCR children. It uses authored captures and real owned loopback HTTP with fixture replies; it does not establish semantic provider quality, native capture or physical display behavior. Source-mode cold one-shot/start/resume/retry/language-change delivery takes roughly4.9–5.6s on this host; these include process/model loading and are not warm-OCR measurements.
 
 The same command deliberately returns **FAIL** overall:20/24 negative backgrounds remain empty, but authored ellipses/diagonals produce short false characters in Japanese, English, Korean and Chinese. The failure is retained, with actual strings/confidence. The [44-case confidence experiment](ocr-confidence-experiment.json) compares all35 positive fixtures plus nine short-text/digit/punctuation cases. Raising the cutoff to0.8 regresses Arabic mixed digits;0.9 also regresses English digits, Arabic multiline, Japanese vertical/pixel text and Traditional Chinese. No global threshold was changed to erase negative-test failures. Tight crops remain necessary; representative real-media accuracy is still unqualified.
 
@@ -47,7 +49,7 @@ The v1 comparison found no persisted JSON language settings to migrate. V2 retai
 
 Coverage now includes transactional writes/rollback/corrupt recovery; provider malformed/auth/quota/deadline/cancellation/model identity; worker descendant/early-spawn cleanup; failed-session retention without cyclic GC; stale/interleaved/one-shot/pause/stop behavior; model interruption/corruption; overlay Unicode/CJK/RTL/geometry/edit/fade; licensing path attacks; version/signing/stable evidence failure cases.
 
-The non-invasive architecture adds 60 pure geometry combinations (six resolutions/orientations×five scales×positive/negative origins), direct offscreen picker drag/corner/Enter/Escape events, and boundary/CLI/timeout/polling policy cases. Observation-gap/timestamp, exact upstream binary privacy verification and bounded cleanup-polling regressions remain. This product pass adds22 cases for setup/status, atomic swap/failed writes, consent/cancellation/obsolete download completion, static resume, retired configuration and opt-in boundaries. Total routine suite:427 tests. Native boundary simulations remain distinct from physical hardware tests.
+The non-invasive architecture adds 60 pure geometry combinations (six resolutions/orientations×five scales×positive/negative origins), direct offscreen picker drag/corner/Enter/Escape events, and boundary/CLI/timeout/polling policy cases. Observation-gap/timestamp, exact upstream binary privacy verification and bounded cleanup-polling regressions remain. The product/readiness passes now add40 cases beyond the405-test baseline, including12 actual startup/IPC component cases, late shutdown and cleanup-state regressions, and opt-in frozen-probe boundaries. Total routine suite:445 tests. The offscreen QApplication now has a session lifetime; owned native notifiers/widgets are still closed and deferred deletion drained. A recreated-application harness abort was corrected without relaxing behavioral/resource assertions. Native boundary simulations remain distinct from physical hardware tests.
 
 ## Verification actually performed
 
@@ -55,20 +57,15 @@ Commands below ran from the repository root with the isolated pinned runtime at 
 
 | Command | Result |
 |---|---|
-| `python tools/validate.py --predeploy --junitxml .audit/pytest-product-final.xml` | PASS; exit0,427 tests59.24s, Ruff lint/format86 files, mypy43 modules, source smoke, pip check/audit/history scan and wheel/sdist |
-| `python -m pytest -q tests/test_pipeline.py tests/test_product_flows.py tests/test_presentation.py` | PASS;38 cases18.42s after the resume root fix; RED resume case timed out before the fix |
-| `python tools/qualify_product.py --component-test --output docs/product-component-qualification.json` | FAIL overall; five real-OCR controller journeys and no-remaining-child check PASS,20/24 negative backgrounds empty, four shape false positives retained |
-| `python tools/evaluate_confidence.py --ocr-experiment --output docs/ocr-confidence-experiment.json` | PASS execution of44 authored positives/short cases;0.8/0.9 tradeoff regressions reject a blanket cutoff increase |
-| `python tools/render_ui.py` | PASS;18 dark/light authored offscreen previews rendered; Translate, Profiles and Providers visually inspected |
-| `python tools/build.py --installer` and `python .audit/qualify_artifacts_current.py` | PASS on the new product source; unsigned portable/setup compiled,20 metadata/hash/runtime/SBOM/notice/content checks pass |
-| `python .audit/qualify_portable_headless.py` | PASS on the new portable; nine checks, exact Japanese OCR2113.21ms, real loopback HTTP and temporary vault cleanup, CJK/space paths, system-only PATH and empty working directory |
-| `python tools/validate.py --predeploy --frozen dist/DeskTranslate/DeskTranslate.exe --junitxml .audit/pytest-final-installer-wait.xml` | PASS; full command exit0,405 pytest cases in 49.18s, Ruff lint/format (81 files), mypy (42 modules), source/frozen smoke, pip check, vulnerability audit, source/history scan, wheel and sdist |
-| `python -m pytest -q -x tests/test_privacy_scan.py tests/test_release.py` | PASS; 42 tests in 2.46s |
-| `python -m pytest -q -x tests/test_validation_policy.py` | PASS; 16 tests in 7.13s; hidden PowerShell polling only, no install/uninstall |
-| `python tools/privacy_scan.py --history --artifacts --output docs/privacy-scan.json` | PASS on final local binaries;322 tree,581 reachable history blobs,403 runtime files,410 release archive members,1482 frozen modules on the new local artifacts; no findings |
-| `python tools/build.py --installer` with the pinned archive digest and isolated build environment | PASS; portable and Inno installer compiled; [20 artifact checks](artifact-qualification.json) pass |
-| `python .audit/qualify_portable_headless.py` | PASS; nine isolation/runtime checks plus actual exact Japanese OCR/HTTP/vault deletion; final portable digest matched |
-| `python -m pip download --no-deps --only-binary=:all: --dest .audit/vendor-verification python-bidi==0.6.11` followed by wheel/member hashing | PASS; wheel 0608bdd…1a4e47 matches lock, binary 8f286f…d38540 matches installed RECORD |
+| `python tools/validate.py --predeploy --junitxml .audit/pytest-recovery-final.xml` | PASS; exit0,445 tests60.63s (JUnit60.685s), Ruff lint/format89 files, mypy44 modules, source smoke, pip check/audit/history scan and wheel/sdist |
+| `python -m pytest -q tests/test_presentation.py tests/test_product_flows.py tests/test_pipeline.py --basetemp .test-data/recovery-final-green` | PASS;42 tests17.21s; cleanup visibility, selection/hide actions and continued replacement-session capture failed before their fixes |
+| `python tools/qualify_product.py --component-test --output docs/product-component-qualification.json` | FAIL overall; five real-OCR controller journeys and zero remaining children PASS;20/24 negative backgrounds empty, four shape false positives retained; exact current source/harness checked |
+| `python tools/evaluate_confidence.py --ocr-experiment --output docs/ocr-confidence-experiment.json` | PASS execution of44 authored positive/short cases;0.8/0.9 regressions reject a blanket cutoff increase. Original source hashes retained: unchanged recognition components/harness, preceding the final UI-only capture preflight guard |
+| `python tools/render_ui.py` | PASS during product pass;18 dark/light authored offscreen previews, with refreshed provider copy; representative pages visually inspected |
+| `python tools/build.py --installer` and `python .audit/qualify_artifacts_current.py` | PASS; unsigned local portable/setup compiled;20 metadata/hash/runtime/SBOM/notice/content checks, exact application digest below |
+| `python .audit/qualify_portable_headless.py` | PASS; nine checks, exact Japanese OCR2127.17ms, loopback HTTP, temporary vault cleanup, CJK/space paths, system-only PATH and empty working directory |
+| `python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output docs/frozen-ownership-qualification.json` | PASS; five actual frozen ownership/relaunch/crash-recovery/isolation/preference checks, offscreen and owned temporary data |
+| `python tools/privacy_scan.py --history --artifacts --output docs/privacy-scan.json` | PASS;327 tree/660 history/403 runtime/410 archive members/1483 frozen modules, no findings within signature coverage |
 | `git diff --check` | PASS |
 
 The direct sandboxed targeted-test attempt failed at fixture setup because of environment permissions; it is not a test pass. The approved offscreen targeted/full runs above subsequently passed. Initial automatic-approval usage limits deferred portable/privacy checks; both later executed successfully.
@@ -76,6 +73,8 @@ The direct sandboxed targeted-test attempt failed at fixture setup because of en
 Hosted [Windows quality38752944599](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38752944599) PASS at e504a9a: 403 tests in 39.525s, build/frozen runtime/privacy, zero dependency findings; its [report archive digest and safe fields are verified](hosted-quality-qualification.json). [Internal candidate38752963196](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38752963196) FAIL: final uninstall registry/shortcuts remained; endurance was skipped. [Original failure](installer-hosted-failure.json) is retained. Bounded observable cleanup and required final-uninstaller checks subsequently pass the replacement hosted installer/privacy step. Steady/fault workloads are independent hosted steps when build/models are ready, so an unrelated installer failure cannot suppress their evidence; all failing gates still fail the job. Candidate inputs have empty tag, `stable=false`, `signed=false`, `endurance=true`; the workflow cannot publish. The earlier upstream-bidi privacy failure is also retained.
 
 Replacement baseline703ee15: [quality38755463595](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755463595) PASS,405 tests35.941s with a [verified report archive](hosted-quality-703ee15.json). [Candidate38755499473](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755499473) completed PASS, including build/runtime, actual installer lifecycle/privacy and both extended workloads. Archive/release hashes, clean provenance and all three hosted attestations were independently verified against the exact source and signer workflow. [Verified baseline](hosted-candidate-703ee15.json); it does not qualify the subsequent product changes.
+
+Product baseline a2a2544: [quality38878667343](https://github.com/DeskTranslate/DeskTranslate/actions/runs/38878667343) PASS,427 tests39.742s; [archive digest verified](hosted-quality-a2a2544.json). Candidate38878684115 was cancelled during build, before endurance, because the shutdown defect changed application bytes. That cancellation is not a completed qualification. Current startup/shutdown/cleanup source requires a new exact-commit hosted run.
 
 ## Windows qualification
 
@@ -96,7 +95,7 @@ Clean horizontal JA/KO/EN/ES and authored English outline/shadow/translucent/low
 
 All 19 installed packs perform real inference with Python connect/DNS/download paths forbidden and zero attempts. That is not a native packet/ETW trace. First-run sample qualification passes 18/19 actual OCR+Google cases; Vietnamese remains FAIL. Real moving-film background has only a historical300.49s authored-subtitle probe (5569frames,19results,five sources), not representative game/anime typography or multi-hour qualification.
 
-Warm original-fixture median1292.96ms across the benchmark, range757.07–2317.64ms under concurrent QA; cold Japanese~3135ms. Current portable first isolated OCR2113.21ms. The source-mode controller journey includes process/model startup and takes5.4–6.0s; these are distinct workloads, not a controlled speedup claim. Hosted steady/fault distributions are reported below. Native subtitle rendering medians improve5000 chars176.2→19.3ms and20000 chars653.6→84.6ms; glyph-cache RGBA storage3.96→1.43MB. Idle CPU is not increased to chase OCR latency.
+Warm original-fixture median1292.96ms across the benchmark, range757.07–2317.64ms under concurrent QA; cold Japanese~3135ms. Current portable first isolated OCR2127.17ms. The source-mode controller journey includes process/model startup and takes4.9–5.6s; these are distinct workloads, not a controlled speedup claim. Hosted steady/fault distributions are reported below. Native subtitle rendering medians improve5000 chars176.2→19.3ms and20000 chars653.6→84.6ms; glyph-cache RGBA storage3.96→1.43MB. Idle CPU is not increased to chase OCR latency.
 
 ## Provider qualification
 
@@ -125,11 +124,11 @@ Fault mode accepts120 results, injects62 HTTP faults, replaces36 sessions and re
 
 ## Installer and portable qualification
 
-Current internal local portable SHA-256: `55f62c95a3092b31306a78add32c777bba95ecd0151b78c448d8538db14c2df9`.
+Current internal local portable SHA-256: `8b0f32702c5aadfd565b5c420bf7f7c446784f75be13b351b4fbfe48f4faa6a4`.
 
-Current internal local setup SHA-256: `514c4811775a0656186ab36524a4893592a06b1a075a3e3f711c68d7a595832f`.
+Current internal local setup SHA-256: `e4bf8bb7f3169f471ece3f5ed86005ddd29e5496af8820254bf3b841e2fda21a`.
 
-Application source digest: `f60562c1b0f139ddda2bf314d70501085d057652f481ed1cf2684c6abab88a50`. Local provenance accurately records an unsigned dirty-tree build; a matching application digest does not rewrite that provenance into a clean hosted claim.
+Application source digest: `feb65ee42a09eabdf5612d0bc3e2478bbc219778c951dd79b43540771bad1ba2`. Local provenance accurately records an unsigned dirty-tree build; a matching application digest does not rewrite that provenance into a clean hosted claim.
 
 Current portable passes extraction into a CJK/space path, empty CJK working directory, system-only PATH/no Python environment, marker/adjacent settings/model/log isolation, exact Japanese OCR, loopback HTTP and temporary vault roundtrip/deletion. It never takes foreground or captures the desktop.
 
@@ -143,7 +142,7 @@ Screenshots/text/context remain in memory by default; explicit user copy/export 
 
 ## GitHub issues
 
-All 23 bodies and 35 available comments were reviewed. [Individual dispositions and prepared notes](issues-v2.md) remain the authoritative per-issue table. No issue comments/closures were posted.
+All 23 bodies and 35 available comments were reviewed. The final read-only refresh found the same18 open issues, with no new/changed body or comment count since that review, and zero PR reviews/review comments. Published tags remain the legacy1.1a/1b/1. [Individual dispositions and prepared notes](issues-v2.md) remain the authoritative per-issue table. No issue comments/closures were posted.
 
 | Issues | Disposition |
 |---|---|

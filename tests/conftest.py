@@ -40,8 +40,22 @@ def require_loopback(host: object) -> None:
     raise AssertionError("Routine tests may connect only to loopback; use a mock transport")
 
 
+@pytest.fixture(scope="session")
+def headless_application():
+    """Qt native notifiers must not outlive/recreate their application between tests."""
+    from PySide6.QtCore import QCoreApplication, QEvent
+    from PySide6.QtWidgets import QApplication
+
+    app = QApplication.instance() or QApplication([])
+    assert app.platformName() == "offscreen"
+    app.setQuitOnLastWindowClosed(False)
+    yield app
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    app.processEvents()
+
+
 @pytest.fixture(autouse=True)
-def isolated_system_boundaries(monkeypatch, tmp_path):
+def isolated_system_boundaries(monkeypatch, tmp_path, headless_application):
     """Keep production validation logic; replace only its external OS boundaries."""
     import keyring
     import mss

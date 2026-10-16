@@ -42,6 +42,11 @@ jobs:
           $process = Start-Process -FilePath "$PWD/dist/DeskTranslate/DeskTranslate.exe" -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw "Packaged startup failed: $($process.ExitCode)" }
+      - name: Verify frozen ownership and crash recovery offscreen
+        shell: pwsh
+        run: |
+          python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Verify frozen OCR, vault and loopback provider
         shell: pwsh
         run: |
@@ -66,6 +71,7 @@ jobs:
             .audit/pytest.xml
             .audit/dependency-audit.json
             .audit/packaged-runtime.json
+            .audit/packaged-instance.json
             docs/privacy-scan.json
           retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

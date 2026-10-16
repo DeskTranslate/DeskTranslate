@@ -23,19 +23,19 @@
     "no_prior_contamination": true
   },
   "artifact_hashes": {
-    "DeskTranslate-2.0.0b2-build-sbom.json": "d34467812d576886db09aa72f4d0be89d6ccc71ccc54d7947364609e8346587e",
+    "DeskTranslate-2.0.0b2-build-sbom.json": "e61a6f3a65b8432132e22ccd77c82e1a407275074265b66676ae4d2f8df2a34f",
     "DeskTranslate-2.0.0b2-LibrarySources.zip": "fb471b860fbc93f44a2e1a6002a89b256bfca663856b81f68789778be12010f7",
-    "DeskTranslate-2.0.0b2-Portable-x64.zip": "55f62c95a3092b31306a78add32c777bba95ecd0151b78c448d8538db14c2df9",
-    "DeskTranslate-2.0.0b2-provenance.json": "9017c158ce1fa7528268835763620d5ccde747d7d23a6c65253a400ffb4b3ba7",
-    "DeskTranslate-2.0.0b2-runtime-sbom.json": "eb0e5e5b143a47b50d089708bbcd72b267ec88f7d73e05b6fc29a1394d59cfa7",
-    "DeskTranslate-2.0.0b2-Setup-x64.exe": "514c4811775a0656186ab36524a4893592a06b1a075a3e3f711c68d7a595832f"
+    "DeskTranslate-2.0.0b2-Portable-x64.zip": "8b0f32702c5aadfd565b5c420bf7f7c446784f75be13b351b4fbfe48f4faa6a4",
+    "DeskTranslate-2.0.0b2-provenance.json": "df2b431080362b79c191c8e86a29586e15160e8348e8062ca26e4d6e1a4e0fd8",
+    "DeskTranslate-2.0.0b2-runtime-sbom.json": "7eb41b842e1d1b5df999d90ebfab7defe0016ff241b91f37353cb28c809dc739",
+    "DeskTranslate-2.0.0b2-Setup-x64.exe": "e4bf8bb7f3169f471ece3f5ed86005ddd29e5496af8820254bf3b841e2fda21a"
   },
   "build_info": {
     "version": "2.0.0b2",
     "windows_version": "2.0.0.10002",
-    "git_commit": "d526fc661b1fb61dac5bc22475b33f315808e0ac",
+    "git_commit": "a2a2544f80a9521da3e78560a5188dbfdb1b7f9b",
     "working_tree_dirty": true,
-    "source_sha256": "f60562c1b0f139ddda2bf314d70501085d057652f481ed1cf2684c6abab88a50",
+    "source_sha256": "feb65ee42a09eabdf5612d0bc3e2478bbc219778c951dd79b43540771bad1ba2",
     "publisher_signed": false,
     "python_version": "3.12.15",
     "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",

@@ -22,7 +22,10 @@ def session_presentation(
     completed: bool = False,
     has_result: bool = False,
     preparation: Literal["needed", "downloading"] | None = None,
+    restart_required: bool = False,
 ) -> SessionPresentation:
+    if restart_required:
+        return SessionPresentation("Restart required · capture stopped", "Pause", False, False)
     if selecting:
         return SessionPresentation(
             "Selecting a region · Enter confirms, Escape cancels", "Pause", False, True

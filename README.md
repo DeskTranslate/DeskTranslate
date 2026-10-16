@@ -66,6 +66,8 @@ The status at the bottom of every page tells you whether capture is running, pau
 
 Shortcuts are configurable and checked for conflicts. First-run setup adds Shift (then Win if needed) when another app owns a default shortcut; the welcome screen shows your assigned shortcut. Closing exits by default; keeping the app in the tray is an explicit preference.
 
+Launching DeskTranslate again restores its existing window. Separate portable folders remain independent. Quit hides the app while it finishes closing; setup cannot reopen or start new work during shutdown.
+
 ## Make the overlay yours
 
 ![Overlay showing synthetic original and translated dialogue](docs/screenshots/overlay-dark.png)
@@ -93,7 +95,7 @@ Translation targets retain v1's 133-language catalog. OCR sources depend on the 
 | LM Studio | Local, contextual AI | Load a model and start its local API server |
 | OpenAI compatible | Local or remote | Loopback HTTP or remote HTTPS base URL; optional key |
 
-API providers may charge usage fees. Trial credits or free quotas are not promised. In **Providers**, select a service, enter a key if required, and **Save & test connection**. Choose a discovered model and **Apply translation settings**. Official provider links are available in the app. Model names are not permanently hardcoded.
+API providers may charge usage fees. Trial credits or free quotas are not promised. In **Providers**, select a service, enter a key if required, and **Save and test connection**. Choose a discovered model and **Apply translation settings**. Official provider links are available in the app. Model names are not permanently hardcoded.
 
 Advanced endpoint/API controls are hidden until requested. Known embedding, image, audio and realtime-only models are excluded from text-model lists; unknown compatible models remain selectable with unverified support. Native OpenAI requests disable response storage and streaming; compatible servers retain Chat Completions. [Provider setup and recovery](docs/provider-setup.md) explains privacy, costs and common errors. Glossaries support previewed JSON/CSV exchange; imported terms remain a draft until Apply.
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import multiprocessing
+import os
 import sys
 from pathlib import Path
 
@@ -21,12 +22,16 @@ def main() -> int:
         "--ocr-fixture", type=Path, help="Synthetic Japanese fixture for release verification"
     )
     args = parser.parse_args()
+    verification_mode = args.smoke_test or bool(args.render_preview) or bool(args.verify_runtime)
+    if verification_mode:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
     from desktranslate.capture import enable_dpi_awareness
 
     enable_dpi_awareness()
     from PySide6.QtCore import QTimer
     from PySide6.QtWidgets import QApplication, QMessageBox
 
+    from desktranslate.instance import InstanceError, SingleInstance
     from desktranslate.logging import configure_logging
     from desktranslate.settings import SettingsStore, data_dir
     from desktranslate.ui.window import MainWindow
@@ -35,20 +40,46 @@ def main() -> int:
     app.setApplicationName("DeskTranslate")
     app.setOrganizationName("DeskTranslate")
     app.setQuitOnLastWindowClosed(False)
+    instance: SingleInstance | None = None
     try:
+        instance = SingleInstance(data_dir(), app)
+        if not instance.acquire():
+            if not verification_mode and instance.notify():
+                return 0
+            message = "DeskTranslate is already running or still closing. Restore it from the tray, or wait for it to finish closing and launch again."
+            if verification_mode:
+                print(
+                    message + " Automated verification needs an isolated data folder.",
+                    file=sys.stderr,
+                )
+            else:
+                QMessageBox.information(None, "DeskTranslate is already running", message)
+            return 1
         configure_logging(data_dir() / "logs")
-    except OSError:
-        QMessageBox.critical(
-            None,
-            "DeskTranslate cannot start",
-            "The application data folder is not writable. Extract the portable ZIP to a writable folder, or check your Windows account's app-data permissions.",
-        )
+    except (OSError, InstanceError):
+        if instance:
+            instance.close()
+        message = "DeskTranslate cannot start with this data folder. Check that it is writable, close other DeskTranslate windows and try again. For portable builds, extract the entire ZIP to a writable folder."
+        if verification_mode:
+            print(message, file=sys.stderr)
+        else:
+            QMessageBox.critical(None, "DeskTranslate cannot start", message)
         return 1
     window = MainWindow(
         SettingsStore(),
         demo=args.demo or args.smoke_test or bool(args.render_preview) or bool(args.verify_runtime),
     )
     window.show()
+    instance.can_activate = lambda: not window.closing
+
+    def activate() -> None:
+        if not window.closing:
+            window.showNormal()
+            window.raise_()
+            window.activateWindow()
+
+    instance.activated.connect(activate)
+    app.aboutToQuit.connect(instance.close)
     if args.verify_runtime:
         from threading import Thread
 
@@ -127,4 +158,7 @@ def main() -> int:
         QTimer.singleShot(400, preview)
     elif args.smoke_test:
         QTimer.singleShot(400, window.quit)
-    return app.exec()
+    try:
+        return app.exec()
+    finally:
+        instance.close()

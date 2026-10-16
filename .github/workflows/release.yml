@@ -85,6 +85,10 @@ jobs:
           $process = Start-Process -FilePath "$PWD/dist/DeskTranslate/DeskTranslate.exe" -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw 'Packaged startup failed' }
+      - name: Verify frozen ownership and crash recovery offscreen
+        run: |
+          python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Prepare verified synthetic OCR qualification
         id: prepare_ocr
         run: |
@@ -145,4 +149,5 @@ jobs:
             docs/soak-chaos-hosted.json
             .audit/pytest.xml
             .audit/dependency-audit.json
+            .audit/packaged-instance.json
           retention-days: 30

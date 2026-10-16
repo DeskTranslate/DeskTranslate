@@ -21,8 +21,11 @@ The suite replaces external boundaries rather than skipping application logic:
 - Picker drag/corner resize/Enter/Escape use authored pixmaps in offscreen widgets. Coordinate invariants cover six resolutions/orientations, five scales and positive/negative origins without changing any display.
 - Session, stale-result, failure and cleanup tests use injected capture/OCR/provider components. A failed-session weak-reference regression verifies that async exception cycles do not keep retired state/native locks alive until cyclic GC.
 - Short native process/job/handle tests use hidden, owned background processes. They do not install software, register input hooks or change the desktop.
+- Startup ownership tests use temporary folders and owned local pipes. Actual offscreen CLI processes cover relaunch/restore, crash recovery and clean unlock; verification/error paths cannot activate an existing app.24 repeated activation/cleanup cycles check handle/thread bounds.
 
 This retains correctness, failure-path and rendering coverage. It does not pretend to qualify native DPI messages, actual font/display composition, screen readers or physical hardware. Native observations remain separately labelled in the acceptance matrix.
+
+One offscreen QApplication lives for the pytest session. Qt notifiers must not outlive an application recreated between component cases; doing so caused a native abort during local-pipe testing. Owned widgets/servers still close and delete between cases, with deferred deletion drained. This matches the production event-loop lifetime without removing cleanup assertions.
 
 The validation runner bounds each step, stops on the first failure and preserves command output/JUnit. Ctrl+C or a timeout closes its owned process tree. It does not terminate unrelated applications. Pytest categories `interactive`, `long_running`, `system_changes` and `external_service` are excluded by the default marker expression; manual native probes live outside `tests/`.
 
@@ -35,6 +38,8 @@ python tools/validate.py --predeploy
 This adds dependency consistency/vulnerability checks, reachable-history/source privacy scanning and wheel/sdist builds. It uses network access for the vulnerability database and more CPU/disk than the routine suite, but does not use the desktop. An existing binary can also be smoke-tested offscreen with `--frozen <path-to-DeskTranslate.exe>`; that does not install it. Packaging/runtime/installer evidence must still match the actual candidate.
 
 Normal GitHub CI uses this headless path on a hosted Windows runner, followed by an offscreen frozen runtime check. It does not invoke foreground capture, visible videos, display changes or an installer. Installer qualification is restricted to the manually dispatched candidate workflow on its disposable runner.
+
+For a matching packaged runtime, `python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json` separately exercises owned offscreen relaunch, verification isolation, deliberate fixture-process crash, dead-owner recovery, retained preferences and clean unlock. Its90-second supervisor closes only owned processes. It uses temporary authored data and system-only PATH; no installer, desktop input/capture or ordinary preferences are touched. Hosted quality/candidate jobs require this gate; it is excluded from the routine laptop command.
 
 ## Extended background qualification
 

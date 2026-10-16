@@ -155,6 +155,47 @@ def test_real_ocr_product_probe_is_an_explicit_separate_command(tmp_path):
     assert not output.exists()
 
 
+def test_frozen_process_probe_requires_opt_in_before_launching_anything(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    output = tmp_path / "not-created.json"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(root / "tools/qualify_frozen_instance.py"),
+            "--executable",
+            str(tmp_path / "DeskTranslate.exe"),
+            "--output",
+            str(output),
+        ],
+        cwd=root,
+        capture_output=True,
+        timeout=15,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+    )
+    assert result.returncode == 2 and b"--component-test" in result.stderr
+    assert not output.exists()
+
+
+def test_frozen_probe_refuses_installer_before_process_execution(tmp_path, monkeypatch):
+    import json
+
+    from tools.qualify_frozen_instance import qualify
+
+    from desktranslate import __version__
+
+    (tmp_path / "build-info.json").write_text(
+        json.dumps({"version": __version__}), encoding="utf-8"
+    )
+    (tmp_path / "managed-runtime.txt").write_text("authored marker", encoding="utf-8")
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("No executable may run before runtime validation")
+
+    monkeypatch.setattr(subprocess, "Popen", forbidden)
+    with pytest.raises(ValueError, match="not an installer"):
+        qualify(tmp_path / "Setup.exe")
+
+
 @pytest.mark.skipif(os.name != "nt", reason="Owned Windows supervisor lifecycle")
 def test_manual_probe_timeout_terminates_owned_worker_tree(monkeypatch, tmp_path):
     monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "tools"))

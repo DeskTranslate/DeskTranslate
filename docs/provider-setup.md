@@ -15,7 +15,7 @@ Recognition always runs locally. Choose where recognized text, glossary/style an
 | LM Studio | Load a model and start the local API server yourself, then discover/test/select it. |
 | Compatible | Loopback HTTP or remote HTTPS base URL, optional key, explicit model. Uses Chat Completions. |
 
-In Providers, choose a service, enter a key if needed, **Save & test connection**, choose a model and **Apply translation settings**. The key is saved in Windows Credential Manager for that provider/endpoint. Leave its field blank to keep the saved key. Delete saved key removes it. Advanced connection settings expose endpoints/API mode only when needed. Changing provider clears dialogue context and requires a fresh session; it does not silently resume capture.
+In Providers, choose a service, enter a key if needed, **Save and test connection**, choose a model and **Apply translation settings**. The key is saved in Windows Credential Manager for that provider/endpoint. Leave its field blank to keep the saved key. Delete saved key removes it. Advanced connection settings expose endpoints/API mode only when needed. Changing provider clears dialogue context and requires a fresh session; it does not silently resume capture.
 
 Discovery omits known embedding, image, audio and realtime-only models. A catalog is not proof that a model is usable with your account or server; unknown compatible IDs remain selectable. Reasoning, quotas, costs and speed are not fabricated. Native Responses requires a completed assistant text response; truncated, blocked, malformed or oversized responses fail safely. Custom servers may expose only Chat Completions. Existing beta1 native OpenAI settings retain Chat mode until you explicitly change it.
 

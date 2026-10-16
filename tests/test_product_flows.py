@@ -231,3 +231,69 @@ def test_one_shot_completion_drains_events_then_stops_polling_but_error_can_retr
     product.poll_pipeline()
     assert "paused" in product.session_status.text().lower()
     assert product.pause_button.isEnabled() and product.pause_button.text() == "Retry translation"
+
+
+def test_quit_rejects_late_setup_and_new_background_work(product, monkeypatch):
+    def forbidden():
+        raise AssertionError("Selection must not open after Quit")
+
+    monkeypatch.setattr("desktranslate.ui.window.RegionSelector", forbidden)
+    started = []
+    monkeypatch.setattr(product.jobs, "run", lambda operation: started.append(operation) or 1)
+    product.show()
+    product.quit()
+    product.onboarding()  # A first-run singleShot may arrive during worker cleanup.
+    product.job(lambda: None, lambda result, error: None)
+    product.select("once")
+    product.queue_start(True)
+    assert not hasattr(product, "setup_dialog")
+    assert not started and not product.callbacks
+    assert not product.isVisible()
+
+
+def test_terminal_worker_cleanup_failure_is_visible_before_next_user_action(product, monkeypatch):
+    from desktranslate.pipeline import Pipeline
+
+    pipeline = Pipeline(product.settings, lambda: None, lambda: None, lambda: None, once=True)
+    pipeline.session.start()
+    pipeline.cancel.set()
+    pipeline.delivered_source = "authored result"
+    product.pipeline = pipeline
+    pipeline.cleanup_failure()
+    product.refresh_session_view()
+    assert product.exit_code == 1 and "Restart required" in product.session_status.text()
+    assert "Quit" in product.status_label.text()
+    assert not product.pause_button.isEnabled() and not product.live_button.isEnabled()
+    product.notice("Profile saved.")
+    assert "Restart required" in product.session_status.text()
+    product.start(False)
+    assert product.pipeline is None and product.pending_start is None
+    product.show()
+
+    def forbidden():
+        raise AssertionError("Selection must not open after cleanup failure")
+
+    monkeypatch.setattr("desktranslate.ui.window.RegionSelector", forbidden)
+    product.once()  # No selected region: refuse before opening a picker.
+    assert product.selector is None and product.isVisible()
+    product.settings.recent_region = [0, 0, 100, 100]
+    product.once()  # Existing region: refuse before hiding to capture.
+    assert product.isVisible() and not product.timer.isActive()
+    assert "launch it again" in product.status_label.text()
+
+
+def test_retired_cleanup_failure_stops_a_replacement_live_session(product):
+    from desktranslate.pipeline import Pipeline
+
+    retired = Pipeline(product.settings, lambda: None, lambda: None, lambda: None)
+    retired.cleanup_failure()
+    active = Pipeline(product.settings, lambda: None, lambda: None, lambda: None)
+    active.session.start()
+    product.retiring.append(retired)
+    product.pipeline = active
+    product.show()
+    product.collect_retired()
+    product.refresh_session_view()
+    assert active.cancel.is_set() and product.pipeline is None
+    assert product.isVisible() and "Restart required" in product.session_status.text()
+    assert "Quit" in product.status_label.text()

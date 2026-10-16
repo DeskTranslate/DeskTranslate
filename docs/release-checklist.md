@@ -29,6 +29,8 @@ python -m build --no-isolation --outdir dist-python
 
 Check every command's exit code; an earlier failure must stop a workflow. Retain JUnit/dependency/build/runtime reports. Inspect wheel/sdist assets and metadata. Run source/reachable-history secret scanning without printing candidate secret values. Review all old issues using [the disposition table](issues-v2.md); do not close them solely because the architecture changed.
 
+After building, require `python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json`. Both hosted workflows preserve this report and fail if frozen relaunch, crash recovery, clean unlock or preference retention fails. It runs offscreen against owned temporary data, never against a user's active data directory.
+
 ## OCR, providers and native desktop
 
 - Run `python tools/qualify_product.py --component-test --output docs/product-component-qualification.json` for real OCR→loopback HTTP→main-window/overlay journeys without the desktop. Inspect each journey and negative-background result separately; retain failures and source/harness hashes. Ambiguous shapes are an accuracy limitation, not evidence that every text-free image is safe. This opted-in CPU probe is excluded from the routine suite.

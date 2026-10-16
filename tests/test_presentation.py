@@ -29,3 +29,12 @@ def test_paused_waiting_and_idle_states_have_distinct_feedback():
     retiring = session_presentation(None, retiring=True)
     assert "Ready" in idle.summary and "Stopping" in retiring.summary
     assert not idle.can_pause and not retiring.can_pause
+
+
+def test_cleanup_failure_overrides_success_retry_and_preparation():
+    for state in (None, SessionState.ERROR, SessionState.WATCHING):
+        view = session_presentation(
+            state, completed=True, has_result=True, preparation="needed", restart_required=True
+        )
+        assert "Restart required" in view.summary
+        assert not view.can_pause and not view.can_stop

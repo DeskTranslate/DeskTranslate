@@ -466,7 +466,7 @@ class MainWindow(QMainWindow):
         self.model_combo.setPlaceholderText("Test connection to discover models")
         layout.addWidget(self.model_combo)
         row = QHBoxLayout()
-        self.test_button = button("Save & test connection", self.test_provider, True)
+        self.test_button = button("Save and test connection", self.test_provider, True)
         row.addWidget(self.test_button)
         row.addWidget(button("Provider website", self.open_provider_site))
         row.addWidget(button("Delete saved key", self.delete_key))
@@ -786,6 +786,8 @@ class MainWindow(QMainWindow):
             return False
 
     def job(self, operation: Callable[[], object], callback: Callable[[object, str], None]) -> None:
+        if self.closing:
+            return
         serial = self.jobs.run(operation)
         if serial:
             self.callbacks[serial] = callback
@@ -914,13 +916,23 @@ class MainWindow(QMainWindow):
                 "Monitor selected. One-shot results appear in the main window when no safe overlay space remains."
             )
 
+    def capture_ready(self) -> bool:
+        if self.closing:
+            return False
+        if self.exit_code:
+            self.notice("Quit DeskTranslate, then launch it again before starting translation.")
+            return False
+        return True
+
     def select(self, action: str = "select", relative: bool = False) -> None:
-        if self.selector:
+        if self.selector or not self.capture_ready():
             return
         if relative and not self.settings.window_target:
             self.notice("Choose an application first, then select a region inside it.")
             return
         self.stop()
+        if not self.capture_ready():
+            return
         self.relative_selection = relative
         self.selected_action = action
         self.hide()
@@ -984,6 +996,8 @@ class MainWindow(QMainWindow):
             self.select("live")
 
     def queue_start(self, once: bool, focus_on_error: bool = True) -> None:
+        if not self.capture_ready():
+            return
         serial = self.command_serial
         self.hide()
         self.overlay.hide()
@@ -1024,10 +1038,7 @@ class MainWindow(QMainWindow):
             self.notice("Finish editing the overlay before starting translation.")
             return
         self.stop()
-        if self.exit_code:
-            self.notice(
-                "Restart DeskTranslate after the worker cleanup failure before starting again."
-            )
+        if not self.capture_ready():
             return
         if len(self.retiring) >= 4:
             self.notice("Previous requests are still stopping. Wait a moment, then start again.")
@@ -1176,6 +1187,16 @@ class MainWindow(QMainWindow):
 
     def refresh_session_view(self) -> None:
         pipeline = self.pipeline
+        if pipeline and pipeline.cleanup_failed.is_set() and not self.exit_code:
+            self.exit_code = 1
+        if self.exit_code and (pipeline or self.selector or self.pending_start):
+            # Retire all controller-owned work, including a replacement session
+            # when an older worker reports failure. stop() refreshes the now-empty view.
+            self.stop()
+            self.notice("A worker could not clean up. Quit DeskTranslate, then launch it again.")
+            return
+        if self.exit_code:
+            self.overlay.status.setText("DESKTRANSLATE  /  RESTART REQUIRED")
         completed = bool(pipeline and pipeline.once and pipeline.cancel.is_set())
         view = session_presentation(
             pipeline.session.state if pipeline else None,
@@ -1186,6 +1207,7 @@ class MainWindow(QMainWindow):
             preparation=("downloading" if self.jobs.busy else "needed")
             if self.pending_start
             else None,
+            restart_required=bool(self.exit_code),
         )
         self.session_status.setText(view.summary)
         self.session_status.setToolTip(view.summary)
@@ -1196,7 +1218,7 @@ class MainWindow(QMainWindow):
         self.overlay.pause_button.setEnabled(view.can_pause)
         self.stop_button.setEnabled(view.can_stop)
         running_live = bool(pipeline and not pipeline.once and not pipeline.cancel.is_set())
-        self.live_button.setEnabled(not running_live)
+        self.live_button.setEnabled(not running_live and not self.exit_code)
         self.live_button.setText("Live is running" if running_live else "Start live")
         if hasattr(self, "tray_actions"):
             self.tray_actions["Pause / resume"].setText(view.pause_text)
@@ -1650,7 +1672,7 @@ class MainWindow(QMainWindow):
             self.ocr_status.setText("Language pack verified. Finishing preparation…")
             return
         self.ocr_status.setText(
-            f"Preparing {model} · {downloaded / 1e6:.1f} MB"
+            f"Downloading recognition pack · {downloaded / 1e6:.1f} MB"
             + (f" / {total / 1e6:.1f} MB" if total else "")
         )
 
@@ -1817,6 +1839,8 @@ class MainWindow(QMainWindow):
         self.job(lambda: check_release(channel, self.jobs.cancel), complete)
 
     def onboarding(self) -> None:
+        if self.closing:
+            return
         if hasattr(self, "setup_dialog"):
             if self.setup_suspended:
                 self.resume_setup()
@@ -1839,6 +1863,8 @@ class MainWindow(QMainWindow):
         self.setup_dialog.show()
 
     def configure_setup_provider(self) -> None:
+        if self.closing:
+            return
         self.setup_suspended = True
         self.setup_dialog.hide()
         self.return_setup_button.show()
@@ -1860,6 +1886,8 @@ class MainWindow(QMainWindow):
         if self.closing:
             return
         self.closing = True
+        self.setEnabled(False)
+        self.hide()
         self.stop()
         self.timer.stop()
         self.display_relayout.stop()
