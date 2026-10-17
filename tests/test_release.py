@@ -72,7 +72,9 @@ def test_canonical_versions_and_mismatched_tag() -> None:
     assert release_support.windows_version("2.0.0") == "2.0.0.60000"
 
 
-def test_release_signing_and_stable_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_release_signing_and_stable_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     monkeypatch.delenv("DESKTRANSLATE_SIGNING_THUMBPRINT", raising=False)
     with pytest.raises(ValueError, match="publisher"):
         release_support.Signer()
@@ -82,8 +84,17 @@ def test_release_signing_and_stable_fail_closed(monkeypatch: pytest.MonkeyPatch)
             Path(__file__).resolve().parents[1], "v" + release_support.__version__
         )
     monkeypatch.setattr(release_support, "__version__", "2.0.0")
+    root = Path(__file__).resolve().parents[1]
+    for name in ("pyproject.toml", "packaging/installer.iss"):
+        destination = tmp_path / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((root / name).read_bytes())
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/manual-qualification.json").write_text(
+        json.dumps({"version": "2.0.0", "gates": {"clean_windows": False}})
+    )
     with pytest.raises(ValueError, match="qualification"):
-        release_support.stable_gate(Path(__file__).resolve().parents[1], "v2.0.0")
+        release_support.stable_gate(tmp_path, "v2.0.0")
 
 
 def test_final_build_policy_requires_evidence_but_permits_disclosed_unsigned(tmp_path, monkeypatch):

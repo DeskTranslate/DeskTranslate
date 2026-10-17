@@ -98,6 +98,8 @@ These are source-mode native OCR/HTTP/offscreen-overlay workloads. Final frozen 
 
 Final release build/verification is a separate controlled step after merging documentation only. The annotated `v2.0.0` tag, binary provenance and [release checksums/verification](https://github.com/DeskTranslate/DeskTranslate/releases/tag/v2.0.0) identify the exact shipped commit and artifacts. No app/lock/soak-harness modification is permitted without affected requalification.
 
+The evidence-only commit initially exposed a [negative-test isolation error](qualification-test-isolation-failure.json): a test expected live repository evidence to remain incomplete forever. It now supplies deliberately incomplete temporary evidence and retains the rejection assertion. The qualified application, lock and endurance harness are unchanged; final hosted checks rerun against the isolated test.
+
 ## Security, packaging and limitations
 
 Source/provider/download/archive/credential/privacy boundaries retain focused
