@@ -88,6 +88,7 @@ class OCRResult:
     language: str = "auto"
     duration_ms: float = 0.0
     timings: dict[str, float] = field(default_factory=dict)
+    annotations: tuple[OCRLine, ...] = ()
 
 
 @dataclass(frozen=True)

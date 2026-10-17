@@ -1,8 +1,34 @@
 # Media and context engineering checkpoint
 
-2026-10-16. PR38 remains a draft. Target:2.0.0; internal version:2.0.0b2. **Publication HOLD.** This is an implementation checkpoint, not stable qualification. Baseline application d5f56dc and its hosted reports remain intact; they do not qualify the changed architecture.
+2026-10-17. PR38 remains a draft. Target:2.0.0; internal version:2.0.0b2. **Publication HOLD.** This is an implementation checkpoint, not stable qualification. Baseline applications d5f56dc and01263ed and their hosted reports remain intact; they do not qualify subsequent recognition changes.
 
-## Implemented product changes
+## Current regional recognition changes
+
+The old Japanese detector joins characters at similar heights across separate columns. Merely changing reading order cannot recover the missing columns. Rotating every pixel also damages upright captions. The new path detects column ROIs in an alternate orientation, maps those boxes back to original crop pixels, rotates individual column crops, and retains upright caption crops. Pure geometry/order/ruby logic lives below the native OCR boundary in `layout.py`.
+
+A pinned PP-OCRv6 small recognizer is loaded lazily in the existing isolated worker for those crops and eligible longer horizontal Japanese word regions. Global replacement generated more false characters on text-free shapes in the comparison, so short text/counters keep the previous model. The word rule selects a model, not whether text exists: failed/empty secondary recognition retains the primary result. The model has an explicit source,21,234,383-byte size and SHA-256 in the manifest. The Japanese pack now needs four verified files; older packs use the existing explicit install-and-continue flow to acquire the additional21.2MB without replacing settings or other packs.
+
+Nearby narrow kana beside a larger aligned kanji column is retained as an annotation, avoiding duplicate ruby readings in translated text. Size alone never removes numbers, Latin or distant small columns. Crops are bounded to256/twice input area. A detection-only column pass cannot disable recognition on the next upright frame. No global confidence threshold or detector resolution was changed.
+
+Twelve authored assets expand the multilingual corpus from35 to47. The regional probe covers20 Japanese positive/short cases twice in one worker, interleaving orientations, plus12 background/mode cases. It is opt-in, background-only, uses existing verified models and has a240-second owned deadline.
+
+| Test / environment | Result | Evidence / limitation |
+|---|---|---|
+| Complete non-disruptive pre-deployment gate, pinned Windows runtime | PASS |474 tests74.85s; Ruff/format96 files, mypy46 modules, smoke/pip check, zero known locked-dependency vulnerabilities, privacy scan361 tree/740 reachable blobs without findings, wheel/sdist2.0.0b2. No frozen/installer qualification in this command. |
+| Eight vertical/long/short/light/mixed/ruby Japanese layouts, two calls each | PASS | [Regional report](ocr-regional-qualification.json); exact text16/16 calls; ruby annotation retained. Authored assets, not real-media qualification. |
+| Pixel-font Japanese and added outline/translucent/low-contrast/small/counter text | PASS within authored scope | Pixel CER0.364→0; translucent0.083→0, low contrast0.091→0 and small0.154→0 in comparative experiments. Existing clean/multiline/outline/counter inputs do not regress. |
+| All20 positive/short cases, twice each | FAIL exact overall |18/20 exact on both calls. Mixed-name punctuation CER0.08 and punctuation line CER0.091 remain; short `の` and `え？` remain exact. No broad accuracy claim. |
+| Six Japanese backgrounds in both orientation modes | FAIL overall |10/12 empty. Geometric shapes still produce short false text in both modes; no secondary word call hides the problem. |
+| Regional call latency on this Windows11 CPU, second call per case | PASS measurement only | Median1,195.82ms, range984.75–1,632.44ms across20 cases; vertical observations1,309–1,632ms. Cold first call15,052ms includes worker initialization; native recognition portion2,782ms. These are not full-pipeline media deadlines. |
+| Authored23-frame recognition/temporal replay | PASS within replay scope | [Current replay](media-sequence-regional.json):9/9 exact complete lines, including both vertical lines; Japanese prefixes5→1 proposal, Korean spacing3→2. Capture timestamps are replayed, not paced. |
+| Actual OCR→owned HTTP→offscreen controller/overlay | FAIL overall; five journeys PASS | [Current component report](product-component-regional.json):one-shot, pause/resume, outage/retry, language switch and cleanup/preferences pass;0 remaining children,6 HTTP requests.20/24 negative backgrounds empty. Cold deliveries5.31–7.54s; provider replies are fixtures. |
+| Current-source packaged endurance / native mixed-media layout / capable-model contextual translation | NOT TESTED | Must qualify after architecture stabilizes. The second native recognizer changes memory/startup behavior, so older endurance reports cannot qualify it. |
+
+The current regional/replay/component reports share identical application hashes. The earlier [layout-only report](ocr-layout-qualification.json) and [layout-only replay](media-sequence-layout.json) retain their original hashes before horizontal word refinement. Existing failures below remain baseline evidence rather than being rewritten as successful runs.
+
+The completed d5f56dc baseline candidate has independently verified archive/checksum/provenance and three hosted attestations, installer lifecycle,7,200.26-second steady and1,800.30-second fault workloads. [Preserved baseline](hosted-candidate-d5f56dc.json). The01263ed checkpoint also [passes hosted quality](hosted-quality-01263ed.json), including463 tests and frozen startup/OCR/vault/HTTP/privacy. Neither result qualifies this new regional OCR source.
+
+## Previous media/context checkpoint at01263ed
 
 - Replace the stateless text stabilizer with a bounded temporal service. Six observations/2.5seconds retain text, confidence, geometry and capture times. Progressive prefix growth, complete subtitles, character noise, spacing noise, disappearance and independent geometry have distinct behavior. Proposed text always comes from an observation.
 - Separate control-generation ownership from visual revisions. Obsolete pixels may contribute text-growth evidence while the same capture session remains authorized, but cannot produce translation/presentation. Pause, stop, target/context changes revoke that evidence. A new regression reproduces pause during an in-flight capture followed by immediate resume; pre-pause pixels are discarded.
@@ -14,7 +40,7 @@
 - Collapse optional dialogue settings until needed, reopening them for configured title context. Quick translation no longer shows an irrelevant AI billing warning. Dark/light pages were rendered offscreen and inspected.
 - Instrument detector, recognizer, reconstruction, OCR-call/IPC and context lookup separately. Bounded numeric diagnostics retain no text, story notes, profile names or endpoints.
 
-## Measured evidence
+### Previous measured evidence
 
 | Test / environment | Result | Evidence / limitation |
 |---|---|---|
@@ -31,15 +57,15 @@
 
 The stage measurements locate the main warm bottleneck in detection: representative Japanese input spent about1,399ms detecting and113ms recognizing; small English text spent936ms detecting and138ms recognizing. Natural-scale detection lowers these costs but produces a wrong low-contrast character at0.999 confidence, so confidence alone cannot safely select the fast path. These are individual observations, not representative warm medians.
 
-The current detector can group same-height Japanese characters across separate vertical columns into horizontal rows. A research-only whole-image90-degree rotation improves two vertical samples but damages horizontal/mixed text. It is not applied globally. Vertical/mixed-layout region analysis, ruby handling and representative real-media accuracy still need engineering and qualification.
+At this previous checkpoint, the detector grouped same-height Japanese characters across separate vertical columns into horizontal rows. A research-only whole-image90-degree rotation improved two vertical samples but damaged horizontal/mixed text. That finding led to the regional implementation above; the original failing replay is preserved.
 
 The sequence report's recorded application hashes precede only the final optional-editor UI change. Its recognition/temporal/pipeline code is unchanged; the original hashes are retained. The product component report matches the subsequent application source. Exact final automated commands/results are recorded in [release-readiness.md](release-readiness.md).
 
 ## Remaining product priorities
 
-1. Improve vertical/mixed-layout OCR and adaptive detection without sacrificing short characters, punctuation or low-contrast text. Expand authored layouts and test real media in a reserved/isolated environment.
+1. Qualify regional layouts/word refinement against representative media and address remaining punctuation/name and false-background weaknesses without sacrificing short characters. Authored vertical/pixel failures are fixed; universal accuracy is not established.
 2. Measure actual capture→recognition→context→translation→overlay sequence latency, calls per completed line and missed brief subtitles. Replay success does not establish real-time throughput; current warm OCR remains around a second on this host.
 3. Qualify story/terminology prompts against capable real models with context/no-context sequences. No local model recommendation or cloud-provider quality claim is justified by the current environment.
 4. After architecture stabilizes, rebuild/qualify exact Windows artifacts, resource endurance, clean consumer Windows, supported physical layouts and accessibility. Obtain trusted publisher signing before stable promotion. No certificate/service is available here.
 
-No new release, tag, merge, issue closure or stable promotion is authorized by this checkpoint. The broad product task remains in progress.
+No new release, tag, merge, issue closure or stable promotion was performed at this checkpoint. The broad product task remains in progress.

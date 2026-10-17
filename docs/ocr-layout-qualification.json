@@ -1,0 +1,752 @@
+{
+  "version": "2.0.0b2",
+  "scope": "Opt-in actual OCR qualification of authored Japanese layouts and backgrounds.\n\nNo desktop capture or media playback. Tests upright captions, vertical columns,\nruby, short text and switching orientations in one owned native worker.\n",
+  "python_version": "3.12.15",
+  "physical_media": false,
+  "provider_tested": false,
+  "source_hashes": {
+    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
+    "algorithms.py": "53fe69d68bee48aded31ac0e942d5a8fed4af0c0e817f86ab2d1a1e11a64507a",
+    "app.py": "eaf1210358be8bbf1321dff838f5710a8231bebeadc15ac6e9954aa938349cc7",
+    "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
+    "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
+    "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
+    "assets/models.json": "fc60f6837b66970ab10f7f1efd898685629a07546a2c4bd8aa14c4f249c08f04",
+    "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
+    "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "assets/samples/es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "assets/samples/fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "assets/samples/hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "assets/samples/id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "assets/samples/it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "assets/samples/ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "assets/samples/ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "assets/samples/nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "assets/samples/pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "assets/samples/pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "assets/samples/ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "assets/samples/tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "assets/samples/uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "assets/samples/vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+    "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
+    "context.py": "90d1f28b6d6448caad5ce057de19592ab5dfaef5a34d0b80bca92e42380684a3",
+    "diagnostics.py": "6d7f526eea6325f0b992fe7d67b288dbb158179f1ad49c3f8aaa40e1fa8edac4",
+    "errors.py": "2094c09ebd08bbeeadc9cdb2e037e5c11c6162b2db16f479b59b2270e23f1cdc",
+    "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
+    "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "instance.py": "e57b9bd91fb2a16d0b99139157255de51a0771e61423b0c38d70a1bb60a4c309",
+    "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "layout.py": "cce1b91ed8d7c7a8e0b9efd37eca75825d8ded0037e9be3e048f1ef9426e2d5f",
+    "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
+    "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
+    "models.py": "6a33ff0c4637860764fcc9e662a6b6066aaebe7ff854de4790ed3eb560293181",
+    "network.py": "702b617972b83b71099568a573a468ec149b56347ceeffa5003e92e337611b02",
+    "ocr.py": "87ef18cfc85d2cdb415558c10381b89bece648df4021663c0adb5945dc825372",
+    "pipeline.py": "89c2989afba7d279c821664f46a8b2eaab42645a68b30bd04bbcd044bada5920",
+    "presentation.py": "47dbfaeb97ebe5381bcb0fea3fe969839e31fafe96af77d76b49ddb0d86d32e9",
+    "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
+    "profiles.py": "ff1215ba938a8d5e2ffec99e4fcaa56a8961280079466e7e91a3f31eebc91be7",
+    "providers.py": "d2adf93ffe98326653e97af1665f99bccda0b0c168b5c775c5c8cd373c715614",
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
+    "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
+    "settings.py": "e8bfac9517023eab952155909091d24207d3fa1d73953e5d147dd9ecfef1120c",
+    "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
+    "temporal.py": "c9932112cf492c30351824659d65197139e5be92892c3fb5aa9dcc8adf0f0204",
+    "transcript.py": "e38502fb06472f0d5af0fc7440db418ae2ab68dbb6e3f615ea0b1f3f5e95b1e9",
+    "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
+    "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
+    "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
+    "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
+    "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
+    "ui/onboarding.py": "a99d5b86a363249b444f44ec5b364474822c21b778d105d92e2b22a2142e939e",
+    "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
+    "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
+    "ui/profiles.py": "2cdf5e893f05a9ade79be612a6c2287c7908198813e0738933d593307b8abd3c",
+    "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
+    "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
+    "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
+    "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
+    "ui/transcript.py": "352aa89ef5ad01577d2c2266a118a3640072312efefbc154d8c1d66a0fbd20f2",
+    "ui/window.py": "d1e5a0d71d0a21dd23d7bb418eeb351590f2b5fe6248803ccfe347d8f256f0e1",
+    "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
+    "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
+  },
+  "source_unchanged": true,
+  "harness_sha256": "98c96b9c47fe358683aae167abc85b437fb4e06d98b5372997805b3644176985",
+  "fixture_renderer_sha256": "e86d760e257bda358eb1a83ff5c02b3a8c160d873ea861c8833042250bbcf305",
+  "models": {
+    "det": {
+      "filename": "ch_PP-OCRv4_det_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/det/ch_PP-OCRv4_det_mobile.onnx",
+      "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9",
+      "bytes": 4745517
+    },
+    "cls": {
+      "filename": "ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/cls/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+      "bytes": 585532
+    },
+    "japan": {
+      "filename": "japan_PP-OCRv4_rec_mobile.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv4/rec/japan_PP-OCRv4_rec_mobile.onnx",
+      "sha256": "e1075a67dba758ecfc7ebc78a10ae61c95ac8fb66a9c86fab5541e33f085cb7a",
+      "bytes": 9753335
+    },
+    "japan_vertical": {
+      "filename": "PP-OCRv6_rec_small.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.9.2/onnx/PP-OCRv6/rec/PP-OCRv6_rec_small.onnx",
+      "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+      "bytes": 21234383
+    }
+  },
+  "fixtures": [
+    {
+      "id": "ja-vertical-dialogue",
+      "expected": "この町の\n名前を\n覚えている",
+      "vertical": true,
+      "image_sha256": "edcdfbff21827ae5ff585ee678dd704ea2e630d441db6ae3fa9510e334e5db4d",
+      "calls": [
+        {
+          "ocr_call_ms": 6372.839900002873,
+          "native_ms": 2756.3770999986446,
+          "timings": {
+            "ocr_layout_detect_ms": 648.8585999977659,
+            "ocr_layout_recognize_ms": 338.8716000044951,
+            "ocr_detect_ms": 1247.6881000038702,
+            "ocr_recognize_ms": 495.7990999973845,
+            "ocr_reconstruct_ms": 0.013500000932253897
+          },
+          "text": "この町の\n名前を\n覚えている",
+          "confidence": 0.9992800000000001,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1637.9480000032345,
+          "native_ms": 1634.7345000031055,
+          "timings": {
+            "ocr_layout_detect_ms": 636.2469000014244,
+            "ocr_layout_recognize_ms": 99.20430000056513,
+            "ocr_detect_ms": 644.1995999994106,
+            "ocr_recognize_ms": 232.53069999918807,
+            "ocr_reconstruct_ms": 0.010099996870849282
+          },
+          "text": "この町の\n名前を\n覚えている",
+          "confidence": 0.9992800000000001,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-game",
+      "expected": "明日、またここで会おう。",
+      "vertical": false,
+      "image_sha256": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+      "calls": [
+        {
+          "ocr_call_ms": 1930.2824000042165,
+          "native_ms": 1928.7168000009842,
+          "timings": {
+            "ocr_detect_ms": 1799.2494999998598,
+            "ocr_recognize_ms": 126.42520000372315,
+            "ocr_reconstruct_ms": 0.05119999696034938
+          },
+          "text": "明日、またここで会おう。",
+          "confidence": 0.99496,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1096.4187000063248,
+          "native_ms": 1095.259800000349,
+          "timings": {
+            "ocr_detect_ms": 1043.7279999969178,
+            "ocr_recognize_ms": 48.86800000531366,
+            "ocr_reconstruct_ms": 0.05890000466024503
+          },
+          "text": "明日、またここで会おう。",
+          "confidence": 0.99496,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-vertical",
+      "expected": "明日また\n会おう",
+      "vertical": true,
+      "image_sha256": "0978e13b59e6743c4ed28f3ae7044efae0f9cd1c525a09438c69554b9ecaa446",
+      "calls": [
+        {
+          "ocr_call_ms": 1506.8763000017498,
+          "native_ms": 1504.3170999997528,
+          "timings": {
+            "ocr_layout_detect_ms": 635.9894999986864,
+            "ocr_layout_recognize_ms": 86.14730000408599,
+            "ocr_detect_ms": 630.1481999980751,
+            "ocr_recognize_ms": 144.89640000101645,
+            "ocr_reconstruct_ms": 0.010899995686486363
+          },
+          "text": "明日また\n会おう",
+          "confidence": 0.99807,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1359.2791999981273,
+          "native_ms": 1356.5703999993275,
+          "timings": {
+            "ocr_layout_detect_ms": 625.9601999990991,
+            "ocr_layout_recognize_ms": 62.19760000385577,
+            "ocr_detect_ms": 605.3424999990966,
+            "ocr_recognize_ms": 57.03999999968801,
+            "ocr_reconstruct_ms": 0.00960000033956021
+          },
+          "text": "明日また\n会おう",
+          "confidence": 0.99807,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-multiline",
+      "expected": "この町の名前を覚えている？\nもう一度、教えて。",
+      "vertical": false,
+      "image_sha256": "4687ceb33486b013026ea6c801ff606cc1ec082452c5367336b048b077c674ab",
+      "calls": [
+        {
+          "ocr_call_ms": 1245.3071999989334,
+          "native_ms": 1243.5913999943295,
+          "timings": {
+            "ocr_detect_ms": 962.261499997112,
+            "ocr_recognize_ms": 277.2549000001163,
+            "ocr_reconstruct_ms": 0.08769999840296805
+          },
+          "text": "この町の名前を覚えている？\nもう一度、教えて。",
+          "confidence": 0.99979,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1107.2296999991522,
+          "native_ms": 1106.0549000030733,
+          "timings": {
+            "ocr_detect_ms": 991.2132999961614,
+            "ocr_recognize_ms": 110.58559999946738,
+            "ocr_reconstruct_ms": 0.08759999764151871
+          },
+          "text": "この町の名前を覚えている？\nもう一度、教えて。",
+          "confidence": 0.99979,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-names",
+      "expected": "アルトリア\n魔導炉",
+      "vertical": true,
+      "image_sha256": "5c9782f571eb01b937a716ca6ef293fc08dcd25ee99c19e7a83dff9863e777a0",
+      "calls": [
+        {
+          "ocr_call_ms": 1327.056599999196,
+          "native_ms": 1325.0132000030135,
+          "timings": {
+            "ocr_layout_detect_ms": 587.7853999991203,
+            "ocr_layout_recognize_ms": 59.6644000033848,
+            "ocr_detect_ms": 632.3042000003625,
+            "ocr_recognize_ms": 41.93189999932656,
+            "ocr_reconstruct_ms": 0.007700000423938036
+          },
+          "text": "アルトリア\n魔導炉",
+          "confidence": 0.99787,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1353.8078000055975,
+          "native_ms": 1351.6019999951823,
+          "timings": {
+            "ocr_layout_detect_ms": 632.6918000049773,
+            "ocr_layout_recognize_ms": 62.500600004568696,
+            "ocr_detect_ms": 619.8354000007384,
+            "ocr_recognize_ms": 33.228100000997074,
+            "ocr_reconstruct_ms": 0.008600000001024455
+          },
+          "text": "アルトリア\n魔導炉",
+          "confidence": 0.99787,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-katakana-pixel",
+      "expected": "ドラゴンの城へ行こう！",
+      "vertical": false,
+      "image_sha256": "d067ffb32bbdec5a54ac141cfed3a3b5393467241e77153e8fa16f8b8a71d19f",
+      "calls": [
+        {
+          "ocr_call_ms": 1069.818399999349,
+          "native_ms": 1068.1588999941596,
+          "timings": {
+            "ocr_detect_ms": 964.1675000020768,
+            "ocr_recognize_ms": 101.7680000004475,
+            "ocr_reconstruct_ms": 0.05130000499775633
+          },
+          "text": "ドラゴンの城ー行ニラ「",
+          "confidence": 0.8519,
+          "annotations": [],
+          "cer": 0.36363636363636365,
+          "exact": false
+        },
+        {
+          "ocr_call_ms": 1041.4183999964735,
+          "native_ms": 1040.1395000008051,
+          "timings": {
+            "ocr_detect_ms": 996.3927999997395,
+            "ocr_recognize_ms": 41.00050000124611,
+            "ocr_reconstruct_ms": 0.04640000406652689
+          },
+          "text": "ドラゴンの城ー行ニラ「",
+          "confidence": 0.8519,
+          "annotations": [],
+          "cer": 0.36363636363636365,
+          "exact": false
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-kanji",
+      "expected": "約束を\n忘れないで",
+      "vertical": true,
+      "image_sha256": "61d84ca5fcbcef0c9b9ffb8c2fb82caadb8e91609db985af0523438ade93402b",
+      "calls": [
+        {
+          "ocr_call_ms": 1487.520199996652,
+          "native_ms": 1485.0298000019393,
+          "timings": {
+            "ocr_layout_detect_ms": 598.4983000016655,
+            "ocr_layout_recognize_ms": 65.24519999948097,
+            "ocr_detect_ms": 587.9407999964315,
+            "ocr_recognize_ms": 225.19759999704547,
+            "ocr_reconstruct_ms": 0.02280000626342371
+          },
+          "text": "約束を\n忘れないで",
+          "confidence": 0.9981450000000001,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1488.7667000002693,
+          "native_ms": 1486.6985999979079,
+          "timings": {
+            "ocr_layout_detect_ms": 701.2545999969007,
+            "ocr_layout_recognize_ms": 78.65679999667918,
+            "ocr_detect_ms": 594.9891999989632,
+            "ocr_recognize_ms": 88.43440000055125,
+            "ocr_reconstruct_ms": 0.009700001101009548
+          },
+          "text": "約束を\n忘れないで",
+          "confidence": 0.9981450000000001,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-mixed-names",
+      "expected": "ミカ：HP 120 / MP 45\nレベル 7 — QUEST 03",
+      "vertical": false,
+      "image_sha256": "d344eca3caadb610c40361abc13e9d18430fbeb4bf84090ed92abb230a649d6a",
+      "calls": [
+        {
+          "ocr_call_ms": 1226.6659000015352,
+          "native_ms": 1224.9114000005648,
+          "timings": {
+            "ocr_detect_ms": 950.5235999968136,
+            "ocr_recognize_ms": 269.48950000223704,
+            "ocr_reconstruct_ms": 0.06859999848529696
+          },
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3",
+          "confidence": 0.938115,
+          "annotations": [],
+          "cer": 0.16,
+          "exact": false
+        },
+        {
+          "ocr_call_ms": 1128.899300005287,
+          "native_ms": 1127.7791999964393,
+          "timings": {
+            "ocr_detect_ms": 1014.9799999999232,
+            "ocr_recognize_ms": 108.65370000101393,
+            "ocr_reconstruct_ms": 0.05539999983739108
+          },
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3",
+          "confidence": 0.938115,
+          "annotations": [],
+          "cer": 0.16,
+          "exact": false
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-small",
+      "expected": "この世界\n明日の光",
+      "vertical": true,
+      "image_sha256": "b05f44e300b584d8857535f64a3fcf7f538528707fb369002abb29efdd216677",
+      "calls": [
+        {
+          "ocr_call_ms": 1765.0630999996793,
+          "native_ms": 1762.8834999995888,
+          "timings": {
+            "ocr_layout_detect_ms": 655.7220999966376,
+            "ocr_layout_recognize_ms": 54.82169999595499,
+            "ocr_detect_ms": 657.760000001872,
+            "ocr_recognize_ms": 382.0521000016015,
+            "ocr_reconstruct_ms": 0.00790000194683671
+          },
+          "text": "この世界\n明日の光",
+          "confidence": 0.9996499999999999,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1483.2222999975784,
+          "native_ms": 1481.2074000001303,
+          "timings": {
+            "ocr_layout_detect_ms": 616.5838000015356,
+            "ocr_layout_recognize_ms": 59.862199996132404,
+            "ocr_detect_ms": 619.9761000025319,
+            "ocr_recognize_ms": 170.54349999671103,
+            "ocr_reconstruct_ms": 0.0092999980552122
+          },
+          "text": "この世界\n明日の光",
+          "confidence": 0.9996499999999999,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-single-kana",
+      "expected": "の",
+      "vertical": false,
+      "image_sha256": "7ab49dd51c20835e66730985d1c40205e98107139097958e57b05de1eb46614f",
+      "calls": [
+        {
+          "ocr_call_ms": 984.5389999973122,
+          "native_ms": 982.3714000012842,
+          "timings": {
+            "ocr_detect_ms": 951.488499995321,
+            "ocr_recognize_ms": 28.72429999843007,
+            "ocr_reconstruct_ms": 0.04629999602911994
+          },
+          "text": "の",
+          "confidence": 0.99865,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 898.8532999937888,
+          "native_ms": 897.5860999998986,
+          "timings": {
+            "ocr_detect_ms": 866.3337000034517,
+            "ocr_recognize_ms": 28.70180000172695,
+            "ocr_reconstruct_ms": 0.05450000026030466
+          },
+          "text": "の",
+          "confidence": 0.99865,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-light",
+      "expected": "時間を\n覚えている",
+      "vertical": true,
+      "image_sha256": "5c6adfa042c08df17634d4b51cddaf43a3f174be2c06c262bfda0fa75a3c42f5",
+      "calls": [
+        {
+          "ocr_call_ms": 1183.508799993433,
+          "native_ms": 1181.422500005283,
+          "timings": {
+            "ocr_layout_detect_ms": 494.8607999976957,
+            "ocr_layout_recognize_ms": 57.24009999539703,
+            "ocr_detect_ms": 513.7853999985964,
+            "ocr_recognize_ms": 105.42030000215163,
+            "ocr_reconstruct_ms": 0.008200004231184721
+          },
+          "text": "時間を\n覚えている",
+          "confidence": 0.996845,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1333.765499999572,
+          "native_ms": 1331.9596000001184,
+          "timings": {
+            "ocr_layout_detect_ms": 588.6813999968581,
+            "ocr_layout_recognize_ms": 49.51689999870723,
+            "ocr_detect_ms": 538.0427999989479,
+            "ocr_recognize_ms": 144.1765999989002,
+            "ocr_reconstruct_ms": 0.0092999980552122
+          },
+          "text": "時間を\n覚えている",
+          "confidence": 0.996845,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-short-question",
+      "expected": "え？",
+      "vertical": false,
+      "image_sha256": "8bd506e20364bb40d13484a02f171ff13fc15879ebe7f61ad211d4eb9d652a09",
+      "calls": [
+        {
+          "ocr_call_ms": 950.0047999972594,
+          "native_ms": 948.5647000037716,
+          "timings": {
+            "ocr_detect_ms": 916.0497999982908,
+            "ocr_recognize_ms": 30.369500003871508,
+            "ocr_reconstruct_ms": 0.05360000068321824
+          },
+          "text": "え？",
+          "confidence": 0.99757,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 977.9454000017722,
+          "native_ms": 976.8571000022348,
+          "timings": {
+            "ocr_detect_ms": 949.6509000018705,
+            "ocr_recognize_ms": 25.04889999545412,
+            "ocr_reconstruct_ms": 0.04220000118948519
+          },
+          "text": "え？",
+          "confidence": 0.99757,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-mixed",
+      "expected": "ミカ：待って！\nアルトリア\n魔導炉",
+      "vertical": true,
+      "image_sha256": "b9d96b05f0fac1d4d9a31bc81d7eaa5870bfc3a69013d818652f7965ad4c57c5",
+      "calls": [
+        {
+          "ocr_call_ms": 1357.8407000022708,
+          "native_ms": 1355.6307999970159,
+          "timings": {
+            "ocr_layout_detect_ms": 497.22230000043055,
+            "ocr_layout_recognize_ms": 77.38480000261916,
+            "ocr_detect_ms": 533.0709999980172,
+            "ocr_recognize_ms": 239.54919999960111,
+            "ocr_reconstruct_ms": 0.011999996786471456
+          },
+          "text": "ミカ：待って！\nアルトリア\n魔導炉",
+          "confidence": 0.99126,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1182.6074000055087,
+          "native_ms": 1181.1238000009325,
+          "timings": {
+            "ocr_layout_detect_ms": 511.8559000038658,
+            "ocr_layout_recognize_ms": 71.35189999826252,
+            "ocr_detect_ms": 479.7091999935219,
+            "ocr_recognize_ms": 108.71149999729823,
+            "ocr_reconstruct_ms": 0.007300004654098302
+          },
+          "text": "ミカ：待って！\nアルトリア\n魔導炉",
+          "confidence": 0.99126,
+          "annotations": [],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    },
+    {
+      "id": "ja-columns-ruby",
+      "expected": "魔導炉\n明日の光",
+      "vertical": true,
+      "image_sha256": "ae5d51c1397be6e71dbae00f6984d620d348440ac54bfd0cb32c7a2ef752a1bd",
+      "calls": [
+        {
+          "ocr_call_ms": 1305.7457999966573,
+          "native_ms": 1303.80580000201,
+          "timings": {
+            "ocr_layout_detect_ms": 490.5307000008179,
+            "ocr_layout_recognize_ms": 77.99330000125337,
+            "ocr_detect_ms": 492.29290000221226,
+            "ocr_recognize_ms": 234.5500000010361,
+            "ocr_reconstruct_ms": 0.006800000846851617
+          },
+          "text": "魔導炉\n明日の光",
+          "confidence": 0.99846,
+          "annotations": [
+            "まどうろ"
+          ],
+          "cer": 0.0,
+          "exact": true
+        },
+        {
+          "ocr_call_ms": 1212.1860999977798,
+          "native_ms": 1210.4147000063676,
+          "timings": {
+            "ocr_layout_detect_ms": 524.2570999980671,
+            "ocr_layout_recognize_ms": 75.14139999693725,
+            "ocr_detect_ms": 481.99169999861624,
+            "ocr_recognize_ms": 120.6339000054868,
+            "ocr_reconstruct_ms": 0.006000002031214535
+          },
+          "text": "魔導炉\n明日の光",
+          "confidence": 0.99846,
+          "annotations": [
+            "まどうろ"
+          ],
+          "cer": 0.0,
+          "exact": true
+        }
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "background": "dark",
+      "vertical": false,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 991.1886000045342
+    },
+    {
+      "background": "dark",
+      "vertical": true,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 2118.4954999989714
+    },
+    {
+      "background": "bright",
+      "vertical": false,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 1046.7151000048034
+    },
+    {
+      "background": "bright",
+      "vertical": true,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 1929.184799999348
+    },
+    {
+      "background": "gradient",
+      "vertical": false,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 945.3347999951802
+    },
+    {
+      "background": "gradient",
+      "vertical": true,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 1954.3410000042059
+    },
+    {
+      "background": "stripes",
+      "vertical": false,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 957.851600003778
+    },
+    {
+      "background": "stripes",
+      "vertical": true,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 1968.566000003193
+    },
+    {
+      "background": "grid",
+      "vertical": false,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 940.5388000013772
+    },
+    {
+      "background": "grid",
+      "vertical": true,
+      "text": "",
+      "confidence": 0.0,
+      "empty": true,
+      "native_ms": 1945.1844000068377
+    },
+    {
+      "background": "shapes",
+      "vertical": false,
+      "text": "と の\n-",
+      "confidence": 0.7873666666666667,
+      "empty": false,
+      "native_ms": 1238.893099995039
+    },
+    {
+      "background": "shapes",
+      "vertical": true,
+      "text": "-\nの\nと",
+      "confidence": 0.7873666666666667,
+      "empty": false,
+      "native_ms": 2243.6585999967065
+    }
+  ],
+  "remaining_children": 0,
+  "all_positive_exact": false,
+  "vertical_exact": true,
+  "all_negative_empty": false
+}

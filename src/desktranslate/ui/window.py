@@ -592,7 +592,7 @@ class MainWindow(QMainWindow):
         )
         self.vertical_check = QCheckBox("Vertical columns · experimental")
         self.vertical_check.setToolTip(
-            "Read columns from right to left. Managed models are optimized for horizontal text; vertical and stylized Japanese remain less accurate."
+            "Japanese: read columns right to left, keep captions upright and avoid repeating nearby kana readings. Other languages retain experimental column ordering. Small or stylized text can still need a tighter region."
         )
         self.vertical_check.setChecked(self.settings.vertical)
         form.addRow("Performance", self.quality_combo)

@@ -141,6 +141,101 @@ EXTRA_SAMPLES = [
         "shadow": True,
     },
 ]
+EXTRA_SAMPLES += [
+    {
+        "id": "ja-region-outline",
+        "language": "ja",
+        "text": "ミカ、鍵を見つけた？",
+        "size": 24,
+        "outline": True,
+        "gradient": True,
+    },
+    {
+        "id": "ja-region-translucent",
+        "language": "ja",
+        "text": "彼女の名前はアウレリア。",
+        "size": 26,
+        "alpha": 170,
+        "gradient": True,
+    },
+    {
+        "id": "ja-region-low-contrast",
+        "language": "ja",
+        "text": "明日の朝に出発します。",
+        "size": 22,
+        "bg": "#65757e",
+        "fg": "#8b999f",
+    },
+    {
+        "id": "ja-region-small",
+        "language": "ja",
+        "text": "魔導炉の出力は120です。",
+        "size": 14,
+        "gradient": True,
+    },
+    {
+        "id": "ja-region-counter",
+        "language": "ja",
+        "text": "ミカ：HP 120 / MP 45",
+        "size": 26,
+        "shadow": True,
+    },
+    {
+        "id": "ja-region-punctuation",
+        "language": "ja",
+        "text": "「えっ、もう終わり？」",
+        "size": 32,
+        "bg": "white",
+        "fg": "black",
+    },
+    {
+        "id": "ja-columns-names",
+        "language": "ja",
+        "text": "アルトリア\n魔導炉",
+        "size": 30,
+        "vertical": True,
+    },
+    {
+        "id": "ja-columns-kanji",
+        "language": "ja",
+        "text": "約束を\n忘れないで",
+        "size": 28,
+        "vertical": True,
+    },
+    {
+        "id": "ja-columns-small",
+        "language": "ja",
+        "text": "この世界\n明日の光",
+        "size": 20,
+        "vertical": True,
+    },
+    {
+        "id": "ja-columns-light",
+        "language": "ja",
+        "text": "時間を\n覚えている",
+        "size": 30,
+        "vertical": True,
+        "bg": "#f6f7f1",
+        "fg": "#111e25",
+    },
+    {
+        "id": "ja-columns-mixed",
+        "language": "ja",
+        "text": "ミカ：待って！\nアルトリア\n魔導炉",
+        "columns": ["アルトリア", "魔導炉"],
+        "caption": "ミカ：待って！",
+        "size": 30,
+        "vertical": True,
+    },
+    {
+        "id": "ja-columns-ruby",
+        "language": "ja",
+        "text": "魔導炉\n明日の光",
+        "ruby": "まどうろ",
+        "size": 30,
+        "vertical": True,
+    },
+]
 for sample in EXTRA_SAMPLES:
     sample.setdefault("render", "qt")
     sample.setdefault("bg", "#172736")
@@ -200,9 +295,22 @@ def render_fixture(sample: dict, destination: Path) -> None:
     if sample.get("vertical"):
         painter.setFont(font)
         painter.setPen(QColor(sample["fg"]))
-        for column, text in enumerate(sample["text"].splitlines()):
+        for column, text in enumerate(sample.get("columns", sample["text"].splitlines())):
             for row, character in enumerate(text):
                 painter.drawText(QPointF(420 - column * 60 + row % 2, 50 + row * 43), character)
+        if caption := sample.get("caption"):
+            caption_font = QFont(font)
+            caption_font.setPixelSize(22)
+            painter.setFont(caption_font)
+            painter.drawText(QPointF(24, 24), caption)
+        if ruby := sample.get("ruby"):
+            ruby_font = QFont(font)
+            ruby_font.setPixelSize(12)
+            if any(not QFontMetrics(ruby_font).inFontUcs4(ord(character)) for character in ruby):
+                raise RuntimeError("Fixture ruby font lacks glyphs")
+            painter.setFont(ruby_font)
+            for index, character in enumerate(ruby):
+                painter.drawText(QPointF(452, 40 + index * 18), character)
     else:
         document = QTextDocument()
         document.setDocumentMargin(0)

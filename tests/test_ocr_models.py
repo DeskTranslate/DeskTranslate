@@ -89,7 +89,7 @@ def test_model_integrity_and_truncated_download_cleanup(tmp_path, monkeypatch):
             "url": "https://models.example/" + key,
             "sha256": hashlib.sha256(b"correct").hexdigest(),
         }
-        for key in ["det", "cls", "japan"]
+        for key in manager.required("ja")
     }
     original = httpx.AsyncClient
 
@@ -111,12 +111,32 @@ def test_verified_preinstalled_models_need_no_network(tmp_path):
     digest = hashlib.sha256(b"model").hexdigest()
     manager.catalog = {
         key: {"filename": key + ".onnx", "url": "https://models.example/" + key, "sha256": digest}
-        for key in ["det", "cls", "japan"]
+        for key in manager.required("ja")
     }
     for key in manager.required("ja"):
         manager.path(key).write_bytes(b"model")
     assert manager.installed("ja", verify=True)
     manager.install("ja", Event(), lambda *args: None)
+
+
+def test_japanese_pack_requires_the_verified_regional_model_without_affecting_other_languages(
+    tmp_path,
+):
+    manager = ModelManager(tmp_path)
+    content = b"verified fixture model"
+    for info in manager.catalog.values():
+        info.update(bytes=len(content), sha256=hashlib.sha256(content).hexdigest())
+    # A complete older Japanese pack and English pack coexist. Updating the
+    # Japanese pack must not make an installed English pack require a download.
+    for key in {"det", "cls", "japan", *manager.required("en")}:
+        manager.path(key).write_bytes(content)
+    assert manager.installed("en", verify=True)
+    assert not manager.installed("ja")
+    regional = manager.path("japan_regional")
+    regional.write_bytes(b"interrupted download")
+    assert not manager.installed("ja", verify=True)
+    regional.write_bytes(content)
+    assert manager.installed("ja", verify=True)
 
 
 def test_oversized_cached_model_is_rejected_without_hashing_it(tmp_path, monkeypatch):

@@ -141,7 +141,7 @@ def test_extended_stress_requires_explicit_opt_in_before_starting():
     assert b"--long-running" in result.stderr
 
 
-@pytest.mark.parametrize("script", ["profile_ocr.py", "evaluate_media.py"])
+@pytest.mark.parametrize("script", ["profile_ocr.py", "evaluate_media.py", "evaluate_layout.py"])
 def test_background_ocr_benchmarks_require_explicit_opt_in(script, tmp_path):
     root = Path(__file__).resolve().parents[1]
     output = tmp_path / "not-created.json"

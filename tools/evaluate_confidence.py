@@ -91,7 +91,7 @@ def evaluate(models: Path) -> dict:
     return {
         "authored_only": True,
         "physical_media": False,
-        "scope": "Post-recognition confidence filtering on original RGB: 35 existing positives plus nine short-text cases. No application threshold changed.",
+        "scope": f"Post-recognition confidence filtering on original RGB: {len(SAMPLES)} existing positives plus nine short-text cases. No application threshold changed.",
         "source_hashes": runtime_source_hashes(ROOT),
         "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "fixtures": rows,

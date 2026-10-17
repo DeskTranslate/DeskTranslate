@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import copy
 import csv
 import hashlib
 import io
@@ -27,6 +28,12 @@ from desktranslate.errors import (
     OCRLanguageMissingError,
 )
 from desktranslate.languages import REGISTRY
+from desktranslate.layout import (
+    from_counterclockwise,
+    japanese_word_region,
+    resolve_layout,
+    uncovered_lines,
+)
 from desktranslate.models import OCRLine, OCRResult, Rect
 from desktranslate.network import identity_chunks, run_cancellable
 from desktranslate.settings import data_dir
@@ -84,7 +91,9 @@ class ModelManager:
             raise OCRLanguageMissingError(
                 "This language requires optional Tesseract recognition. Choose a managed source language or configure Tesseract."
             )
-        return ["det", "cls", REGISTRY[language].recognition]
+        return ["det", "cls", REGISTRY[language].recognition] + (
+            ["japan_regional"] if language == "ja" else []
+        )
 
     def path(self, model: str) -> Path:
         return self.directory / self.catalog[model]["filename"]
@@ -246,6 +255,108 @@ class RapidEngine:
         detector.get_preprocess = lambda _max_wh: bounded_detector_preprocess(
             detector.limit_side_len, detector.limit_type, detector.mean, detector.std
         )
+        self.regional_model = manager.path("japan_regional") if language == "ja" else None
+        self.regional_recognizer: Any = None
+
+    def recognize_regions(
+        self, image: Image.Image, regions: tuple[tuple[Rect, bool], ...]
+    ) -> tuple[OCRLine, ...]:
+        import numpy as np
+        from rapidocr import ModelType, OCRVersion
+        from rapidocr.ch_ppocr_rec.main import TextRecognizer
+        from rapidocr.ch_ppocr_rec.typings import TextRecInput
+
+        if (
+            not regions
+            or self.regional_model is None
+            or len(regions) > 256
+            or sum(box.width * box.height for box, _ in regions) > image.width * image.height * 2
+        ):
+            return ()
+        if self.regional_recognizer is None:
+            config = copy.deepcopy(self.engine.cfg.Rec)
+            config.model_path = str(self.regional_model)
+            config.ocr_version = OCRVersion.PPOCRV6
+            config.model_type = ModelType.SMALL
+            config.lang_type = "multi"
+            self.regional_recognizer = TextRecognizer(config)
+            self.regional_recognizer.RTL_LANGS = set()
+        crops = []
+        for box, vertical in regions:
+            crop = image.crop(
+                (
+                    max(0, box.x - 2),
+                    max(0, box.y - 2),
+                    min(image.width, box.right + 2),
+                    min(image.height, box.bottom + 2),
+                )
+            )
+            if vertical:
+                crop = crop.transpose(Image.Transpose.ROTATE_90)
+            crops.append(np.asarray(crop)[:, :, ::-1])
+        result = self.regional_recognizer(TextRecInput(img=crops))
+        if result.txts is None or result.scores is None:
+            return ()
+        return tuple(
+            OCRLine(text, box, float(score))
+            for (box, _), text, score in zip(regions, result.txts, result.scores, strict=True)
+            if text.strip() and score >= self.engine.text_score
+        )
+
+    def refine_horizontal(
+        self, image: Image.Image, original: tuple[OCRLine, ...]
+    ) -> tuple[OCRLine, ...]:
+        selected = tuple((line.box, False) for line in original if japanese_word_region(line))
+        replacements = {line.box: line for line in self.recognize_regions(image, selected)}
+        return tuple(replacements.get(line.box, line) for line in original)
+
+    def vertical_layout(
+        self, image: Image.Image, original: tuple[OCRLine, ...]
+    ) -> tuple[str | None, tuple[OCRLine, ...], tuple[OCRLine, ...], dict[str, float]]:
+        import numpy as np
+
+        start = time.perf_counter()
+        # The alternate orientation locates columns only. Horizontal regions
+        # retain their own upright pixels; the whole frame is never translated
+        # as if every region had the same orientation.
+        detected: Any = self.engine(
+            np.asarray(image.transpose(Image.Transpose.ROTATE_90))[:, :, ::-1],
+            use_cls=False,
+            use_rec=False,
+        )
+        columns: list[Rect] = []
+        for points in detected.boxes if detected.boxes is not None else ():
+            left, top = int(min(p[0] for p in points)), int(min(p[1] for p in points))
+            right, bottom = int(max(p[0] for p in points)), int(max(p[1] for p in points))
+            box = from_counterclockwise(
+                Rect(left, top, max(1, right - left), max(1, bottom - top)),
+                image.width,
+                image.height,
+            )
+            # A single upright glyph has no reliable orientation. Leave it on
+            # the normal path rather than guessing or discarding short text.
+            if box and box.height >= box.width * 2 and box not in columns:
+                columns.append(box)
+        timings = {"ocr_layout_detect_ms": (time.perf_counter() - start) * 1000}
+        if not columns or self.regional_model is None:
+            return None, original, (), timings
+        horizontal = uncovered_lines(original, tuple(columns))
+        regions = tuple(columns) + tuple(line.box for line in horizontal)
+        start = time.perf_counter()
+        recognized = self.recognize_regions(
+            image, tuple((box, index < len(columns)) for index, box in enumerate(regions))
+        )
+        timings["ocr_layout_recognize_ms"] = (time.perf_counter() - start) * 1000
+        vertical = tuple(line for line in recognized if line.box in columns)
+        if not vertical:
+            return None, original, (), timings
+        replacements = {line.box: line for line in recognized if line.box not in columns}
+        horizontal = tuple(
+            replacements.get(line.box, line)
+            for line in uncovered_lines(original, tuple(line.box for line in vertical))
+        )
+        text, body, annotations = resolve_layout(horizontal, vertical)
+        return text, body, annotations, timings
 
     def recognize(self, image: Image.Image, language: str, vertical: bool = False) -> OCRResult:
         import numpy as np
@@ -253,7 +364,7 @@ class RapidEngine:
         start = time.perf_counter()
         # Screens are already upright. The document angle classifier can rotate
         # valid Hangul subtitles by 180 degrees, destroying otherwise accurate OCR.
-        result: Any = self.engine(np.asarray(image)[:, :, ::-1], use_cls=False)
+        result: Any = self.engine(np.asarray(image)[:, :, ::-1], use_cls=False, use_rec=True)
         stages = getattr(result, "elapse_list", None) or []
         lines = []
         if result.boxes is not None:
@@ -268,9 +379,22 @@ class RapidEngine:
                     )
                 )
         output = tuple(lines)
+        layout_text = None
+        layout_timings: dict[str, float] = {}
+        annotations: tuple[OCRLine, ...] = ()
+        if vertical and language == "ja":
+            layout_text, output, annotations, layout_timings = self.vertical_layout(image, output)
+        if language == "ja" and layout_text is None:
+            regional_start = time.perf_counter()
+            output = self.refine_horizontal(image, output)
+            layout_timings["ocr_regional_ms"] = (time.perf_counter() - regional_start) * 1000
         confidence = sum(line.confidence for line in output) / len(output) if output else 0.0
         reconstruct_start = time.perf_counter()
-        text = reconstruct(output, vertical, REGISTRY[language].direction)
+        text = (
+            layout_text
+            if layout_text is not None
+            else reconstruct(output, vertical, REGISTRY[language].direction)
+        )
         return OCRResult(
             text,
             output,
@@ -278,6 +402,7 @@ class RapidEngine:
             language,
             (time.perf_counter() - start) * 1000,
             {
+                **layout_timings,
                 **{
                     name: float(value) * 1000
                     for name, value in zip(
@@ -289,6 +414,7 @@ class RapidEngine:
                 },
                 "ocr_reconstruct_ms": (time.perf_counter() - reconstruct_start) * 1000,
             },
+            annotations,
         )
 
     def close(self) -> None:
