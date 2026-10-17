@@ -1,4 +1,4 @@
-"""Opt-in paced authored media → real OCR/HTTP → offscreen overlay qualification.
+"""Opt-in paced authored media → real OCR/HTTP → offscreen controller/overlay qualification.
 
 No desktop capture, input, playback, credentials or external provider. Generation
 and timing assertions exercise the application pipeline; HTTP replies are authored
@@ -33,12 +33,14 @@ from PySide6.QtWidgets import QApplication
 from release_support import runtime_source_hashes
 
 from desktranslate import __version__
-from desktranslate.models import SessionState, Stamp
+from desktranslate.hotkeys import Hotkeys
+from desktranslate.models import Rect, SessionState, Stamp
 from desktranslate.ocr import IsolatedOCR, ModelManager
 from desktranslate.pipeline import Pipeline
 from desktranslate.providers import create_provider
-from desktranslate.settings import Settings
-from desktranslate.ui.overlay import Overlay
+from desktranslate.security import CredentialStore
+from desktranslate.settings import Settings, SettingsStore
+from desktranslate.ui.window import MainWindow
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -180,6 +182,10 @@ def journey(
         vertical=vertical,
         recent_region=[0, 0, *images[0][0].size],
         reduced_motion=True,
+        onboarding_done=True,
+        provider="custom",
+        endpoint=f"http://127.0.0.1:{server.server_port}/v1",
+        model="authored-fixture",
     )
     capture = Capture(cues, images)
     pipeline = Pipeline(
@@ -190,13 +196,26 @@ def journey(
             "custom", endpoint=f"http://127.0.0.1:{server.server_port}/v1", timeout=8
         ),
     )
-    overlay = Overlay(settings)
+    data = tempfile.TemporaryDirectory(prefix="desktranslate-paced-settings-")
+    store = SettingsStore(Path(data.name))
+    store.save(settings)
+    with (
+        patch.object(Hotkeys, "register", return_value=[]),
+        patch.object(CredentialStore, "get", return_value=""),
+        patch("desktranslate.ui.window.ModelManager", lambda: ModelManager(models)),
+    ):
+        window = MainWindow(store, demo=True)
+    window.timer.stop()
+    window.pipeline = pipeline
+    overlay = window.overlay
     records, stages, checks = [], {}, {}
+    rendered_cues = {}
     first_request = len(server.requests)
     maximum = {"frames": 0, "texts": 0, "events": 0, "children": 0}
     cold = time.monotonic()
     pipeline.start()
     cold_ms = None
+    discarded_before_presentation = 0
     try:
         deadline = cold + 35
         end = float("inf")
@@ -209,14 +228,16 @@ def journey(
             if pipeline.session.state == SessionState.ERROR:
                 raise AssertionError("Paced pipeline entered an error state")
             for event in pipeline.poll():
-                if not event.result:
-                    continue
                 before = time.monotonic()
                 with pipeline.session.lock:
                     if event.stamp != Stamp(pipeline.session.serial, pipeline.session.generation):
-                        raise AssertionError("A stale event reached presentation")
-                    overlay.display(event.source, event.result.text)
-                    pipeline.delivered_source = event.source
+                        # Match the actual controller's final presentation guard:
+                        # a revision between poll() and display must be discarded.
+                        discarded_before_presentation += 1
+                        continue
+                    window.handle_pipeline_event(event)
+                if not event.result:
+                    continue
                 app.processEvents()
                 overlay.grab()
                 presented = time.monotonic()
@@ -252,12 +273,31 @@ def journey(
                 }
                 for key, value in values.items():
                     stages.setdefault(key, []).append(value)
+            if cold_ms is not None:
+                index, _ = capture.index_at(time.monotonic())
+                cue = cues[index]
+                source = overlay.source.text()
+                expected = compact(cue.text)
+                if (
+                    cue.text
+                    and overlay.isVisible()
+                    and overlay.translation.text() == "Translated: " + source
+                    and compact(source) == expected
+                ):
+                    rendered_cues.setdefault(cue.name, round(time.monotonic() - capture.origin, 3))
             time.sleep(0.008)
         if cold_ms is None:
             raise AssertionError("No cold primer result")
         required = {c.name for c in cues[1:] if c.required and c.text}
         delivered = {r["cue"] for r in records if r["source_cer"] <= 0.12}
-        checks["required_dialogue_delivered"] = required <= delivered
+        # A repeated line may already be correctly visible, without a duplicate
+        # request/result. Inspect actual controller overlay state, including its
+        # blank grace timer, instead of requiring unnecessary provider calls.
+        checks["required_dialogue_delivered"] = required <= (delivered | rendered_cues.keys())
+        if name == "static-one-character":
+            checks["distinct_one_character_sources_delivered"] = {
+                compact(cue.text) for cue in cues[1:] if cue.required and cue.text
+            } <= {compact(row["source"]) for row in records}
         checks["freshness_no_backlog"] = all(r["lag_cues"] <= 1 for r in records)
         checks["bounded_work"] = (
             maximum["frames"] <= 1
@@ -272,6 +312,13 @@ def journey(
         pipeline.stop()
         checks["workers_closed"] = pipeline.wait_closed(10)
         overlay.close()
+        window.pipeline = None
+        window.quit()
+        cleanup_deadline = time.monotonic() + 3
+        while window.shutdown_timer.isActive() and time.monotonic() < cleanup_deadline:
+            app.processEvents()
+            time.sleep(0.01)
+        data.cleanup()
     # Allow no post-stop receipt, context mutation, or surviving owned OCR child.
     checks["no_post_stop_results"] = not any(e.result for e in pipeline.poll())
     checks["no_remaining_children"] = not multiprocessing.active_children()
@@ -284,10 +331,12 @@ def journey(
         "cold_first_presentation_ms": cold_ms,
         "warm_stage_ms": {k: percentiles(v) for k, v in stages.items()},
         "records": records,
-        "missing": sorted(required - delivered),
+        "missing": sorted(required - delivered - rendered_cues.keys()),
+        "correct_overlay_observed_at_s": rendered_cues,
         "max_pending": maximum,
         "counters": pipeline.counters,
         "http_requests": len(server.requests) - first_request,
+        "discarded_before_presentation": discarded_before_presentation,
     }
 
 
@@ -318,7 +367,7 @@ def qualify(models: Path) -> dict:
             ],
         ),
         (
-            "brief-one-character-subtitles",
+            "brief-small-change-subtitles",
             "en",
             False,
             [
@@ -329,6 +378,19 @@ def qualify(models: Path) -> dict:
                 Cue("go", "Go!", 2.8, moving=True),
                 Cue("blank2", "", 1.5, required=False),
                 Cue("return", "Go!", 3, moving=True),
+            ],
+        ),
+        (
+            "static-one-character",
+            "en",
+            False,
+            [
+                Cue("primer", "Ready!", 1, required=False),
+                Cue("blank", "", 1.5, required=False),
+                Cue("statement", "Wait for me!", 4),
+                Cue("question", "Wait for me?", 4),
+                Cue("digit1", "Room 1.", 4),
+                Cue("digit2", "Room 2.", 4),
             ],
         ),
         (
@@ -377,7 +439,21 @@ def qualify(models: Path) -> dict:
             def forbidden(*args, **kwargs):
                 raise AssertionError("Desktop access forbidden in paced qualification")
 
-            with patch("mss.mss", forbidden), patch("PySide6.QtGui.QScreen.grabWindow", forbidden):
+            screens = {
+                screen.name(): Rect(
+                    screen.geometry().x(),
+                    screen.geometry().y(),
+                    screen.geometry().width(),
+                    screen.geometry().height(),
+                )
+                for screen in app.screens()
+            }
+            with (
+                patch("mss.mss", forbidden),
+                patch("PySide6.QtGui.QScreen.grabWindow", forbidden),
+                patch("desktranslate.ui.window.physical_monitors", lambda: screens),
+                patch("desktranslate.ui.overlay.physical_monitors", lambda: screens),
+            ):
                 for (name, code, vertical, cues), images in zip(suites, rendered, strict=True):
                     rows.append(journey(app, models, server, name, code, vertical, cues, images))
     finally:

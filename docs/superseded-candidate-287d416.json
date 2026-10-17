@@ -1,0 +1,6 @@
+{
+  "run_id": 38993292850,
+  "source_commit": "287d4164a472bee610ed7bac9e6a5413b297df4e",
+  "disposition": "SUPERSEDED; endurance incomplete and cannot qualify the replacement application",
+  "reason": "Explicit one-character/static subtitle validation found real missed frame changes; current fix changes application bytes. Preserve this run/logs/artifacts and refresh both endurance workloads on the replacement RC. Quality/installer steps had passed; endurance is not a PASS."
+}

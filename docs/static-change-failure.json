@@ -1,0 +1,137 @@
+{
+  "name": "static-one-character",
+  "language": "en",
+  "vertical": false,
+  "checks": {
+    "required_dialogue_delivered": false,
+    "freshness_no_backlog": true,
+    "bounded_work": true,
+    "no_wrong_source": true,
+    "progressive_consolidated": true,
+    "workers_closed": true,
+    "no_post_stop_results": true,
+    "no_remaining_children": true
+  },
+  "passed": false,
+  "cold_first_presentation_ms": 5625.0,
+  "warm_stage_ms": {
+    "capture_ms": {
+      "count": 1,
+      "p50": 0.263,
+      "p95": 0.263
+    },
+    "change_ms": {
+      "count": 1,
+      "p50": 1.545,
+      "p95": 1.545
+    },
+    "preprocess_ms": {
+      "count": 1,
+      "p50": 0.007,
+      "p95": 0.007
+    },
+    "ocr_detect_ms": {
+      "count": 1,
+      "p50": 1029.868,
+      "p95": 1029.868
+    },
+    "ocr_recognize_ms": {
+      "count": 1,
+      "p50": 34.065,
+      "p95": 34.065
+    },
+    "ocr_reconstruct_ms": {
+      "count": 1,
+      "p50": 0.056,
+      "p95": 0.056
+    },
+    "ocr_ms": {
+      "count": 1,
+      "p50": 1066.179,
+      "p95": 1066.179
+    },
+    "ocr_call_ms": {
+      "count": 1,
+      "p50": 1067.546,
+      "p95": 1067.546
+    },
+    "temporal_ms": {
+      "count": 1,
+      "p50": 0.09,
+      "p95": 0.09
+    },
+    "context_ms": {
+      "count": 1,
+      "p50": 0.052,
+      "p95": 0.052
+    },
+    "queue_ms": {
+      "count": 1,
+      "p50": 0.0,
+      "p95": 0.0
+    },
+    "provider_ms": {
+      "count": 1,
+      "p50": 141.0,
+      "p95": 141.0
+    },
+    "total_ms": {
+      "count": 1,
+      "p50": 1204.0,
+      "p95": 1204.0
+    },
+    "gui_delivery_ms": {
+      "count": 1,
+      "p50": 0.0,
+      "p95": 0.0
+    },
+    "render_ms": {
+      "count": 1,
+      "p50": 15.0,
+      "p95": 15.0
+    },
+    "presentation_ms": {
+      "count": 1,
+      "p50": 1219.0,
+      "p95": 1219.0
+    },
+    "onset_ms": {
+      "count": 1,
+      "p50": 1469.0,
+      "p95": 1469.0
+    }
+  },
+  "records": [
+    {
+      "cue": "statement",
+      "source": "Wait for me!",
+      "at_s": 3.969,
+      "source_cer": 0.0,
+      "lag_cues": 0,
+      "presentation_ms": 1218.9999999973224,
+      "onset_ms": 1468.9999999973224,
+      "replaces_source": ""
+    }
+  ],
+  "missing": [
+    "question"
+  ],
+  "max_pending": {
+    "frames": 0,
+    "texts": 0,
+    "events": 1,
+    "children": 1
+  },
+  "counters": {
+    "captures": 77,
+    "ocr": 3,
+    "translations": 2,
+    "stale": 0,
+    "cache_hits": 0,
+    "ocr_restarts": 0,
+    "glossary_hits": 0,
+    "temporal_suppressed": 0
+  },
+  "http_requests": 2,
+  "scope": "Preserved authored static English actual OCR/HTTP/offscreen failure during an uncommitted intermediate detector adjustment after287d416; statement delivered, question missed. Not release qualification."
+}

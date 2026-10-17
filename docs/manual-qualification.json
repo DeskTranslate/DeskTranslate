@@ -15,6 +15,6 @@
   "publisher_signing_available": false,
   "unsigned_release_approved": true,
   "unsigned_disclosure": "Maintainer explicitly authorized an unsigned v2.0.0 on 2026-10-17. Release notes must disclose missing Authenticode and possible Windows/SmartScreen warnings; SHA-256/provenance do not assert publisher trust.",
-  "notes": "Final unpublished RC. Paced authored media and bounded context behavior pass. Current-source hosted installer/portable and 2h/30min endurance still pending. Physical hardware/account gaps remain NOT TESTED; see stable-release-plan.md for accepted scope. No signing capability exists; unsigned release explicitly approved by maintainer.",
+  "notes": "Replacement final RC after missed static/punctuation fix.490 tests, all five actual OCR/HTTP/controller/overlay paced workloads and bounded context behavior PASS. Hosted current-source portable/installer and 2h/30min endurance pending.287d416 endurance cancelled as superseded, not a PASS. Physical/account/signing limits remain accurately disclosed.",
   "target": "2.0.0 stable"
 }

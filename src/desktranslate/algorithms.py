@@ -138,8 +138,14 @@ class FrameGate:
             stats = ImageStat.Stat(diff)
             # Mean alone misses a changed short subtitle in a large crop.
             histogram = diff.histogram()
-            significant = sum(histogram[20:]) / (sample.width * sample.height)
-            changed = stats.mean[0] > self.threshold or significant > 0.008
+            significant_pixels = sum(histogram[20:])
+            significant = significant_pixels / (sample.width * sample.height)
+            # A short line or punctuation can occupy far below 0.8% of a
+            # subtitle region. Retain a small, clearly contrasting change at
+            # thumbnail resolution without reacting to isolated hot pixels or
+            # low-amplitude compression/brightness noise.
+            small_text_change = significant_pixels >= 4
+            changed = stats.mean[0] > self.threshold or significant > 0.008 or small_text_change
         if changed:
             if self.motion_interval:
                 self.recent_changes.append(now)

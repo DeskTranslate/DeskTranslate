@@ -28,6 +28,7 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Recognize Japanese columns and upright captions by region, with conservative ruby annotations and a separately verified recognizer loaded only for eligible word/column regions. All eight authored vertical/mixed/ruby layouts now match. Selective word recognition also fixes the authored pixel, translucent, low-contrast and small-text cases; punctuation/name differences and background false positives remain. Short text and counters keep their original path because global model replacement worsened false positives.
 - Preserve ruby annotations when contrast/scaling slightly overlaps detector boxes; all eight authored layouts match in all three image treatments. Make the full OCR benchmark explicitly opted-in, bounded and limited to one native model family, with partial failure reports and safe private defaults.
 
+- Detect short static dialogue, disappearing text and punctuation-only revisions without reacting to isolated hot pixels or low-amplitude noise.
 - Fix intermittent animation starvation: short quiet gaps no longer repeatedly cancel in-flight OCR. Add paced authored end-to-end media/slow-provider qualification and complete presentation-stage metrics.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.

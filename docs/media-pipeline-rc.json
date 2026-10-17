@@ -4,7 +4,7 @@
   "source_hashes": {
     "__init__.py": "932b6a0755599d7d9aa220a7db8912dd36b8e64f2aabcf78b43d682eb788b95b",
     "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
-    "algorithms.py": "aec3f333eac8d8d70cb00babe15d524e5d40693a88a2fdfb9458e32a927f1f49",
+    "algorithms.py": "1ec7765d39528b57a2716d019612d38bd7569dcf343e22aba950557ba1906c5c",
     "app.py": "eaf1210358be8bbf1321dff838f5710a8231bebeadc15ac6e9954aa938349cc7",
     "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
     "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
@@ -74,8 +74,8 @@
     "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
   },
   "source_unchanged": true,
-  "harness_sha256": "eaad13faf58722199f16a9ccc8e85c3ca440eaf354ad5beb95009322da4734a5",
-  "scope": "Opt-in paced authored media → real OCR/HTTP → offscreen overlay qualification.\n\nNo desktop capture, input, playback, credentials or external provider. Generation\nand timing assertions exercise the application pipeline; HTTP replies are authored\nechoes and do not qualify semantic translation. Owns a five-minute deadline.\n",
+  "harness_sha256": "9a49db1419aa9cc4339f62e08fd188433c7e433b9000f55c9ae7e99ec63b3461",
+  "scope": "Opt-in paced authored media → real OCR/HTTP → offscreen controller/overlay qualification.\n\nNo desktop capture, input, playback, credentials or external provider. Generation\nand timing assertions exercise the application pipeline; HTTP replies are authored\nechoes and do not qualify semantic translation. Owns a five-minute deadline.\n",
   "paced": true,
   "desktop_capture": false,
   "semantic_translation": false,
@@ -95,67 +95,67 @@
         "no_remaining_children": true
       },
       "passed": true,
-      "cold_first_presentation_ms": 5812.000000005355,
+      "cold_first_presentation_ms": 14203.000000008615,
       "warm_stage_ms": {
         "capture_ms": {
           "count": 5,
-          "p50": 0.181,
-          "p95": 0.435
+          "p50": 0.331,
+          "p95": 0.514
         },
         "change_ms": {
           "count": 5,
-          "p50": 1.266,
-          "p95": 1.485
+          "p50": 1.405,
+          "p95": 2.039
         },
         "preprocess_ms": {
           "count": 5,
-          "p50": 0.009,
-          "p95": 0.013
+          "p50": 0.007,
+          "p95": 0.01
         },
         "ocr_regional_ms": {
           "count": 5,
-          "p50": 52.817,
-          "p95": 80.642
+          "p50": 36.596,
+          "p95": 54.585
         },
         "ocr_detect_ms": {
           "count": 5,
-          "p50": 964.342,
-          "p95": 1061.334
+          "p50": 783.748,
+          "p95": 1173.333
         },
         "ocr_recognize_ms": {
           "count": 5,
-          "p50": 96.351,
-          "p95": 106.215
+          "p50": 73.5,
+          "p95": 96.583
         },
         "ocr_reconstruct_ms": {
           "count": 5,
-          "p50": 0.067,
-          "p95": 0.115
+          "p50": 0.055,
+          "p95": 0.81
         },
         "ocr_ms": {
           "count": 5,
-          "p50": 1080.304,
-          "p95": 1223.51
+          "p50": 896.043,
+          "p95": 1309.664
         },
         "ocr_call_ms": {
           "count": 5,
-          "p50": 1081.683,
-          "p95": 1224.693
+          "p50": 897.009,
+          "p95": 1311.025
         },
         "temporal_ms": {
           "count": 5,
-          "p50": 0.095,
-          "p95": 0.216
+          "p50": 0.085,
+          "p95": 0.241
         },
         "context_ms": {
           "count": 5,
-          "p50": 0.056,
-          "p95": 0.073
+          "p50": 0.049,
+          "p95": 0.345
         },
         "queue_ms": {
           "count": 5,
           "p50": 0.0,
-          "p95": 0.0
+          "p95": 16.0
         },
         "provider_ms": {
           "count": 5,
@@ -164,83 +164,89 @@
         },
         "total_ms": {
           "count": 5,
-          "p50": 1375.0,
-          "p95": 2344.0
+          "p50": 1437.0,
+          "p95": 1578.0
         },
         "gui_delivery_ms": {
-          "count": 5,
-          "p50": 15.0,
-          "p95": 15.0
-        },
-        "render_ms": {
           "count": 5,
           "p50": 0.0,
           "p95": 16.0
         },
+        "render_ms": {
+          "count": 5,
+          "p50": 15.0,
+          "p95": 31.0
+        },
         "presentation_ms": {
           "count": 5,
-          "p50": 1375.0,
-          "p95": 2359.0
+          "p50": 1469.0,
+          "p95": 1593.0
         },
         "onset_ms": {
           "count": 5,
-          "p50": 2064.0,
-          "p95": 3498.0
+          "p50": 1704.0,
+          "p95": 2779.0
         }
       },
       "records": [
         {
           "cue": "complete",
           "source": "彼女は昨日ここに来た。",
-          "at_s": 4.625,
+          "at_s": 4.766,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1218.9999999973224,
-          "onset_ms": 1344.9999999999998,
+          "presentation_ms": 1468.9999999973224,
+          "onset_ms": 1485.9999999887075,
           "replaces_source": ""
         },
         {
           "cue": "outline",
           "source": "ミカ、鍵を見つけた？",
-          "at_s": 10.422,
+          "at_s": 10.0,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1375.0,
-          "onset_ms": 2642.0000000059367,
+          "presentation_ms": 1531.0000000026776,
+          "onset_ms": 2219.9999999999995,
           "replaces_source": ""
         },
         {
           "cue": "translucent",
           "source": "彼女の名前はアウレリア。",
-          "at_s": 13.844,
+          "at_s": 13.484,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1483.9999999967404,
-          "onset_ms": 2063.9999999973215,
+          "presentation_ms": 1218.0000000080327,
+          "onset_ms": 1703.9999999967392,
           "replaces_source": ""
         },
         {
           "cue": "return",
           "source": "彼女は昨日ここに来た。",
-          "at_s": 19.375,
+          "at_s": 19.063,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1202.9999999940628,
-          "onset_ms": 1794.9999999999982,
+          "presentation_ms": 985.0000000005821,
+          "onset_ms": 1482.999999994643,
           "replaces_source": ""
         },
         {
           "cue": "static",
           "source": "明日、ま またここで会おう。",
-          "at_s": 25.078,
+          "at_s": 24.359,
           "source_cer": 0.0833,
           "lag_cues": 0,
-          "presentation_ms": 2358.9999999967404,
-          "onset_ms": 3497.999999994061,
+          "presentation_ms": 1593.0000000080327,
+          "onset_ms": 2778.9999999967386,
           "replaces_source": ""
         }
       ],
       "missing": [],
+      "correct_overlay_observed_at_s": {
+        "complete": 4.766,
+        "outline": 10.0,
+        "translucent": 13.484,
+        "return": 19.063
+      },
       "max_pending": {
         "frames": 1,
         "texts": 0,
@@ -248,8 +254,8 @@
         "children": 1
       },
       "counters": {
-        "captures": 186,
-        "ocr": 21,
+        "captures": 213,
+        "ocr": 24,
         "translations": 6,
         "stale": 2,
         "cache_hits": 0,
@@ -257,10 +263,11 @@
         "glossary_hits": 0,
         "temporal_suppressed": 0
       },
-      "http_requests": 6
+      "http_requests": 6,
+      "discarded_before_presentation": 0
     },
     {
-      "name": "brief-one-character-subtitles",
+      "name": "brief-small-change-subtitles",
       "language": "en",
       "vertical": false,
       "checks": {
@@ -274,57 +281,57 @@
         "no_remaining_children": true
       },
       "passed": true,
-      "cold_first_presentation_ms": 5125.0,
+      "cold_first_presentation_ms": 5063.000000009197,
       "warm_stage_ms": {
         "capture_ms": {
           "count": 4,
-          "p50": 0.189,
-          "p95": 0.202
+          "p50": 0.195,
+          "p95": 0.23
         },
         "change_ms": {
           "count": 4,
-          "p50": 1.577,
-          "p95": 1.888
+          "p50": 1.21,
+          "p95": 1.485
         },
         "preprocess_ms": {
           "count": 4,
-          "p50": 0.009,
-          "p95": 0.014
+          "p50": 0.008,
+          "p95": 0.011
         },
         "ocr_detect_ms": {
           "count": 4,
-          "p50": 943.488,
-          "p95": 970.801
+          "p50": 800.746,
+          "p95": 889.736
         },
         "ocr_recognize_ms": {
           "count": 4,
-          "p50": 30.014,
-          "p95": 31.439
+          "p50": 24.12,
+          "p95": 28.335
         },
         "ocr_reconstruct_ms": {
           "count": 4,
-          "p50": 0.043,
-          "p95": 0.091
+          "p50": 0.041,
+          "p95": 0.052
         },
         "ocr_ms": {
           "count": 4,
-          "p50": 975.206,
-          "p95": 1003.269
+          "p50": 826.397,
+          "p95": 920.362
         },
         "ocr_call_ms": {
           "count": 4,
-          "p50": 976.353,
-          "p95": 1004.738
+          "p50": 827.772,
+          "p95": 921.534
         },
         "temporal_ms": {
           "count": 4,
-          "p50": 0.096,
-          "p95": 0.221
+          "p50": 0.083,
+          "p95": 0.192
         },
         "context_ms": {
           "count": 4,
-          "p50": 0.043,
-          "p95": 0.062
+          "p50": 0.038,
+          "p95": 0.056
         },
         "queue_ms": {
           "count": 4,
@@ -333,78 +340,85 @@
         },
         "provider_ms": {
           "count": 4,
-          "p50": 125.0,
+          "p50": 132.5,
           "p95": 141.0
         },
         "total_ms": {
           "count": 4,
-          "p50": 1141.0,
-          "p95": 1297.0
+          "p50": 999.5,
+          "p95": 1344.0
         },
         "gui_delivery_ms": {
           "count": 4,
-          "p50": 7.5,
-          "p95": 15.0
+          "p50": 0.0,
+          "p95": 16.0
         },
         "render_ms": {
           "count": 4,
-          "p50": 0.0,
-          "p95": 0.0
+          "p50": 8.0,
+          "p95": 16.0
         },
         "presentation_ms": {
           "count": 4,
-          "p50": 1148.5,
-          "p95": 1297.0
+          "p50": 1015.5,
+          "p95": 1344.0
         },
         "onset_ms": {
           "count": 4,
-          "p50": 1898.5,
-          "p95": 2341.0
+          "p50": 1420.5,
+          "p95": 1672.0
         }
       },
       "records": [
         {
           "cue": "me",
           "source": "Wait for me!",
-          "at_s": 4.203,
+          "at_s": 3.781,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1108.9999999967404,
-          "onset_ms": 1703.0000000086147,
+          "presentation_ms": 1078.0000000086147,
+          "onset_ms": 1281.0000000026776,
           "replaces_source": ""
         },
         {
           "cue": "us",
           "source": "Wait for us!",
-          "at_s": 6.594,
+          "at_s": 6.172,
           "source_cer": 0.0,
-          "lag_cues": 1,
-          "presentation_ms": 1172.0000000059372,
-          "onset_ms": 2094.0000000118744,
+          "lag_cues": 0,
+          "presentation_ms": 952.9999999940628,
+          "onset_ms": 1671.9999999913853,
           "replaces_source": ""
         },
         {
           "cue": "go",
           "source": "Go!",
-          "at_s": 7.953,
+          "at_s": 7.969,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1125.0,
-          "onset_ms": 1453.0000000086147,
+          "presentation_ms": 1343.9999999973224,
+          "onset_ms": 1468.9999999973224,
           "replaces_source": ""
         },
         {
           "cue": "return",
           "source": "Go!",
-          "at_s": 13.141,
+          "at_s": 12.172,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1296.9999999913853,
-          "onset_ms": 2341.0000000032587,
+          "presentation_ms": 812.9999999946449,
+          "onset_ms": 1371.9999999913846,
           "replaces_source": ""
         }
       ],
       "missing": [],
+      "correct_overlay_observed_at_s": {
+        "primer": 0.0,
+        "me": 3.781,
+        "us": 6.172,
+        "go": 7.969,
+        "return": 10.812
+      },
       "max_pending": {
         "frames": 1,
         "texts": 0,
@@ -412,16 +426,190 @@
         "children": 1
       },
       "counters": {
-        "captures": 107,
-        "ocr": 11,
+        "captures": 111,
+        "ocr": 15,
         "translations": 4,
-        "stale": 1,
+        "stale": 0,
         "cache_hits": 1,
         "ocr_restarts": 0,
         "glossary_hits": 0,
         "temporal_suppressed": 0
       },
-      "http_requests": 4
+      "http_requests": 4,
+      "discarded_before_presentation": 0
+    },
+    {
+      "name": "static-one-character",
+      "language": "en",
+      "vertical": false,
+      "checks": {
+        "required_dialogue_delivered": true,
+        "distinct_one_character_sources_delivered": true,
+        "freshness_no_backlog": true,
+        "bounded_work": true,
+        "no_wrong_source": true,
+        "progressive_consolidated": true,
+        "workers_closed": true,
+        "no_post_stop_results": true,
+        "no_remaining_children": true
+      },
+      "passed": true,
+      "cold_first_presentation_ms": 5046.999999991385,
+      "warm_stage_ms": {
+        "capture_ms": {
+          "count": 4,
+          "p50": 0.229,
+          "p95": 0.272
+        },
+        "change_ms": {
+          "count": 4,
+          "p50": 1.033,
+          "p95": 1.192
+        },
+        "preprocess_ms": {
+          "count": 4,
+          "p50": 0.006,
+          "p95": 0.006
+        },
+        "ocr_detect_ms": {
+          "count": 4,
+          "p50": 983.702,
+          "p95": 1441.335
+        },
+        "ocr_recognize_ms": {
+          "count": 4,
+          "p50": 30.118,
+          "p95": 35.054
+        },
+        "ocr_reconstruct_ms": {
+          "count": 4,
+          "p50": 0.054,
+          "p95": 0.069
+        },
+        "ocr_ms": {
+          "count": 4,
+          "p50": 1013.12,
+          "p95": 1476.671
+        },
+        "ocr_call_ms": {
+          "count": 4,
+          "p50": 1014.385,
+          "p95": 1478.218
+        },
+        "temporal_ms": {
+          "count": 4,
+          "p50": 0.069,
+          "p95": 0.114
+        },
+        "context_ms": {
+          "count": 4,
+          "p50": 0.041,
+          "p95": 0.045
+        },
+        "queue_ms": {
+          "count": 4,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "provider_ms": {
+          "count": 4,
+          "p50": 132.5,
+          "p95": 141.0
+        },
+        "total_ms": {
+          "count": 4,
+          "p50": 1148.5,
+          "p95": 1609.0
+        },
+        "gui_delivery_ms": {
+          "count": 4,
+          "p50": 8.0,
+          "p95": 16.0
+        },
+        "render_ms": {
+          "count": 4,
+          "p50": 0.0,
+          "p95": 16.0
+        },
+        "presentation_ms": {
+          "count": 4,
+          "p50": 1156.5,
+          "p95": 1625.0
+        },
+        "onset_ms": {
+          "count": 4,
+          "p50": 1437.5,
+          "p95": 2047.0
+        }
+      },
+      "records": [
+        {
+          "cue": "statement",
+          "source": "Wait for me!",
+          "at_s": 3.922,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1172.0000000059372,
+          "onset_ms": 1422.0000000059372,
+          "replaces_source": ""
+        },
+        {
+          "cue": "question",
+          "source": "Wait for me?",
+          "at_s": 7.953,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1110.000000000582,
+          "onset_ms": 1453.0000000086147,
+          "replaces_source": ""
+        },
+        {
+          "cue": "digit1",
+          "source": "Room 1.",
+          "at_s": 12.547,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1625.0,
+          "onset_ms": 2047.0000000059372,
+          "replaces_source": ""
+        },
+        {
+          "cue": "digit2",
+          "source": "Room 2.",
+          "at_s": 15.797,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1141.0000000032596,
+          "onset_ms": 1297.0000000059372,
+          "replaces_source": ""
+        }
+      ],
+      "missing": [],
+      "correct_overlay_observed_at_s": {
+        "primer": 0.0,
+        "statement": 3.922,
+        "question": 7.953,
+        "digit1": 12.547,
+        "digit2": 15.797
+      },
+      "max_pending": {
+        "frames": 0,
+        "texts": 0,
+        "events": 1,
+        "children": 1
+      },
+      "counters": {
+        "captures": 130,
+        "ocr": 6,
+        "translations": 5,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "http_requests": 5,
+      "discarded_before_presentation": 0
     },
     {
       "name": "columns-ruby-captions",
@@ -438,82 +626,82 @@
         "no_remaining_children": true
       },
       "passed": true,
-      "cold_first_presentation_ms": 5702.999999994063,
+      "cold_first_presentation_ms": 5625.0,
       "warm_stage_ms": {
         "capture_ms": {
           "count": 3,
-          "p50": 0.169,
-          "p95": 0.188
+          "p50": 0.229,
+          "p95": 0.234
         },
         "change_ms": {
           "count": 3,
-          "p50": 1.493,
-          "p95": 2.027
+          "p50": 1.956,
+          "p95": 2.049
         },
         "preprocess_ms": {
           "count": 3,
           "p50": 0.007,
-          "p95": 0.008
+          "p95": 0.015
         },
         "ocr_layout_detect_ms": {
           "count": 3,
-          "p50": 626.721,
-          "p95": 632.487
+          "p50": 597.133,
+          "p95": 603.695
         },
         "ocr_layout_recognize_ms": {
           "count": 3,
-          "p50": 108.311,
-          "p95": 135.778
+          "p50": 96.673,
+          "p95": 110.715
         },
         "ocr_detect_ms": {
           "count": 3,
-          "p50": 597.87,
-          "p95": 600.147
+          "p50": 591.971,
+          "p95": 757.173
         },
         "ocr_recognize_ms": {
           "count": 3,
-          "p50": 281.815,
-          "p95": 287.509
+          "p50": 216.578,
+          "p95": 293.058
         },
         "ocr_reconstruct_ms": {
           "count": 3,
-          "p50": 0.012,
-          "p95": 0.016
+          "p50": 0.008,
+          "p95": 0.009
         },
         "ocr_ms": {
           "count": 3,
-          "p50": 1624.768,
-          "p95": 1636.641
+          "p50": 1492.052,
+          "p95": 1587.23
         },
         "ocr_call_ms": {
           "count": 3,
-          "p50": 1626.325,
-          "p95": 1638.179
+          "p50": 1493.82,
+          "p95": 1588.72
         },
         "temporal_ms": {
           "count": 3,
-          "p50": 0.078,
-          "p95": 0.092
+          "p50": 0.077,
+          "p95": 0.107
         },
         "context_ms": {
           "count": 3,
-          "p50": 0.058,
-          "p95": 0.065
+          "p50": 0.041,
+          "p95": 0.092
         },
         "queue_ms": {
           "count": 3,
           "p50": 0.0,
-          "p95": 15.0
+          "p95": 0.0
         },
         "provider_ms": {
           "count": 3,
           "p50": 125.0,
-          "p95": 125.0
+          "p95": 140.0
         },
         "total_ms": {
           "count": 3,
-          "p50": 1750.0,
-          "p95": 1765.0
+          "p50": 1625.0,
+          "p95": 1719.0
         },
         "gui_delivery_ms": {
           "count": 3,
@@ -523,52 +711,58 @@
         "render_ms": {
           "count": 3,
           "p50": 16.0,
-          "p95": 16.0
+          "p95": 31.0
         },
         "presentation_ms": {
           "count": 3,
-          "p50": 1766.0,
-          "p95": 1781.0
+          "p50": 1641.0,
+          "p95": 1750.0
         },
         "onset_ms": {
           "count": 3,
-          "p50": 1922.0,
-          "p95": 2234.0
+          "p50": 1938.0,
+          "p95": 2047.0
         }
       },
       "records": [
         {
           "cue": "columns",
           "source": "アルトリア\n魔導炉",
-          "at_s": 4.656,
+          "at_s": 4.891,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1468.9999999973224,
-          "onset_ms": 1656.0000000026776,
+          "presentation_ms": 1608.9999999967404,
+          "onset_ms": 1891.0000000032596,
           "replaces_source": ""
         },
         {
           "cue": "ruby",
           "source": "魔導炉\n明日の光",
-          "at_s": 10.234,
+          "at_s": 9.938,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1781.0000000026776,
-          "onset_ms": 2234.0000000112923,
+          "presentation_ms": 1641.0000000032596,
+          "onset_ms": 1938.0000000091968,
           "replaces_source": ""
         },
         {
           "cue": "caption",
           "source": "ミカ：待って！\nアルトリア\n魔導炉",
-          "at_s": 14.922,
+          "at_s": 15.047,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 1766.0000000032596,
-          "onset_ms": 1922.0000000059372,
+          "presentation_ms": 1750.0,
+          "onset_ms": 2047.0000000059372,
           "replaces_source": ""
         }
       ],
       "missing": [],
+      "correct_overlay_observed_at_s": {
+        "primer": 0.0,
+        "columns": 4.891,
+        "ruby": 9.938,
+        "caption": 15.047
+      },
       "max_pending": {
         "frames": 0,
         "texts": 0,
@@ -585,7 +779,8 @@
         "glossary_hits": 0,
         "temporal_suppressed": 0
       },
-      "http_requests": 4
+      "http_requests": 4,
+      "discarded_before_presentation": 0
     },
     {
       "name": "slow-provider-freshness",
@@ -602,61 +797,61 @@
         "no_remaining_children": true
       },
       "passed": true,
-      "cold_first_presentation_ms": 6889.999999999418,
+      "cold_first_presentation_ms": 6952.999999994063,
       "warm_stage_ms": {
         "capture_ms": {
           "count": 2,
-          "p50": 0.165,
-          "p95": 0.175
+          "p50": 0.159,
+          "p95": 0.174
         },
         "change_ms": {
           "count": 2,
-          "p50": 1.175,
-          "p95": 1.228
+          "p50": 1.878,
+          "p95": 2.385
         },
         "preprocess_ms": {
           "count": 2,
-          "p50": 0.007,
-          "p95": 0.009
+          "p50": 0.004,
+          "p95": 0.004
         },
         "ocr_detect_ms": {
           "count": 2,
-          "p50": 957.532,
-          "p95": 975.587
+          "p50": 945.361,
+          "p95": 959.997
         },
         "ocr_recognize_ms": {
           "count": 2,
-          "p50": 31.589,
-          "p95": 32.555
+          "p50": 27.271,
+          "p95": 27.358
         },
         "ocr_reconstruct_ms": {
           "count": 2,
-          "p50": 0.056,
-          "p95": 0.063
+          "p50": 0.051,
+          "p95": 0.059
         },
         "ocr_ms": {
           "count": 2,
-          "p50": 991.975,
-          "p95": 1011.24
+          "p50": 975.308,
+          "p95": 989.893
         },
         "ocr_call_ms": {
           "count": 2,
-          "p50": 993.353,
-          "p95": 1012.409
+          "p50": 976.374,
+          "p95": 991.024
         },
         "temporal_ms": {
           "count": 2,
-          "p50": 0.166,
-          "p95": 0.248
+          "p50": 0.125,
+          "p95": 0.172
         },
         "context_ms": {
           "count": 2,
-          "p50": 0.056,
-          "p95": 0.06
+          "p50": 0.04,
+          "p95": 0.045
         },
         "queue_ms": {
           "count": 2,
-          "p50": 23.0,
+          "p50": 15.5,
           "p95": 31.0
         },
         "provider_ms": {
@@ -666,8 +861,8 @@
         },
         "total_ms": {
           "count": 2,
-          "p50": 2828.5,
-          "p95": 2860.0
+          "p50": 2805.0,
+          "p95": 2844.0
         },
         "gui_delivery_ms": {
           "count": 2,
@@ -681,38 +876,42 @@
         },
         "presentation_ms": {
           "count": 2,
-          "p50": 2836.0,
-          "p95": 2875.0
+          "p50": 2812.5,
+          "p95": 2844.0
         },
         "onset_ms": {
           "count": 2,
-          "p50": 3117.5,
-          "p95": 3360.0
+          "p50": 3257.5,
+          "p95": 3343.0
         }
       },
       "records": [
         {
           "cue": "first",
           "source": "The first line.",
-          "at_s": 5.86,
+          "at_s": 5.843,
           "source_cer": 0.0,
           "lag_cues": 1,
-          "presentation_ms": 2797.000000005937,
-          "onset_ms": 3360.000000000582,
+          "presentation_ms": 2781.0000000026776,
+          "onset_ms": 3343.0000000080327,
           "replaces_source": ""
         },
         {
           "cue": "final",
           "source": "The final line.",
-          "at_s": 9.375,
+          "at_s": 9.672,
           "source_cer": 0.0,
           "lag_cues": 0,
-          "presentation_ms": 2875.0,
-          "onset_ms": 2875.0,
+          "presentation_ms": 2843.9999999973224,
+          "onset_ms": 3172.000000005937,
           "replaces_source": ""
         }
       ],
       "missing": [],
+      "correct_overlay_observed_at_s": {
+        "primer": 0.0,
+        "final": 9.672
+      },
       "max_pending": {
         "frames": 1,
         "texts": 1,
@@ -720,8 +919,8 @@
         "children": 1
       },
       "counters": {
-        "captures": 98,
-        "ocr": 9,
+        "captures": 102,
+        "ocr": 10,
         "translations": 4,
         "stale": 1,
         "cache_hits": 0,
@@ -729,7 +928,8 @@
         "glossary_hits": 0,
         "temporal_suppressed": 0
       },
-      "http_requests": 4
+      "http_requests": 4,
+      "discarded_before_presentation": 0
     }
   ],
   "remaining_children": 0,

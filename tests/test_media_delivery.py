@@ -1,10 +1,64 @@
 import time
 
+import pytest
 from PIL import Image
 
 from desktranslate.models import Capabilities, OCRResult, TranslationResult
 from desktranslate.pipeline import Pipeline
 from desktranslate.settings import Settings
+
+
+@pytest.mark.parametrize(
+    "before,after",
+    [("Ready!", "Wait for me!"), ("Wait for me!", "Wait for me?"), ("Wait for me?", "")],
+)
+def test_short_static_subtitle_and_punctuation_change_are_not_lost(
+    before, after, tmp_path, monkeypatch
+):
+    from pathlib import Path
+
+    from desktranslate.algorithms import FrameGate
+
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "tools"))
+    from fixtures import render_fixture
+
+    frames = []
+    for index, text in enumerate((before, after)):
+        path = tmp_path / f"subtitle{index}.png"
+        render_fixture(
+            dict(
+                id=path.stem,
+                language="en",
+                text=text,
+                size=30,
+                bg="#172736",
+                fg="white",
+                outline=True,
+            ),
+            path,
+        )
+        with Image.open(path) as image:
+            frames.append(image.convert("RGB"))
+    gate = FrameGate(0.15, motion_interval=0.45)
+    gate.observe(frames[0], 0)
+    assert gate.observe(frames[0], 0.2).ready
+    assert gate.observe(frames[1], 2).changed
+    assert gate.observe(frames[1], 2.2).ready
+    assert not gate.observe(frames[1], 4).ready
+
+
+def test_change_detection_ignores_low_amplitude_noise_and_isolated_hot_pixels():
+    from desktranslate.algorithms import FrameGate
+
+    gate = FrameGate(0.15)
+    base = Image.new("RGB", (256, 128), "black")
+    gate.observe(base, 0)
+    gate.observe(base, 0.2)
+    noise = base.copy()
+    noise.putpixel((25, 50), (255, 255, 255))
+    noise.putpixel((125, 30), (255, 255, 255))
+    assert not gate.observe(noise, 1).changed
+    assert not gate.observe(Image.new("RGB", base.size, (1, 1, 1)), 2).changed
 
 
 def test_numeric_metrics_retain_complete_vertical_pipeline_and_presentation_stages():
