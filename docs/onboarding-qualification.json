@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "synthetic_data_only": true,
+  "live_provider": "Google public web endpoint",
+  "fresh_isolated_model_directory": true,
+  "forced_page_ready": false,
+  "next_blocked_before_pack": true,
+  "language_pack_verified": true,
+  "next_blocked_before_translation": true,
+  "actual_ocr_provider_success": true,
+  "result_visible": true,
+  "success_page_entered": true,
+  "finish_committed": true,
+  "set_up_later_does_not_commit": true,
+  "remaining_children": 0,
+  "elapsed_s": 18.02,
+  "effective_device_pixel_ratio": 2.0,
+  "passed": true
+}

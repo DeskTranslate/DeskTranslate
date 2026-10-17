@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0b2",
+  "source_sha256": "feb65ee42a09eabdf5612d0bc3e2478bbc219778c951dd79b43540771bad1ba2",
+  "executable_sha256": "b6d6a558538ccbbc98ada751fa018d195f24ea24826634bd34e3fe50e44d9736",
+  "harness_sha256": "c25e65d664bdc4fc9661f425b02f23a714975fbb4edc7bc5d00af723793c4a0d",
+  "scope": "Actual frozen executable, offscreen Qt, owned local pipes, system-only PATH and isolated authored preferences. No desktop input/capture/media or installation. Native foreground restore, cross-account ACL and clean consumer Windows not tested.",
+  "checks": {
+    "relaunch_existing_frozen_owner": true,
+    "verification_refuses_active_data_without_activation": true,
+    "frozen_dead_owner_recovery": true,
+    "ownership_removed_after_clean_exit": true,
+    "preferences_retained": true
+  },
+  "passed": true
+}

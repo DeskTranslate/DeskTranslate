@@ -1,0 +1,230 @@
+{
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "requested_duration_s": 1800.0,
+  "elapsed_s": 1800.61,
+  "completed": true,
+  "mode": "chaos",
+  "failure_category": "",
+  "real_ocr": true,
+  "synthetic_capture": true,
+  "loopback_http": true,
+  "source_unchanged": true,
+  "harness_sha256": "12a47f6b786a06db6c13ed6f2c3b24cc27e23787dd6bc062084cfd7c691909d1",
+  "harness_unchanged": true,
+  "accepted": 91,
+  "session_restarts": 28,
+  "injected_http_faults": 47,
+  "http_requests": 137,
+  "errors": {
+    "ProviderUnavailableError": 11,
+    "LocalServerUnavailableError": 8,
+    "ProviderTimeoutError": 8
+  },
+  "counters": {
+    "captures": 9939,
+    "ocr": 580,
+    "translations": 121,
+    "stale": 347,
+    "cache_hits": 0,
+    "ocr_restarts": 12
+  },
+  "max_event_queue": 8,
+  "latency_ms": {
+    "capture_ms": {
+      "count": 91,
+      "p50": 0.282,
+      "p95": 0.564,
+      "p99": 7.433
+    },
+    "change_ms": {
+      "count": 91,
+      "p50": 1.765,
+      "p95": 2.933,
+      "p99": 8.751
+    },
+    "preprocess_ms": {
+      "count": 91,
+      "p50": 0.02,
+      "p95": 0.061,
+      "p99": 0.337
+    },
+    "ocr_ms": {
+      "count": 91,
+      "p50": 1141.755,
+      "p95": 1365.72,
+      "p99": 2501.013
+    },
+    "queue_ms": {
+      "count": 91,
+      "p50": 0.0,
+      "p95": 47.0,
+      "p99": 47.0
+    },
+    "provider_ms": {
+      "count": 91,
+      "p50": 31.0,
+      "p95": 1078.0,
+      "p99": 1094.0
+    },
+    "total_ms": {
+      "count": 91,
+      "p50": 1218.0,
+      "p95": 2375.0,
+      "p99": 6125.0
+    },
+    "overlay_paint_ms": {
+      "count": 91,
+      "p50": 6.83,
+      "p95": 9.318,
+      "p99": 36.508
+    }
+  },
+  "cancellation_ms": {
+    "count": 116,
+    "median": 31.000000002677552,
+    "p95": 46.999999998661224
+  },
+  "workers_closed": true,
+  "remaining_children": 0,
+  "final_resources": {
+    "rss_bytes": 102277120,
+    "private_bytes": 73031680,
+    "peak_rss_bytes": 106754048,
+    "handles": 435,
+    "cpu_seconds": 116.203125,
+    "native_threads": 2,
+    "tcp_connections": 0
+  },
+  "resource_qualification": {
+    "qualified": false,
+    "bounded_collections_workers_sockets": true,
+    "main_growth": {
+      "rss_bytes": {
+        "initial_median": 97871872.0,
+        "final_median": 105170944.0,
+        "growth": 7299072.0,
+        "budget": 33554432,
+        "passed": true
+      },
+      "private_bytes": {
+        "initial_median": 67833856.0,
+        "final_median": 75225088.0,
+        "growth": 7391232.0,
+        "budget": 33554432,
+        "passed": true
+      },
+      "handles": {
+        "initial_median": 386.0,
+        "final_median": 430.5,
+        "growth": 44.5,
+        "budget": 32,
+        "passed": false
+      },
+      "native_threads": {
+        "initial_median": 6.5,
+        "final_median": 6.0,
+        "growth": -0.5,
+        "budget": 8,
+        "passed": true
+      }
+    },
+    "python_heap_growth": {
+      "bytes": 2154519.0,
+      "budget": 16777216
+    }
+  },
+  "continuous_worker_qualification": {
+    "qualified": false,
+    "reason": "NOT APPLICABLE to restart workload"
+  },
+  "measurement_scope": "Authored synthetic capture, real isolated CPU OCR, real loopback HTTP and Qt overlay. Not physical monitor or real media qualification.",
+  "workload_passed": true,
+  "rates_per_minute": {
+    "captures": 331.188,
+    "ocr": 19.327,
+    "translations": 4.032,
+    "stale": 11.563,
+    "cache_hits": 0.0,
+    "ocr_restarts": 0.4
+  },
+  "main_cpu_percent_one_core": {
+    "active": {
+      "median": 7.03125,
+      "samples": 39
+    },
+    "static": {
+      "median": 3.8020833333333335,
+      "samples": 9
+    }
+  },
+  "source_hashes": {
+    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
+    "algorithms.py": "89b77b42079aa39b4f4746912f71fcd2fe9ab2e7c9ec2c99a30b1bff9b5d1f2f",
+    "app.py": "aa5871e8dc0242e35fd33335d7b7d272f0e9876da38a86846d21e04c761225a8",
+    "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
+    "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
+    "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
+    "assets/models.json": "3c3d68db87c4835fedbcb87189bb37323aeaf09ab0f2330b26096cdc6efe8602",
+    "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
+    "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "assets/samples/es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "assets/samples/fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "assets/samples/hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "assets/samples/id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "assets/samples/it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "assets/samples/ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "assets/samples/ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "assets/samples/nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "assets/samples/pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "assets/samples/pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "assets/samples/ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "assets/samples/tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "assets/samples/uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "assets/samples/vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+    "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
+    "context.py": "d1f7fd7c34932a7ffc317706a0b40e430afd9398422184eb95823bee27b8dd74",
+    "diagnostics.py": "2af30568b78d98f6e375be759d67caa512e46d32e9ea9a8181c8f94b7af071ed",
+    "errors.py": "035f84c48edc7a4d54c88c655b1e07863d1ad269e1a0fa586d23f8408fde3d15",
+    "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
+    "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
+    "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
+    "models.py": "b1cdec4d50bd1829fbb589b0ad5f24e3eb8a8ef0cfd4582a7900c061ce68539d",
+    "network.py": "7374c4356a97a10e5a4213961851186c4781fc374d4de005eab18b2043f103ab",
+    "ocr.py": "aa8b3e1c54d8b2353e71bd4af2b13e76a5bbe5fe88ae99b795a3312e00002df1",
+    "pipeline.py": "2eee4b7c0b7cad20feedf0dc9585fb25ee84de559945f2113dfa8c737b73cc59",
+    "processes.py": "d5bbb19aa0bb3af15af4106a7b89bbe6e2533967efc52713d2410602553cd8d1",
+    "profiles.py": "2fbd02b8e67050b794e6cef5499cff45af740ee452896d29bdecdeee15e29be3",
+    "providers.py": "c64c1c0f2a073cb07f9ff1b0765c5210e1a2a88210a8b8959e5370c9951e2df0",
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
+    "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
+    "settings.py": "297fc2e7f526773abbce3b72fbd52322805c55a02c2a41724606292c7f7e64a2",
+    "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
+    "transcript.py": "28afb150ac86e6ceda4e8305ae046fb20c6f73785be9ef849291d7b432f65d64",
+    "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
+    "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
+    "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
+    "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
+    "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
+    "ui/onboarding.py": "233e4022a404118fdb67df5b4f4c164b6274e8d18b2ab6b9b56037a6b742a209",
+    "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
+    "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
+    "ui/profiles.py": "b1b108d1da6c90aa85f28bf97226280b1daea0381b84dddc9c633c27f64446d2",
+    "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
+    "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
+    "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
+    "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
+    "ui/transcript.py": "f7de5d1ecfc60b069891db875a71d1a0d625039db06c50e36acee718a503c848",
+    "ui/window.py": "09aa478abe8ce99831b44d3d13803d1eb8544f7105ea747eea22a5cb1255dce2",
+    "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
+    "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
+  },
+  "superseded_reason": "Windows early-cancel pipe handle leak discovered and fixed after this run; current-source endurance must be rerun."
+}

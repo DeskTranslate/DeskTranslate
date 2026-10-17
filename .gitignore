@@ -7,6 +7,10 @@ __pycache__/
 .upstream.git/
 .test-data/
 .test-tmp/
+.test-tmp-network/
+.test-tmp-*/
+.test-onboarding-tmp/
+.test-provider-tmp/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
@@ -16,6 +20,8 @@ dist/
 *.egg-info/
 *.log
 *.jsonl
+*.progress.json
+dist-python/
 *.part
 .env
 .env.*
@@ -24,3 +30,5 @@ credentials.*
 coverage.xml
 .coverage
 htmlcov/
+
+*.partial.json

@@ -1,0 +1,83 @@
+# Testing without taking over your desktop
+
+Routine development and pre-deployment checks must work while the laptop is being used for other work. They do not require visible playback, foreground windows, real desktop pixels, global keyboard/mouse input, display changes or installation. Native hardware qualification is a separate, occasional activity in a reserved session.
+
+## Routine local validation
+
+In the documented development environment:
+
+```powershell
+python tools/validate.py
+```
+
+This runs Ruff, format checks, mypy, pytest and an offscreen application smoke. `python -m pytest -q` runs the same isolated test suite directly. Qt is forced to `offscreen`, even if a developer inherited `QT_QPA_PLATFORM=windows`; key events and clipboard tests stay inside that backend.
+
+The suite replaces external boundaries rather than skipping application logic:
+
+- Settings/models use temporary test directories; the credential backend is an in-memory test double.
+- Global shortcut registration calls are substituted, while shortcut parsing, conflicts, retries and cleanup still execute.
+- Real desktop grabs and browser launches fail the test immediately. No screenshot of another application is taken.
+- External DNS/connections are blocked. Provider tests use mock transports; deadline/cancellation tests may use an owned loopback server.
+- Picker drag/corner resize/Enter/Escape use authored pixmaps in offscreen widgets. Coordinate invariants cover six resolutions/orientations, five scales and positive/negative origins without changing any display.
+- Session, stale-result, failure and cleanup tests use injected capture/OCR/provider components. A failed-session weak-reference regression verifies that async exception cycles do not keep retired state/native locks alive until cyclic GC.
+- Short native process/job/handle tests use hidden, owned background processes. They do not install software, register input hooks or change the desktop.
+- Startup ownership tests use temporary folders and owned local pipes. Actual offscreen CLI processes cover relaunch/restore, crash recovery and clean unlock; verification/error paths cannot activate an existing app.24 repeated activation/cleanup cycles check handle/thread bounds.
+
+This retains correctness, failure-path and rendering coverage. It does not pretend to qualify native DPI messages, actual font/display composition, screen readers or physical hardware. Native observations remain separately labelled in the acceptance matrix.
+
+One offscreen QApplication lives for the pytest session. Qt notifiers must not outlive an application recreated between component cases; doing so caused a native abort during local-pipe testing. Owned widgets/servers still close and delete between cases, with deferred deletion drained. This matches the production event-loop lifetime without removing cleanup assertions.
+
+The validation runner bounds each step, stops on the first failure and preserves command output/JUnit. Ctrl+C or a timeout closes its owned process tree. It does not terminate unrelated applications. Pytest categories `interactive`, `long_running`, `system_changes` and `external_service` are excluded by the default marker expression; manual native probes live outside `tests/`.
+
+## Before deployment
+
+```powershell
+python tools/validate.py --predeploy
+```
+
+This adds dependency consistency/vulnerability checks, reachable-history/source privacy scanning and wheel/sdist builds. It uses network access for the vulnerability database and more CPU/disk than the routine suite, but does not use the desktop. An existing binary can also be smoke-tested offscreen with `--frozen <path-to-DeskTranslate.exe>`; that does not install it. Packaging/runtime/installer evidence must still match the actual candidate.
+
+Normal GitHub CI uses this headless path on a hosted Windows runner, followed by an offscreen frozen runtime check. It does not invoke foreground capture, visible videos, display changes or an installer. Installer qualification is restricted to the manually dispatched candidate workflow on its disposable runner.
+
+For a matching packaged runtime, `python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json` separately exercises owned offscreen relaunch, verification isolation, deliberate fixture-process crash, dead-owner recovery, retained preferences and clean unlock. Its90-second supervisor closes only owned processes. It uses temporary authored data and system-only PATH; no installer, desktop input/capture or ordinary preferences are touched. Hosted quality/candidate jobs require this gate; it is excluded from the routine laptop command.
+
+## Extended background qualification
+
+`python tools/evaluate.py --ocr-experiment --cases ja-game ja-columns-ruby en-small --output .audit/ocr-benchmark.json` is the bounded full/preprocessing benchmark. It forces offscreen Qt, defaults to one repeat and local `.test-data/models`, and performs no download unless `--install` is explicit. It groups fixtures by model family, closes/releases the previous native family before loading another, and atomically checkpoints each completed case. Failure/timeout leaves `completed:false`; cleanup and unchanged source are recorded separately. The default owned deadline is300seconds; `--benchmark-timeout` accepts30–1800seconds for explicitly longer qualification. Ctrl+C/timeout closes only its process tree. Output defaults under `.audit`, preserving historical public reports. A47-case, three-repeat run is an extended qualification activity, not routine laptop validation.
+
+`python tools/evaluate_media.py --ocr-experiment --output .audit/media-sequences.json` recognizes23 authored changing-frame images in owned background OCR workers, then replays their capture timestamps through temporal reconciliation. It measures exact complete-line retention, proposal counts, observed recognition errors and OCR stage/call costs. The240-second supervisor owns cleanup. This is not paced media, desktop capture, semantic translation or real-time throughput qualification. An exact-line failure returns nonzero and remains in the report. See [the current engineering checkpoint](media-engineering.md).
+
+`python tools/evaluate_layout.py --ocr-experiment --output .audit/ocr-regional.json` exercises20 authored Japanese layouts/word regions/short inputs, twice each in one isolated worker, interleaving horizontal and vertical modes. Twelve additional background/mode cases retain false-positive failures. It requires the complete verified Japanese pack, performs no download, and has a240-second supervisor. It records observed text, ruby annotations, stage costs, source/model/image hashes and cleanup. This is authored recognition evidence, not real-media or real-time qualification.
+
+`python tools/profile_ocr.py --ocr-experiment --output .audit/ocr-stages.json` separately compares current and experimental natural-scale detection on the current corpus plus nine authored short inputs (56 cases). `--cases ja-game en-small` narrows the probe. It requires verified existing models, uses a300-second owned deadline and changes no product detector default. Individual observations are not warm medians. All three tools reject invocation without their opt-in before loading a model and are excluded from routine pytest/pre-deployment.
+
+Extended OCR/HTTP/resource stress is opt-in and excluded from routine validation. Prefer a hosted/disposable runner. The fixture soak forces offscreen Qt and uses authored in-memory frames, isolated CPU OCR and loopback HTTP; it never captures the desktop or plays video.
+
+For the complete controller journey without the desktop:
+
+```powershell
+python tools/qualify_product.py --component-test --output .audit/product-component.json
+```
+
+This explicitly opted-in, 240-second bounded command uses already verified Japanese/English/Korean/Chinese packs, authored images, real isolated OCR, real owned HTTP and the offscreen main window/overlay. It checks one-shot delivery, pause/capture suppression/resume onto changed content, provider outage/retry, atomic language switching, stop cleanup and preference/content-retention boundaries. It also retains 24 negative OCR results, including ambiguous geometric backgrounds; a failed quality criterion remains a failure and returns nonzero. No paid service, desktop capture, global shortcut registration, installation or visible playback occurs. Partial reports retain the successful checks and failure category. This is component evidence, not physical-media or provider semantic-quality qualification.
+
+`python tools/evaluate_confidence.py --ocr-experiment --output .audit/ocr-confidence.json` separately compares four confidence cutoffs on the47 current positives plus nine authored short-text/digit/punctuation cases. The historical44-case report retains its original35-image corpus. The probe uses one native worker at a time, existing verified packs and offscreen fonts, with a300-second owned deadline. It changes no application default and makes no network requests. Inspect regressions as well as improvements; discarding genuine short text is not a quality fix.
+
+```powershell
+$env:DESKTRANSLATE_DATA_DIR = "$PWD/.test-data"
+python tools/soak.py --long-running --mode chaos --duration 1800 --stop-file .audit/stop-chaos --output docs/soak-chaos.json
+```
+
+Japanese/English packs must already be verified. Extended runs require both `--long-running` and `--stop-file`. Create that stop file to end cooperatively and reap workers; an existing stop request is never silently removed. A direct short smoke defaults to 60 seconds. Any incomplete run remains incomplete; resource failures return a failing exit code. Sampling gaps longer than90 seconds, including the start/end, invalidate endurance; suspended or stalled wall time cannot count as continuous observation. The tool does not prevent sleep or change power settings. Two-hour steady and 30-minute fault workloads retain their strict budgets. Do not add these workloads to the routine laptop test command.
+
+## Manual desktop and installation qualification
+
+Only use this tier when a native boundary cannot reasonably be tested below the UI, and reserve a session where disruption is acceptable. Prior evidence need not be repeated after unrelated logic/docs changes. Never run prolonged foreground/video tests as a development or deployment habit.
+
+`qualify_ui.py`, `qualify_window.py`, `qualify_selection_motion.py`, `qualify_window_loop.py` and `e2e_desktop.py` refuse to start without `--interactive-desktop`. They may display topmost authored windows, capture their pixels or require focus. An owned supervisor imposes a 120-second deadline (explicit `--desktop-timeout` accepts 1–300 seconds); Ctrl+C or timeout closes that probe and its workers. Inspect `--help` without launching the desktop test. These commands are not run as part of routine pytest/CI/pre-deployment validation.
+
+`qualify_installer.ps1` additionally requires `-AllowInstallChanges` because it creates/removes installed files, shortcuts and per-user uninstall registration. Use a dedicated account/VM or the manual hosted workflow. Display rotation/scaling/topology changes, real-media sessions, Narrator and OS-preference checks remain manual acceptance items, not unattended laptop tests.
+
+The installer probe waits for actual executable/registry/shortcut removal before reinstalling; an Inno uninstaller's original process can exit before temporary-clone cleanup finishes. The bounded polling logic has hidden component tests with authored temporary state, so those timing paths can be developed without repeatedly installing the application. Independent hosted steady/fault steps still run after an unrelated installer qualification failure when build/models are ready; each failed gate continues to fail the overall job.
+
+The prolonged visible-media experiment was stopped when the maintainer requested this policy. Its interrupted progress is not a completed endurance pass. No further visible playback or display changes are part of the current routine verification.

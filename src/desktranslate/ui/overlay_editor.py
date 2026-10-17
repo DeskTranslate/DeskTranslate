@@ -32,6 +32,7 @@ class OverlayEditor(QWidget):
         self.controls: dict[str, Any] = {}
         row = QHBoxLayout()
         self.presets = QComboBox()
+        self.presets.setAccessibleName("Subtitle appearance preset")
         self.presets.addItems(list(PRESETS))
         row.addWidget(self.presets, 1)
         preset = QPushButton("Use preset")
@@ -81,6 +82,7 @@ class OverlayEditor(QWidget):
             value.setMaxLength(7)
             value.setAccessibleName(title)
             choose = QPushButton("Choose…")
+            choose.setAccessibleName("Choose " + title.lower())
             choose.clicked.connect(lambda checked=False, edit=value: self.choose_color(edit))
             row.addWidget(value, 1)
             row.addWidget(choose)

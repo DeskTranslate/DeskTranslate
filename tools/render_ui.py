@@ -1,10 +1,14 @@
 """Render synthetic UI previews without capturing a desktop or making network calls."""
 
+import os
 from pathlib import Path
+
+os.environ["QT_QPA_PLATFORM"] = "offscreen"
 
 from PIL import Image, ImageOps
 from PySide6.QtWidgets import QApplication
 
+from desktranslate.profiles import profile_values
 from desktranslate.settings import Settings, SettingsStore
 from desktranslate.ui.window import MainWindow
 
@@ -15,12 +19,18 @@ def main() -> None:
     directory.mkdir(parents=True, exist_ok=True)
     for theme in ("dark", "light"):
         store = SettingsStore(Path(".test-data/previews") / theme)
-        store.save(Settings(theme=theme))
+        settings = Settings(theme=theme)
+        settings.profiles = {
+            "Visual novel · Japanese → English": profile_values(Settings(style="game")),
+            "Subtitles · Korean → English": profile_values(Settings(source="ko", style="subtitle")),
+            "Menus · Spanish → English": profile_values(Settings(source="es", style="literal")),
+        }
+        store.save(settings)
         window = MainWindow(store, demo=True)
+        window.resize(1000, 800)
         window.show()
-        for index, name in enumerate(
-            ("translate", "providers", "recognition", "appearance", "preferences", "diagnostics")
-        ):
+        for index in range(window.navigation.count()):
+            name = window.navigation.item(index).text().lower()
             window.navigation.setCurrentRow(index)
             app.processEvents()
             window.grab().save(str(directory / f"{name}-{theme}.png"))
@@ -28,7 +38,7 @@ def main() -> None:
         app.processEvents()
         window.overlay.grab().save(str(directory / f"overlay-{theme}.png"))
         window.quit()
-    montage = Image.new("RGB", (1500, 1200), "#263b3c")
+    montage = Image.new("RGB", (1500, 1600), "#263b3c")
     for index, file in enumerate(sorted(directory.glob("*-dark.png"))):
         image = Image.open(file)
         image.thumbnail((495, 395))

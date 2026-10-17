@@ -1,0 +1,94 @@
+{
+  "run_id": 38755463595,
+  "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/38755463595",
+  "source_commit": "703ee15d960c861ce86479ef141b0157f339d975",
+  "workflow": "Windows quality",
+  "environment": "GitHub-hosted windows-2022, pinned CPython3.12.15",
+  "result": "PASS",
+  "report_archive_sha256": "65805045acdfb01ecd323fe822585ab5bca83795683227fa997b02436768a8e7",
+  "report_archive_digest_verified": true,
+  "pytest": {
+    "tests": "405",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "35.941"
+  },
+  "runtime": {
+    "qt": true,
+    "assets": true,
+    "http_provider_roundtrip": true,
+    "credential_roundtrip": true,
+    "credential_cleanup": true,
+    "ocr_exact": true,
+    "ocr_ms": 997.3008999999138,
+    "ocr_cleanup": true
+  },
+  "privacy": {
+    "version": "2.0.0b2",
+    "scope": "Publishable tree, optional reachable Git blobs, extracted frozen code/runtime files, and checksum-listed release files/archive members; signature scan cannot prove absence of every secret. Public contributor identities and third-party attribution are retained.",
+    "counts": {
+      "tree_files": 306,
+      "history_blobs": 652,
+      "artifact_members": 403,
+      "release_files": 6,
+      "release_archive_members": 410,
+      "frozen_modules": 1481
+    },
+    "findings": [],
+    "verified_upstream_metadata": [
+      {
+        "location": "app/_internal/bidi/bidi.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "python-bidi",
+        "version": "0.6.11",
+        "source_sha256": "8f286fa2b62aade1c55d68a7a8ff33e066414c4e0d365df817164dd2e5d38540"
+      },
+      {
+        "location": "app/_internal/shapely/_geometry_helpers.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "707cb47e19233d313681192f086b22268e72b98adcc21c41e131891c51569180"
+      },
+      {
+        "location": "app/_internal/shapely/_geos.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "5de4fb9704e89549eab873cc7b0e92b49e602d407f61d8eb8d2575a67edd83cd"
+      },
+      {
+        "location": "frozen/numpy.__config__",
+        "category": "published_upstream_build_metadata",
+        "package": "numpy",
+        "version": "2.5.3",
+        "source_sha256": "54309fe4a6792ef381020e258d4bf370b08f833af7463c99bd5d24de68786730"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/bidi/bidi.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "python-bidi",
+        "version": "0.6.11",
+        "source_sha256": "8f286fa2b62aade1c55d68a7a8ff33e066414c4e0d365df817164dd2e5d38540"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/shapely/_geometry_helpers.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "707cb47e19233d313681192f086b22268e72b98adcc21c41e131891c51569180"
+      },
+      {
+        "location": "release/DeskTranslate-2.0.0b2-Portable-x64.zip/DeskTranslate/_internal/shapely/_geos.cp312-win_amd64.pyd",
+        "category": "published_upstream_build_metadata",
+        "package": "shapely",
+        "version": "2.2.0",
+        "source_sha256": "5de4fb9704e89549eab873cc7b0e92b49e602d407f61d8eb8d2575a67edd83cd"
+      }
+    ],
+    "passed": true
+  },
+  "dependency_vulnerability_count": 0,
+  "scope": "Exact recorded commit: quality/build/offscreen frozen OCR/vault/HTTP/artifact privacy. Not installer, consumer Windows, physical hardware, signing or endurance qualification."
+}

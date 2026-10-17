@@ -1,0 +1,69 @@
+{
+  "result": "FAIL",
+  "report": "soak-chaos.json",
+  "elapsed_s": 2009.58,
+  "accepted": 54,
+  "minimum_accepted": 58,
+  "observed_resource_budget_result": {
+    "qualified": true,
+    "bounded_collections_workers_sockets": true,
+    "main_growth": {
+      "rss_bytes": {
+        "initial_median": 96143360.0,
+        "final_median": 99461120.0,
+        "growth": 3317760.0,
+        "budget": 33554432,
+        "passed": true
+      },
+      "private_bytes": {
+        "initial_median": 65947648.0,
+        "final_median": 68904960.0,
+        "growth": 2957312.0,
+        "budget": 33554432,
+        "passed": true
+      },
+      "handles": {
+        "initial_median": 369.0,
+        "final_median": 369.5,
+        "growth": 0.5,
+        "budget": 32,
+        "passed": true
+      },
+      "native_threads": {
+        "initial_median": 6.5,
+        "final_median": 6.0,
+        "growth": -0.5,
+        "budget": 8,
+        "passed": true
+      }
+    },
+    "python_heap_growth": {
+      "bytes": 594477.0,
+      "budget": 16777216
+    }
+  },
+  "current_observation_assessment": {
+    "qualified": false,
+    "reason": "All observation gaps, including start/end, must be at most 90 seconds",
+    "max_gap_s": 959.58,
+    "end_gap_s": 959.58,
+    "observed_span_s": 1050.0
+  },
+  "assessor_harness_sha256": "9b69a50b2bfc12ee148ddda1b2c30eb678f0f6045dd8cac17791a795bcc70027",
+  "original_report_preserved": true,
+  "continuous_endurance_qualified": false,
+  "gap_cause": "Windows Kernel-Power events confirm lid-triggered Modern Standby during the observation gap; no application-hang conclusion and no power-setting changes.",
+  "scope": "Observed resource deltas are useful diagnostic evidence, not a continuous thirty-minute PASS. The original gate did not check start/end sampling gaps; the strengthened harness does.",
+  "power_events_utc": [
+    {
+      "utc": "2026-10-15T10:46:00.1441906Z",
+      "id": 506,
+      "message": "Entering Modern Standby; Reason: Lid"
+    },
+    {
+      "utc": "2026-10-15T11:01:36.0517271Z",
+      "id": 507,
+      "message": "Exiting Modern Standby; Reason: AC/DC Display Burst Suppressed"
+    }
+  ]
+}

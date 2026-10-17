@@ -1,0 +1,14 @@
+{
+  "engine": "1.1.26090.9",
+  "antivirus": "1.461.32.0",
+  "signature_date": "2026-10-15T05:16:48.0000000+08:00",
+  "real_time_enabled": true,
+  "scan_scope": "Workspace dist artifacts only",
+  "started_utc": "2026-10-15T09:45:27.7000419Z",
+  "finished_utc": "2026-10-15T09:52:51.0161931Z",
+  "cmdlet_completed": true,
+  "limitations": "Local Microsoft Defender scan only; no universal AV or SmartScreen/signing qualification",
+  "scan_completion_event_observed": true,
+  "detection_events_observed": 0,
+  "result": "PASS"
+}

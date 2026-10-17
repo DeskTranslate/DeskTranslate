@@ -1,0 +1,13 @@
+{
+  "result": "FAIL preserved; test isolation corrected",
+  "run_id": 39021390696,
+  "url": "https://github.com/DeskTranslate/DeskTranslate/actions/runs/39021390696",
+  "source_commit": "b7d29bfc90b5fb157a65c98d15a7bc51430e835e",
+  "pytest": {
+    "passed": 489,
+    "failed": 1
+  },
+  "test": "test_release_signing_and_stable_fail_closed",
+  "root_cause": "The negative test read live repository qualification evidence and assumed it would always be incomplete. Once final evidence legitimately passed, stable_gate correctly did not raise.",
+  "disposition": "Use an isolated temporary project with explicitly incomplete manual evidence. Keep the same ValueError assertion and real version/config validation. No application, lock, build logic or soak harness changes. Full hosted suite rerun required."
+}

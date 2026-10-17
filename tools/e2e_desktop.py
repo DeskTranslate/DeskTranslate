@@ -23,6 +23,9 @@ from desktranslate.settings import Settings
 
 
 def main() -> None:
+    from qualification_policy import require_interactive_desktop
+
+    require_interactive_desktop()
     enable_dpi_awareness()
     from PySide6.QtCore import Qt, QTimer
     from PySide6.QtGui import QPixmap

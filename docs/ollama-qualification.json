@@ -1,0 +1,29 @@
+{
+  "official_ollama_version": "0.40.4",
+  "model": "qwen3:0.6b",
+  "authored_content_only": true,
+  "cloud_disabled": true,
+  "isolated_test_profile": true,
+  "checks": {
+    "offline_before_start": true,
+    "actual_model_download": true,
+    "discovery": true,
+    "real_translation_nonempty_changed": true,
+    "missing_model": true,
+    "model_unload": true,
+    "reload_after_unload": true,
+    "actual_generation_cancellation": true,
+    "offline_after_stop": true,
+    "discovery_after_restart": true,
+    "translation_after_restart": true,
+    "owned_server_stopped": true
+  },
+  "cold_translation_s": 5.797,
+  "authored_translation": "{\"translation\": \"Hola mundo\"}",
+  "missing_model_category": "ModelNotFoundError",
+  "cancellation_ms": 0.0,
+  "service_lifecycle_passed": true,
+  "translation_quality": "FAIL",
+  "quality_limitation": "Correct Spanish words were wrapped in JSON despite the translation-only prompt; this tiny model is not recommended as a qualified translation model.",
+  "passed": false
+}

@@ -1,0 +1,33 @@
+{
+  "setup_sha256": "a642569388fb2f702f14320fc4f21f49dab78c4a83e69d5a71c005cc933eeaa7",
+  "checks": [
+    {
+      "case": "unknown-runtime",
+      "exit_code": 7,
+      "refused": true,
+      "expected_reason": true,
+      "sentinel_retained": true,
+      "no_app_written": true,
+      "registry_unchanged": true
+    },
+    {
+      "case": "runtime-junction",
+      "exit_code": 7,
+      "refused": true,
+      "expected_reason": true,
+      "sentinel_retained": true,
+      "no_app_written": true,
+      "registry_unchanged": true
+    },
+    {
+      "case": "parent-junction",
+      "exit_code": 7,
+      "refused": true,
+      "expected_reason": true,
+      "sentinel_retained": true,
+      "no_app_written": true,
+      "registry_unchanged": true
+    }
+  ],
+  "passed": true
+}

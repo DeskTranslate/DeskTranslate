@@ -1,0 +1,7 @@
+# Build provenance statement v1
+
+`tools/build.py` emits an in-toto Statement v1 envelope with this document's URL as the custom predicate type. Subjects name each versioned artifact and its SHA-256. The predicate records canonical/Windows versions, Git commit, dirty-tree flag, package-source digest, builder script and runtime/build SBOM filenames. No hostname, username, absolute paths, environment or credentials are published.
+
+This local statement is traceability metadata; it is not a signed SLSA claim or proof of bit-identical reproducibility. Check its source commit/digest against the source you review. Check published hashes against your download. Runtime inventory comes from PyInstaller analysis inputs mapped privately to installed distribution files; the separate build inventory also includes development tooling. Shared Qt/native components and OCR model manifests have corresponding notices/sources or hashes.
+
+The manual release workflow additionally uses the pinned official GitHub `actions/attest` action for hosted installer/ZIP builds. Those attestations apply to the exact hosted artifact digests, not a locally rebuilt file with a different hash. Verify a hosted artifact with `gh attestation verify <artifact> -R DeskTranslate/DeskTranslate`. Attestation establishes build provenance; it does not replace Authenticode publisher signing or the manual product qualification gates.

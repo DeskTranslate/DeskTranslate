@@ -1,0 +1,61 @@
+{
+  "official_ollama_version": "0.40.4",
+  "model": "qwen2.5:1.5b",
+  "authored_content_only": true,
+  "cloud_disabled": true,
+  "isolated_test_profile": true,
+  "checks": {
+    "offline_before_start": true,
+    "actual_model_download": true,
+    "discovery": true,
+    "real_translation_nonempty_changed": true,
+    "missing_model": true,
+    "model_unload": true,
+    "reload_after_unload": true,
+    "actual_generation_cancellation": true,
+    "offline_after_stop": true,
+    "discovery_after_restart": true,
+    "translation_after_restart": true,
+    "owned_server_stopped": true
+  },
+  "cold_translation_s": 4.908,
+  "authored_translation": "Hola mundo.",
+  "authored_generations": [
+    {
+      "source": "en",
+      "target": "es",
+      "input": "Hello world.",
+      "output": "Hola mundo.",
+      "elapsed_s": 0.442
+    },
+    {
+      "source": "ja",
+      "target": "en",
+      "input": "明日、またここで会おう。",
+      "output": "See you tomorrow here.",
+      "elapsed_s": 1.635
+    },
+    {
+      "source": "ko",
+      "target": "en",
+      "input": "내일 다시 만나요.",
+      "output": "See you tomorrow.",
+      "elapsed_s": 1.913
+    },
+    {
+      "source": "zh-CN",
+      "target": "en",
+      "input": "明天我们在这里见面。",
+      "output": "We will meet here tomorrow.",
+      "elapsed_s": 1.951
+    }
+  ],
+  "authored_context_output": "Gracias.",
+  "missing_model_category": "ModelNotFoundError",
+  "cancellation_ms": 11.804,
+  "service_lifecycle_passed": true,
+  "translation_quality": "FAIL",
+  "quality_limitation": "Short authored outputs are usable plain text, but Japanese and Korean omit again; no faithful-context or representative-media model qualification is claimed.",
+  "passed": false,
+  "plain_text_short_samples": "PASS"
+}

@@ -1,0 +1,9 @@
+{
+  "provider": "libre",
+  "endpoint": "https://libretranslate.com",
+  "scope": "Actual public HTTPS service, authored greeting, no API key",
+  "translation": "FAIL",
+  "observed_error": "TranslationError",
+  "safe_message": "The provider rejected this request. Check its supported languages, model and endpoint in Providers.",
+  "limitation": "No usable account key or owned LibreTranslate server; actual endpoint failure is retained, not successful generation."
+}

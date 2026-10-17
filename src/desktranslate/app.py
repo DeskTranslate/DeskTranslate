@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import multiprocessing
+import os
 import sys
 from pathlib import Path
 
@@ -21,12 +22,16 @@ def main() -> int:
         "--ocr-fixture", type=Path, help="Synthetic Japanese fixture for release verification"
     )
     args = parser.parse_args()
+    verification_mode = args.smoke_test or bool(args.render_preview) or bool(args.verify_runtime)
+    if verification_mode:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
     from desktranslate.capture import enable_dpi_awareness
 
     enable_dpi_awareness()
     from PySide6.QtCore import QTimer
-    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication, QMessageBox
 
+    from desktranslate.instance import InstanceError, SingleInstance
     from desktranslate.logging import configure_logging
     from desktranslate.settings import SettingsStore, data_dir
     from desktranslate.ui.window import MainWindow
@@ -35,37 +40,68 @@ def main() -> int:
     app.setApplicationName("DeskTranslate")
     app.setOrganizationName("DeskTranslate")
     app.setQuitOnLastWindowClosed(False)
-    configure_logging(data_dir() / "logs")
+    instance: SingleInstance | None = None
+    try:
+        instance = SingleInstance(data_dir(), app)
+        if not instance.acquire():
+            if not verification_mode and instance.notify():
+                return 0
+            message = "DeskTranslate is already running or still closing. Restore it from the tray, or wait for it to finish closing and launch again."
+            if verification_mode:
+                print(
+                    message + " Automated verification needs an isolated data folder.",
+                    file=sys.stderr,
+                )
+            else:
+                QMessageBox.information(None, "DeskTranslate is already running", message)
+            return 1
+        configure_logging(data_dir() / "logs")
+    except (OSError, InstanceError):
+        if instance:
+            instance.close()
+        message = "DeskTranslate cannot start with this data folder. Check that it is writable, close other DeskTranslate windows and try again. For portable builds, extract the entire ZIP to a writable folder."
+        if verification_mode:
+            print(message, file=sys.stderr)
+        else:
+            QMessageBox.critical(None, "DeskTranslate cannot start", message)
+        return 1
     window = MainWindow(
         SettingsStore(),
         demo=args.demo or args.smoke_test or bool(args.render_preview) or bool(args.verify_runtime),
     )
     window.show()
+    instance.can_activate = lambda: not window.closing
+
+    def activate() -> None:
+        if not window.closing:
+            window.showNormal()
+            window.raise_()
+            window.activateWindow()
+
+    instance.activated.connect(activate)
+    app.aboutToQuit.connect(instance.close)
     if args.verify_runtime:
         from threading import Thread
+
+        verification: dict[str, object] = {}
 
         def verify() -> None:
             import json
             import uuid
 
+            from desktranslate.runtime_verification import verify_credentials, verify_http_provider
             from desktranslate.security import CredentialStore
 
             report: dict[str, object] = {
                 "qt": True,
                 "assets": (Path(__file__).parent / "assets/models.json").is_file(),
             }
-            account = "release-probe-" + uuid.uuid4().hex
-            credentials = CredentialStore()
             try:
-                credentials.set(account, account)
-                report["credential_roundtrip"] = credentials.get(account) == account
+                report["http_provider_roundtrip"] = verify_http_provider()
             except Exception as error:
-                report["credential_error"] = type(error).__name__
-            finally:
-                try:
-                    credentials.delete(account)
-                except Exception:
-                    report["credential_cleanup"] = False
+                report["http_provider_error"] = type(error).__name__
+            account = "release-probe-" + uuid.uuid4().hex
+            report.update(verify_credentials(CredentialStore(), account))
             if args.ocr_fixture:
                 from PIL import Image
 
@@ -81,14 +117,34 @@ def main() -> int:
                     report["ocr_error"] = type(error).__name__
                 finally:
                     if engine:
-                        engine.close()
+                        try:
+                            engine.close()
+                            engine.reap()
+                            report["ocr_cleanup"] = True
+                        except Exception as error:
+                            report["ocr_cleanup"] = False
+                            report["ocr_cleanup_error"] = type(error).__name__
             args.verify_runtime.parent.mkdir(parents=True, exist_ok=True)
             args.verify_runtime.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            verification.update(report)
 
         thread = Thread(target=verify, daemon=True)
         thread.start()
         timer = QTimer(window)
-        timer.timeout.connect(lambda: window.quit() if not thread.is_alive() else None)
+
+        def finish_verification() -> None:
+            if not thread.is_alive():
+                required = [
+                    "qt",
+                    "assets",
+                    "credential_roundtrip",
+                    "credential_cleanup",
+                    "http_provider_roundtrip",
+                ] + (["ocr_exact", "ocr_cleanup"] if args.ocr_fixture else [])
+                window.exit_code = int(not all(verification.get(key) is True for key in required))
+                window.quit()
+
+        timer.timeout.connect(finish_verification)
         timer.start(100)
     elif args.render_preview:
 
@@ -102,4 +158,7 @@ def main() -> int:
         QTimer.singleShot(400, preview)
     elif args.smoke_test:
         QTimer.singleShot(400, window.quit)
-    return app.exec()
+    try:
+        return app.exec()
+    finally:
+        instance.close()

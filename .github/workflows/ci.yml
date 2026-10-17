@@ -18,10 +18,10 @@ jobs:
       DESKTRANSLATE_DATA_DIR: ${{ github.workspace }}/.test-data
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version: '3.12'
-          architecture: x64
+          fetch-depth: 0
+      - name: Prepare pinned Python security runtime
+        run: ./tools/install_python.ps1
       - name: Install verified environment
         run: |
           python -m pip install --require-hashes -r requirements-bootstrap.lock
@@ -29,34 +29,58 @@ jobs:
           python -m pip install --require-hashes --no-build-isolation -r requirements-windows.lock
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           python -m pip install --no-deps --no-build-isolation -e .
-      - name: Quality gates
-        run: |
-          python -m ruff check src tests tools
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m ruff format --check src tests tools
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m mypy src
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pytest -q --basetemp=.test-tmp
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m desktranslate --smoke-test
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pip_audit --require-hashes --disable-pip -r requirements-windows.lock
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m build --no-isolation --outdir dist-python
+      - name: Headless quality and pre-deployment gates
+        run: python tools/validate.py --predeploy --junitxml .audit/pytest.xml
       - name: Build portable app
-        run: python tools/build.py
+        run: |
+          python tools/library_sources.py
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          python tools/build.py --qualification
       - name: Packaged startup
         shell: pwsh
         run: |
           $process = Start-Process -FilePath "$PWD/dist/DeskTranslate/DeskTranslate.exe" -ArgumentList '--smoke-test' -PassThru -WindowStyle Hidden
           if (-not $process.WaitForExit(20000)) { $process.Kill(); throw 'Packaged startup timed out' }
           if ($process.ExitCode -ne 0) { throw "Packaged startup failed: $($process.ExitCode)" }
+      - name: Verify frozen ownership and crash recovery offscreen
+        shell: pwsh
+        run: |
+          python tools/qualify_frozen_instance.py --component-test --executable dist/DeskTranslate/DeskTranslate.exe --output .audit/packaged-instance.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Verify frozen OCR, vault and loopback provider
+        shell: pwsh
+        run: |
+          python -c "from threading import Event; from desktranslate.ocr import ModelManager; ModelManager().install('ja',Event(),lambda *args: None); assert ModelManager().installed('ja',verify=True)"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $program = "$PWD/dist/DeskTranslate/DeskTranslate.exe"
+          $report = "$PWD/.audit/packaged-runtime.json"
+          $fixture = "$PWD/tests/fixtures/ja-game.png"
+          $env:PATH = "$env:SystemRoot/System32;$env:SystemRoot"
+          $env:PYTHONPATH = ''
+          $process = Start-Process -FilePath $program -ArgumentList "--verify-runtime `"$report`" --ocr-fixture `"$fixture`"" -WorkingDirectory $env:RUNNER_TEMP -PassThru -WindowStyle Hidden
+          if (-not $process.WaitForExit(90000)) { $process.Kill(); throw 'Frozen runtime verification timed out' }
+          if ($process.ExitCode -ne 0) { throw 'Frozen runtime verification failed' }
+      - name: Artifact privacy gate
+        run: python tools/privacy_scan.py --history --artifacts --output docs/privacy-scan.json
+      - name: Preserve quality evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: desktranslate-quality-reports
+          path: |
+            .audit/pytest.xml
+            .audit/dependency-audit.json
+            .audit/packaged-runtime.json
+            .audit/packaged-instance.json
+            docs/privacy-scan.json
+          retention-days: 14
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: desktranslate-windows
           path: |
             dist/*.zip
             dist/*sbom.json
+            dist/*provenance.json
             dist/SHA256SUMS.txt
+            docs/privacy-scan.json
           retention-days: 14

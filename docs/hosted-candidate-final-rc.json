@@ -1,0 +1,41 @@
+{
+  "run_id": 39011328579,
+  "source_commit": "a6eeea3e22c276e368d5f391179a9a1a83b30d89",
+  "artifact_archive_digest_verified": true,
+  "release_file_hashes_verified": true,
+  "provenance": {
+    "version": "2.0.0",
+    "windows_version": "2.0.0.60000",
+    "git_commit": "a6eeea3e22c276e368d5f391179a9a1a83b30d89",
+    "working_tree_dirty": false,
+    "source_sha256": "12c7ae38c3b56bca39da997c99cc34e3b3bfa57fa7a453f90ad37db9aff8f33b",
+    "publisher_signed": false,
+    "qualification_only": true,
+    "python_version": "3.12.15",
+    "openssl_version": "OpenSSL 3.5.9 29 Sep 2026",
+    "python_distribution": "astral-sh/python-build-standalone/20261009",
+    "python_archive_sha256": "11ed9f8a6ac64fb1b5a55e40e305a6744a3f77a70863c8f8197a6e4349abc64a",
+    "ocr_backend": "CPUExecutionProvider",
+    "builder": "tools/build.py",
+    "build_environment_sbom": "DeskTranslate-2.0.0-build-sbom.json",
+    "runtime_sbom": "DeskTranslate-2.0.0-runtime-sbom.json",
+    "claim": "Local build statement; not a hosted or signed attestation"
+  },
+  "attestations": [
+    {
+      "name": "DeskTranslate-2.0.0-LibrarySources.zip",
+      "verified": true,
+      "sha256": "47f5f3d99430b9e16517ded655017ac1ca61ba97339c5d5ebc23f790c6d5366f"
+    },
+    {
+      "name": "DeskTranslate-2.0.0-Portable-x64.zip",
+      "verified": true,
+      "sha256": "fc7a3de81d72d256e0fe6a483c2a958eeb60d75496ce75222165ff8355498e2c"
+    },
+    {
+      "name": "DeskTranslate-2.0.0-Setup-x64.exe",
+      "verified": true,
+      "sha256": "8620323dc7ae4e8879dfc398e925ee5b33c83a6ef79c4277698ca8a358200fb0"
+    }
+  ]
+}

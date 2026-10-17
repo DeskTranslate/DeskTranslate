@@ -1,26 +1,29 @@
 {
   "engine": "rapidocr",
+  "repeats_per_variant": 3,
+  "authored_fixtures_only": true,
   "fixtures": [
     {
       "id": "ja-game",
       "language": "ja",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1138.228700030595,
+          "latency_ms_median": 1180.6004000100074,
           "text": "明日、またここで会おう。"
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1077.5882999878377,
+          "latency_ms_median": 1226.2141999963205,
           "text": "明日、またここで会おう。"
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1109.3114998657256,
+          "latency_ms_median": 1554.6380000014324,
           "text": "明日、またここで会おう。"
         }
       ]
@@ -28,23 +31,24 @@
     {
       "id": "ja-multiline",
       "language": "ja",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1212.818899890408,
+          "latency_ms_median": 1325.851599991438,
           "text": "この町の名前を覚えている？\nもう一度、教えて。"
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1376.1986000463367,
+          "latency_ms_median": 1341.6620000061812,
           "text": "この町の名前を覚えている？\nもう一度、教えて。"
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1181.1210999730974,
+          "latency_ms_median": 2019.0676000056555,
           "text": "この町の名前を覚えている？\nもう一度、教えて。"
         }
       ]
@@ -52,23 +56,24 @@
     {
       "id": "ko-subtitle",
       "language": "ko",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1147.903900127858,
+          "latency_ms_median": 1580.246100013028,
           "text": "내일 다시 만나요."
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1165.6213998794556,
+          "latency_ms_median": 1917.5438999955077,
           "text": "내일 다시 만나요."
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1071.3519998826087,
+          "latency_ms_median": 1434.9814000015613,
           "text": "내일 다시 만나요."
         }
       ]
@@ -76,23 +81,24 @@
     {
       "id": "zh-dialogue",
       "language": "zh-CN",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.1,
-          "latency_ms_median": 910.8205998782068,
+          "latency_ms_median": 1855.7943999912823,
           "text": "明天我们在这里见面"
         },
         {
           "mode": "contrast",
           "cer": 0.1,
-          "latency_ms_median": 895.6224999856204,
+          "latency_ms_median": 1302.9734000010649,
           "text": "明天我们在这里见面"
         },
         {
           "mode": "subtitle",
           "cer": 0.1,
-          "latency_ms_median": 919.4574998691678,
+          "latency_ms_median": 1215.6497999967542,
           "text": "明天我们在这里见面"
         }
       ]
@@ -100,23 +106,24 @@
     {
       "id": "zh-traditional",
       "language": "zh-TW",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.2,
-          "latency_ms_median": 1105.960400076583,
+          "latency_ms_median": 1265.5184000032023,
           "text": "明天我們在這裸見面"
         },
         {
           "mode": "contrast",
           "cer": 0.2,
-          "latency_ms_median": 1069.391599856317,
+          "latency_ms_median": 1227.2773000004236,
           "text": "明天我們在這裸見面"
         },
         {
           "mode": "subtitle",
           "cer": 0.2,
-          "latency_ms_median": 1096.3586999569088,
+          "latency_ms_median": 1414.7660000016913,
           "text": "明天我們在這裸見面"
         }
       ]
@@ -124,23 +131,24 @@
     {
       "id": "en-ui",
       "language": "en",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1138.495499966666,
+          "latency_ms_median": 1307.006699993508,
           "text": "Select a region to translate."
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1097.162699792534,
+          "latency_ms_median": 1329.4399000005797,
           "text": "Select a region to translate."
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1102.5517999660224,
+          "latency_ms_median": 1320.0522999977693,
           "text": "Select a region to translate."
         }
       ]
@@ -148,23 +156,24 @@
     {
       "id": "en-small",
       "language": "en",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1147.6332999300212,
+          "latency_ms_median": 1312.101799994707,
           "text": "The door is locked. Find another way."
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1102.4650000035763,
+          "latency_ms_median": 1284.9797999951988,
           "text": "The door is locked. Find another way."
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1271.7559998854995,
+          "latency_ms_median": 1479.6945999987656,
           "text": "The door is locked. Find another way."
         }
       ]
@@ -172,23 +181,24 @@
     {
       "id": "en-outlined",
       "language": "en",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1121.8060001265258,
+          "latency_ms_median": 1262.4187000037637,
           "text": "Where did you hide the key?"
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1123.2227999716997,
+          "latency_ms_median": 1288.298899991787,
           "text": "Where did you hide the key?"
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1096.3702001608908,
+          "latency_ms_median": 1532.9790000105277,
           "text": "Where did you hide the key?"
         }
       ]
@@ -196,35 +206,801 @@
     {
       "id": "es-ui",
       "language": "es",
+      "vertical": false,
       "variants": [
         {
           "mode": "original",
           "cer": 0.0,
-          "latency_ms_median": 1070.203399984166,
+          "latency_ms_median": 1247.4217999988468,
           "text": "Selecciona una región para traducir."
         },
         {
           "mode": "contrast",
           "cer": 0.0,
-          "latency_ms_median": 1064.1053998842835,
+          "latency_ms_median": 1273.3321999985492,
           "text": "Selecciona una región para traducir."
         },
         {
           "mode": "subtitle",
           "cer": 0.0,
-          "latency_ms_median": 1083.9778000954539,
+          "latency_ms_median": 1217.4001000093995,
           "text": "Selecciona una región para traducir."
+        }
+      ]
+    },
+    {
+      "id": "fr-setup",
+      "language": "fr",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1292.955199998687,
+          "text": "Sélectionnez une région à traduire."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.03225806451612903,
+          "latency_ms_median": 1527.1484999975655,
+          "text": "Sélectionnez une r région à traduire."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.03225806451612903,
+          "latency_ms_median": 1475.6038999912562,
+          "text": "Sélectionnez une r région à traduire."
+        }
+      ]
+    },
+    {
+      "id": "de-setup",
+      "language": "de",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1465.8560000098078,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1547.0327000075486,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1303.136699993047,
+          "text": "Wähle einen Bereich zum Übersetzen."
+        }
+      ]
+    },
+    {
+      "id": "it-setup",
+      "language": "it",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1205.74150000175,
+          "text": "Seleziona una regione da tradurre."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1340.674899998703,
+          "text": "Seleziona una regione da tradurre."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1151.7610000009881,
+          "text": "Seleziona una regione da tradurre."
+        }
+      ]
+    },
+    {
+      "id": "pt-setup",
+      "language": "pt",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.03225806451612903,
+          "latency_ms_median": 1251.6700999985915,
+          "text": "Selecione uma região o para traduzir."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1700.2222000010079,
+          "text": "Selecione uma região para traduzir."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.06451612903225806,
+          "latency_ms_median": 1399.8719999945024,
+          "text": "Selecione uma região para a1 traduzir."
+        }
+      ]
+    },
+    {
+      "id": "nl-setup",
+      "language": "nl",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1235.7486999972025,
+          "text": "Selecteer een gebied om te vertalen."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1259.5374999946216,
+          "text": "Selecteer een gebied om te vertalen."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1205.9185999969486,
+          "text": "Selecteer een gebied om te vertalen."
+        }
+      ]
+    },
+    {
+      "id": "pl-setup",
+      "language": "pl",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1370.754899995518,
+          "text": "Wybierz obszar do tłumaczenia."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1544.821999996202,
+          "text": "Wybierz obszar do tłumaczenia."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1290.5587999994168,
+          "text": "Wybierz obszar do tłumaczenia."
+        }
+      ]
+    },
+    {
+      "id": "vi-setup",
+      "language": "vi",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.2777777777777778,
+          "latency_ms_median": 1280.5485000135377,
+          "text": "Chąn mt vùng dê dich."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.2777777777777778,
+          "latency_ms_median": 1229.699099989375,
+          "text": "Chçn mt vùng dê dich."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.2777777777777778,
+          "latency_ms_median": 1220.641899999464,
+          "text": "Chąn mt vùng dê dich."
+        }
+      ]
+    },
+    {
+      "id": "id-setup",
+      "language": "id",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1282.6376000011805,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1675.856699992437,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1186.4304000046104,
+          "text": "Pilih wilayah untuk diterjemahkan."
+        }
+      ]
+    },
+    {
+      "id": "tr-setup",
+      "language": "tr",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1353.0674999929033,
+          "text": "Çevirmek için bir alan seçin."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1250.54409999575,
+          "text": "Çevirmek için bir alan seçin."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1035.7605000026524,
+          "text": "Çevirmek için bir alan seçin."
+        }
+      ]
+    },
+    {
+      "id": "ru-setup",
+      "language": "ru",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1182.7361000032397,
+          "text": "Выберите область для перевода."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1033.6733000003733,
+          "text": "Выберите область для перевода."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1090.0474000081886,
+          "text": "Выберите область для перевода."
+        }
+      ]
+    },
+    {
+      "id": "uk-setup",
+      "language": "uk",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1058.703599992441,
+          "text": "Виберіть область для перекладу."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1051.225199989858,
+          "text": "Виберіть область для перекладу."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1070.1158000010764,
+          "text": "Виберіть область для перекладу."
+        }
+      ]
+    },
+    {
+      "id": "ar-setup",
+      "language": "ar",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.08333333333333333,
+          "latency_ms_median": 1037.0891000056872,
+          "text": "مرحبا العالم"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 918.3784000051674,
+          "text": "مرحبا بالعالم"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.08333333333333333,
+          "latency_ms_median": 1036.2086999957683,
+          "text": "مرحبا العالم"
+        }
+      ]
+    },
+    {
+      "id": "hi-setup",
+      "language": "hi",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1034.329300004174,
+          "text": "नमस्ते दुनिया"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1006.6484999988461,
+          "text": "नमस्ते दुनिया"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1026.4240999968024,
+          "text": "नमस्ते दुनिया"
+        }
+      ]
+    },
+    {
+      "id": "ar-mixed-digits",
+      "language": "ar",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.09523809523809523,
+          "latency_ms_median": 1205.6201999948826,
+          "text": "مرحبا مريم 2\nHP 120 / I MP 45"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.047619047619047616,
+          "latency_ms_median": 1203.6578999977792,
+          "text": "مرحبا مريم 2\nHP 120 / MP 45"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.09523809523809523,
+          "latency_ms_median": 1306.387500007986,
+          "text": "مرحبا مريم 2\nHP 120 / I MP 45"
+        }
+      ]
+    },
+    {
+      "id": "ar-multiline",
+      "language": "ar",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.15,
+          "latency_ms_median": 1087.8635999979451,
+          "text": "مرحبا العالم\nنلتقعدا"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.05,
+          "latency_ms_median": 1171.4695999980904,
+          "text": "مرحبا بالعالم\nنلتقغدا"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.15,
+          "latency_ms_median": 1276.0932999954093,
+          "text": "مرحبا العالم\nنلتي عدا"
+        }
+      ]
+    },
+    {
+      "id": "ja-vertical-dialogue",
+      "language": "ja",
+      "vertical": true,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.5833333333333334,
+          "latency_ms_median": 1057.308000003104,
+          "text": "の\nの\n覚名こ\n前\nを町\n;\nいる"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.5833333333333334,
+          "latency_ms_median": 999.8745000048075,
+          "text": "の\n覚名こ\n前\nを町\n-\nいる"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.5833333333333334,
+          "latency_ms_median": 1074.1636000020662,
+          "text": "の\n覚名こ\n前\nを町\n-\nいる"
+        }
+      ]
+    },
+    {
+      "id": "ja-vertical",
+      "language": "ja",
+      "vertical": true,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.42857142857142855,
+          "latency_ms_median": 757.0669000124326,
+          "text": "日また\n会明"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.5714285714285714,
+          "latency_ms_median": 740.5594000010751,
+          "text": "日また"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.5714285714285714,
+          "latency_ms_median": 751.3143999967724,
+          "text": "日また"
+        }
+      ]
+    },
+    {
+      "id": "ja-katakana-pixel",
+      "language": "ja",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.36363636363636365,
+          "latency_ms_median": 1400.946699999622,
+          "text": "ドラゴンの城ー行ニラ「"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.36363636363636365,
+          "latency_ms_median": 1615.916800001287,
+          "text": "ドラゴンの城～行ニラ「"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.2727272727272727,
+          "latency_ms_median": 1629.959299985785,
+          "text": "ドラゴンの城ー行ニう「"
+        }
+      ]
+    },
+    {
+      "id": "ja-mixed-names",
+      "language": "ja",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.16,
+          "latency_ms_median": 2207.62129999639,
+          "text": "三カ：HP120/MP45\nレベル７ーQUEST０3"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.2,
+          "latency_ms_median": 1927.16289999953,
+          "text": "ミカ：HP120 ＭＰ 45\nレベル7 「 QUEST O3"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.16,
+          "latency_ms_median": 3187.735100000282,
+          "text": "ミカ：HP120 - MP 45\nレベル7 _ - QUEST O3"
+        }
+      ]
+    },
+    {
+      "id": "en-large-shadow",
+      "language": "en",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1732.8532000101404,
+          "text": "Mika, wait! 42 seconds."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1691.3479999930132,
+          "text": "Mika, wait! 42 seconds."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1336.6619000007631,
+          "text": "Mika, wait! 42 seconds."
+        }
+      ]
+    },
+    {
+      "id": "en-low-contrast",
+      "language": "en",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1799.3143999919994,
+          "text": "The gate opens at 07:30."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1818.3685999974841,
+          "text": "The gate opens at 07:30."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 2427.3079999984475,
+          "text": "The gate opens at 07:30."
+        }
+      ]
+    },
+    {
+      "id": "en-translucent",
+      "language": "en",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1955.2767999994103,
+          "text": "We can meet tomorrow."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1813.7500000011642,
+          "text": "We can meet tomorrow."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1929.4576999964193,
+          "text": "We can meet tomorrow."
+        }
+      ]
+    },
+    {
+      "id": "es-punctuation",
+      "language": "es",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 2317.6361999940127,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1412.4253000045428,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 1742.0768000010867,
+          "text": "¿Dónde está Lucía? ¡Aquí! 2026."
+        }
+      ]
+    },
+    {
+      "id": "zh-punctuation",
+      "language": "zh-CN",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.125,
+          "latency_ms_median": 1928.9436999970349,
+          "text": "你好，日 明天见！\n时间： 12:30"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.1875,
+          "latency_ms_median": 2492.8866000118433,
+          "text": "你好，日 明天见！\n时间：‘ 12:30"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.1875,
+          "latency_ms_median": 1952.5523999909637,
+          "text": "你好，日 明天见！\n时间：‘ 12:30"
+        }
+      ]
+    },
+    {
+      "id": "zh-traditional-characters",
+      "language": "zh-TW",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.17647058823529413,
+          "latency_ms_median": 1753.8704000035068,
+          "text": "這褸的門還沒開\n請記住我們的名字!"
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.17647058823529413,
+          "latency_ms_median": 1359.728900002665,
+          "text": "這裸的門還沒開\n請記住我們的名字"
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.17647058823529413,
+          "latency_ms_median": 1851.8461999919964,
+          "text": "這裸的門還沒開\n請記住我們的名字"
+        }
+      ]
+    },
+    {
+      "id": "ko-multiline-shadow",
+      "language": "ko",
+      "vertical": false,
+      "variants": [
+        {
+          "mode": "original",
+          "cer": 0.0,
+          "latency_ms_median": 1691.3192000065465,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        },
+        {
+          "mode": "contrast",
+          "cer": 0.0,
+          "latency_ms_median": 1623.0178999976488,
+          "text": "미카,문이 열렸어요!\n내일 오후 3시에 만나요."
+        },
+        {
+          "mode": "subtitle",
+          "cer": 0.0,
+          "latency_ms_median": 2121.9421999994665,
+          "text": "미카, 문이 열렸어요!\n내일 오후 3시에 만나요."
         }
       ]
     }
   ],
   "startup_ms": {
-    "ja": 2979.9413001164794,
-    "ko": 935.6261000502855,
-    "zh-CN": 674.4786999188364,
-    "zh-TW": 688.6279000900686,
-    "en": 1038.705199956894,
-    "es": 681.4496000297368
+    "ja": 3135.138999990886,
+    "ko": 1201.1590000038268,
+    "zh-CN": 1170.0898999988567,
+    "zh-TW": 961.1780999985058,
+    "en": 1244.9550000019372,
+    "es": 941.3251000078162,
+    "ru": 794.0381999942474,
+    "ar": 1058.6557000060566,
+    "hi": 805.2536000031978
   },
-  "static_gate_ms_per_frame": 1.4149191998876631
+  "static_gate_ms_per_frame": 1.7114149999979418,
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "system": "Windows-11-10.0.26200-SP0",
+  "logical_processors": 12,
+  "source_hashes": {
+    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
+    "algorithms.py": "89b77b42079aa39b4f4746912f71fcd2fe9ab2e7c9ec2c99a30b1bff9b5d1f2f",
+    "app.py": "aa5871e8dc0242e35fd33335d7b7d272f0e9876da38a86846d21e04c761225a8",
+    "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
+    "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
+    "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
+    "assets/models.json": "3c3d68db87c4835fedbcb87189bb37323aeaf09ab0f2330b26096cdc6efe8602",
+    "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
+    "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "assets/samples/es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "assets/samples/fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "assets/samples/hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "assets/samples/id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "assets/samples/it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "assets/samples/ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "assets/samples/ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "assets/samples/nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "assets/samples/pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "assets/samples/pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "assets/samples/ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "assets/samples/tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "assets/samples/uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "assets/samples/vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+    "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
+    "context.py": "d1f7fd7c34932a7ffc317706a0b40e430afd9398422184eb95823bee27b8dd74",
+    "diagnostics.py": "2af30568b78d98f6e375be759d67caa512e46d32e9ea9a8181c8f94b7af071ed",
+    "errors.py": "035f84c48edc7a4d54c88c655b1e07863d1ad269e1a0fa586d23f8408fde3d15",
+    "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
+    "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
+    "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
+    "models.py": "b1cdec4d50bd1829fbb589b0ad5f24e3eb8a8ef0cfd4582a7900c061ce68539d",
+    "network.py": "7374c4356a97a10e5a4213961851186c4781fc374d4de005eab18b2043f103ab",
+    "ocr.py": "5d22e4230f958ab423830f9409f0bcd9dee6c9c1a8dd9f9fc2a14f050fca5233",
+    "pipeline.py": "2eee4b7c0b7cad20feedf0dc9585fb25ee84de559945f2113dfa8c737b73cc59",
+    "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
+    "profiles.py": "2fbd02b8e67050b794e6cef5499cff45af740ee452896d29bdecdeee15e29be3",
+    "providers.py": "c64c1c0f2a073cb07f9ff1b0765c5210e1a2a88210a8b8959e5370c9951e2df0",
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
+    "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
+    "settings.py": "297fc2e7f526773abbce3b72fbd52322805c55a02c2a41724606292c7f7e64a2",
+    "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
+    "transcript.py": "28afb150ac86e6ceda4e8305ae046fb20c6f73785be9ef849291d7b432f65d64",
+    "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
+    "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
+    "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
+    "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
+    "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
+    "ui/onboarding.py": "233e4022a404118fdb67df5b4f4c164b6274e8d18b2ab6b9b56037a6b742a209",
+    "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
+    "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
+    "ui/profiles.py": "b1b108d1da6c90aa85f28bf97226280b1daea0381b84dddc9c633c27f64446d2",
+    "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
+    "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
+    "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
+    "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
+    "ui/transcript.py": "f7de5d1ecfc60b069891db875a71d1a0d625039db06c50e36acee718a503c848",
+    "ui/window.py": "09aa478abe8ce99831b44d3d13803d1eb8544f7105ea747eea22a5cb1255dce2",
+    "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
+    "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
+  },
+  "fixture_hashes": {
+    "ar-mixed-digits.png": "046fd568df2d5837f7620726078f43f051f7c1fd8f7cf5e1fe509aa95c9966b3",
+    "ar-multiline.png": "aae2d8f3a988d554740c873cbc76d9dd0b4edccff15a1168d1b96af4b625aae1",
+    "ar-setup.png": "2bc748a3ac021cc8c04ecfad39df012275f4f3f93d8bb990e318a7e80044251a",
+    "de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "en-large-shadow.png": "705ec5657d01439f6f9bf1b2adc6a78d074f7c0dbb3957c540c87e436654766c",
+    "en-low-contrast.png": "274293dc85d8276be4a3a9fe05554f73e03ed167c1be61550877757a2c76fc15",
+    "en-outlined.png": "016f91e60750f00e6d338168803b048558c7f6d031a4c0e19647a8fb609a823b",
+    "en-small.png": "08568f7b566e1586908b7945c7a5641f86dffd00476872ca210357438cb3f972",
+    "en-translucent.png": "b9555549621c3f739db11f4e3c8b0fd65f7b61e5bf5fd265a3aca4b7846e24e3",
+    "en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "es-punctuation.png": "4734064a0d19e77e09c4727bf6477456e9634567c00e108c802977e8038f03c5",
+    "es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "ja-katakana-pixel.png": "d067ffb32bbdec5a54ac141cfed3a3b5393467241e77153e8fa16f8b8a71d19f",
+    "ja-mixed-names.png": "d344eca3caadb610c40361abc13e9d18430fbeb4bf84090ed92abb230a649d6a",
+    "ja-multiline.png": "4687ceb33486b013026ea6c801ff606cc1ec082452c5367336b048b077c674ab",
+    "ja-vertical-dialogue.png": "edcdfbff21827ae5ff585ee678dd704ea2e630d441db6ae3fa9510e334e5db4d",
+    "ja-vertical.png": "0978e13b59e6743c4ed28f3ae7044efae0f9cd1c525a09438c69554b9ecaa446",
+    "ko-multiline-shadow.png": "f26f22af28a0bdb8fd38559f1391f20c5aa48632cb49739bffe49bebd34a858e",
+    "ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "README.md": "cd1b8e9118af2be097e35a8caceb7f8435fca04ff6ae9e4cd90dcef0cefc1505",
+    "ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "samples.json": "45485b25e96c243d383d3aa934b717edd22d98b3887b780e432e5b6c05e8449c",
+    "tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "zh-punctuation.png": "cab4b6e2adcd38f8f57bbc8ce48b488f4f99072c2855d04b4412dacae1a77fd1",
+    "zh-traditional-characters.png": "6e3207b4e807b3c66f295842122fcc1d92369daa05f6f1a04312590585435819",
+    "zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3"
+  },
+  "authored_synthetic_only": true
 }

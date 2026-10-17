@@ -1,0 +1,78 @@
+{
+  "mode_returns": {
+    "720p": 0,
+    "1080p": 0
+  },
+  "controller_exit": 0,
+  "final_restore_return": 0,
+  "original_mode_restored": true,
+  "controller": {
+    "scope": "Actual running main controller, fixed region, MSS, isolated OCR and loopback HTTP through a temporary 1080p\u2192720p\u21921080p change. No cloud/media or other monitor tested.",
+    "checks": {
+      "initial_real_translation": true,
+      "initial_main_hidden": true,
+      "running_capture_invalidated_on_change": true,
+      "overlay_explicitly_stopped": true,
+      "stopped_overlay_fits_workarea": true,
+      "no_main_focus_after_change": true,
+      "new_720p_selection_translates": true,
+      "new_720p_overlay_outside_capture": true,
+      "restoring_mode_invalidates_720p_region": true,
+      "retired_workers_closed": true,
+      "ocr_children_closed": true
+    },
+    "observed_displays": [
+      {
+        "physical": [
+          1920,
+          1080
+        ],
+        "qt_dpr": 1.25
+      },
+      {
+        "physical": [
+          1280,
+          720
+        ],
+        "qt_dpr": 1.0
+      },
+      {
+        "physical": [
+          1920,
+          1080
+        ],
+        "qt_dpr": 1.25
+      }
+    ],
+    "overlay_after_mode_signal": {
+      "frame": [
+        279,
+        421,
+        900,
+        263
+      ],
+      "available": [
+        0,
+        0,
+        1280,
+        672
+      ]
+    },
+    "overlay_after_settle": {
+      "frame": [
+        189,
+        368,
+        900,
+        263
+      ],
+      "available": [
+        0,
+        0,
+        1280,
+        672
+      ]
+    },
+    "result": "PASS"
+  },
+  "result": "PASS"
+}

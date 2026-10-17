@@ -81,5 +81,379 @@
     "size": 28,
     "bg": "white",
     "fg": "black"
+  },
+  {
+    "id": "fr-setup",
+    "language": "fr",
+    "text": "Sélectionnez une région à traduire.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "de-setup",
+    "language": "de",
+    "text": "Wähle einen Bereich zum Übersetzen.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "it-setup",
+    "language": "it",
+    "text": "Seleziona una regione da tradurre.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "pt-setup",
+    "language": "pt",
+    "text": "Selecione uma região para traduzir.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "nl-setup",
+    "language": "nl",
+    "text": "Selecteer een gebied om te vertalen.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "pl-setup",
+    "language": "pl",
+    "text": "Wybierz obszar do tłumaczenia.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "vi-setup",
+    "language": "vi",
+    "text": "Chọn một vùng để dịch.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "id-setup",
+    "language": "id",
+    "text": "Pilih wilayah untuk diterjemahkan.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "tr-setup",
+    "language": "tr",
+    "text": "Çevirmek için bir alan seçin.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ru-setup",
+    "language": "ru",
+    "text": "Выберите область для перевода.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "uk-setup",
+    "language": "uk",
+    "text": "Виберіть область для перекладу.",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ar-setup",
+    "language": "ar",
+    "text": "مرحبا بالعالم",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "hi-setup",
+    "language": "hi",
+    "text": "नमस्ते दुनिया",
+    "render": "qt",
+    "size": 32,
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ar-mixed-digits",
+    "language": "ar",
+    "text": "مرحبا مريم 42\nHP 120 / MP 45",
+    "size": 32,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ar-multiline",
+    "language": "ar",
+    "text": "مرحبا بالعالم\nنلتقي غدا",
+    "size": 32,
+    "shadow": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-vertical-dialogue",
+    "language": "ja",
+    "text": "この町の\n名前を\n覚えている",
+    "vertical": true,
+    "size": 30,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-vertical",
+    "language": "ja",
+    "text": "明日また\n会おう",
+    "vertical": true,
+    "size": 32,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-katakana-pixel",
+    "language": "ja",
+    "text": "ドラゴンの城へ行こう！",
+    "size": 24,
+    "pixelated": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-mixed-names",
+    "language": "ja",
+    "text": "ミカ：HP 120 / MP 45\nレベル 7 — QUEST 03",
+    "size": 30,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "en-large-shadow",
+    "language": "en",
+    "text": "Mika, wait! 42 seconds.",
+    "size": 42,
+    "shadow": true,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "en-low-contrast",
+    "language": "en",
+    "text": "The gate opens at 07:30.",
+    "size": 22,
+    "bg": "#65757e",
+    "fg": "#8b999f",
+    "render": "qt"
+  },
+  {
+    "id": "en-translucent",
+    "language": "en",
+    "text": "We can meet tomorrow.",
+    "size": 26,
+    "alpha": 170,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "es-punctuation",
+    "language": "es",
+    "text": "¿Dónde está Lucía? ¡Aquí! 2026.",
+    "size": 30,
+    "outline": true,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "zh-punctuation",
+    "language": "zh-CN",
+    "text": "你好，明天见！\n时间：12:30。",
+    "size": 32,
+    "outline": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "zh-traditional-characters",
+    "language": "zh-TW",
+    "text": "這裡的門還沒開。\n請記住我們的名字！",
+    "size": 32,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ko-multiline-shadow",
+    "language": "ko",
+    "text": "미카, 문이 열렸어요!\n내일 오후 3시에 만나요.",
+    "size": 30,
+    "shadow": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-region-outline",
+    "language": "ja",
+    "text": "ミカ、鍵を見つけた？",
+    "size": 24,
+    "outline": true,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-region-translucent",
+    "language": "ja",
+    "text": "彼女の名前はアウレリア。",
+    "size": 26,
+    "alpha": 170,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-region-low-contrast",
+    "language": "ja",
+    "text": "明日の朝に出発します。",
+    "size": 22,
+    "bg": "#65757e",
+    "fg": "#8b999f",
+    "render": "qt"
+  },
+  {
+    "id": "ja-region-small",
+    "language": "ja",
+    "text": "魔導炉の出力は120です。",
+    "size": 14,
+    "gradient": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-region-counter",
+    "language": "ja",
+    "text": "ミカ：HP 120 / MP 45",
+    "size": 26,
+    "shadow": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-region-punctuation",
+    "language": "ja",
+    "text": "「えっ、もう終わり？」",
+    "size": 32,
+    "bg": "white",
+    "fg": "black",
+    "render": "qt"
+  },
+  {
+    "id": "ja-columns-names",
+    "language": "ja",
+    "text": "アルトリア\n魔導炉",
+    "size": 30,
+    "vertical": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-columns-kanji",
+    "language": "ja",
+    "text": "約束を\n忘れないで",
+    "size": 28,
+    "vertical": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-columns-small",
+    "language": "ja",
+    "text": "この世界\n明日の光",
+    "size": 20,
+    "vertical": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-columns-light",
+    "language": "ja",
+    "text": "時間を\n覚えている",
+    "size": 30,
+    "vertical": true,
+    "bg": "#f6f7f1",
+    "fg": "#111e25",
+    "render": "qt"
+  },
+  {
+    "id": "ja-columns-mixed",
+    "language": "ja",
+    "text": "ミカ：待って！\nアルトリア\n魔導炉",
+    "columns": [
+      "アルトリア",
+      "魔導炉"
+    ],
+    "caption": "ミカ：待って！",
+    "size": 30,
+    "vertical": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
+  },
+  {
+    "id": "ja-columns-ruby",
+    "language": "ja",
+    "text": "魔導炉\n明日の光",
+    "ruby": "まどうろ",
+    "size": 30,
+    "vertical": true,
+    "render": "qt",
+    "bg": "#172736",
+    "fg": "white"
   }
 ]

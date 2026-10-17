@@ -1,0 +1,25 @@
+{
+  "result": "FAIL; P2 diagnostic instrumentation allocation retained",
+  "scope": "90 explicit Win32 resource probes in an otherwise idle Python process; no application session, OCR, desktop, network or screen capture",
+  "batches": [
+    {
+      "calls": 30,
+      "pointer_type_cache_entries": 113,
+      "python_heap_bytes": 607774
+    },
+    {
+      "calls": 60,
+      "pointer_type_cache_entries": 203,
+      "python_heap_bytes": 1208216
+    },
+    {
+      "calls": 90,
+      "pointer_type_cache_entries": 293,
+      "python_heap_bytes": 1793094
+    }
+  ],
+  "root_cause": "process_resources/thread_count declare ctypes Structure classes per probe; ctypes pointer-type caching retains their metadata even after gc.collect(). Approximately20KiB/probe. Two probes per30s in the soak account for approximately9MiB over2h.",
+  "production_scope": "Only explicit diagnostic metadata generation calls process_resources; no normal translation timer polls it. Low-impact P2 follow-up, accepted for the frozen release.",
+  "app_changed": false,
+  "qualified_application_commit": "a6eeea3e22c276e368d5f391179a9a1a83b30d89"
+}

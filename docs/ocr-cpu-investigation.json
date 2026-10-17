@@ -1,0 +1,41 @@
+{
+  "runtime_version": "1.30.0",
+  "mode": "cpu",
+  "available_providers": [
+    "AzureExecutionProvider",
+    "CPUExecutionProvider"
+  ],
+  "primary_environment_unchanged": true,
+  "fixtures": [
+    {
+      "language": "ja",
+      "startup_ms": 715.43,
+      "warm_median_ms": 1151.77,
+      "warm_max_ms": 1387.21,
+      "exact": true,
+      "providers": [
+        "CPUExecutionProvider"
+      ]
+    },
+    {
+      "language": "ko",
+      "startup_ms": 858.7,
+      "warm_median_ms": 1059.83,
+      "warm_max_ms": 1261.78,
+      "exact": true,
+      "providers": [
+        "CPUExecutionProvider"
+      ]
+    },
+    {
+      "language": "en",
+      "startup_ms": 870.25,
+      "warm_median_ms": 1076.44,
+      "warm_max_ms": 1142.33,
+      "exact": true,
+      "providers": [
+        "CPUExecutionProvider"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0b2",
+  "synthetic_windows_only": true,
+  "device_pixel_ratios": [
+    1.25
+  ],
+  "checks": {
+    "initial_client_crop": true,
+    "follows_move": true,
+    "follows_resize": true,
+    "minimized_rejected": true,
+    "restore_recovers": true,
+    "occlusion_rejected_before_pixels": true,
+    "closed_rejected": true,
+    "replacement_requires_consent": true,
+    "explicit_reconnect_recovers": true,
+    "ambiguous_reconnect_rejected": true
+  },
+  "passed": true
+}

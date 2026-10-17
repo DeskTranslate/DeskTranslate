@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0b2",
+  "artifact_sha256": "8b0f32702c5aadfd565b5c420bf7f7c446784f75be13b351b4fbfe48f4faa6a4",
+  "actual_windows": true,
+  "desktop_capture_or_playback": false,
+  "clean_machine": false,
+  "non_ascii_windows_username": false,
+  "system_only_path": true,
+  "source_free_working_directory": true,
+  "portable_override_removed": true,
+  "checks": {
+    "portable_marker": true,
+    "smoke": true,
+    "runtime_exit": true,
+    "runtime_fields": true,
+    "portable_settings_retained": true,
+    "portable_logs_adjacent": true,
+    "no_installed_appdata": true,
+    "working_directory_stays_empty": true,
+    "offscreen_authored_preview": true
+  },
+  "runtime": {
+    "qt": true,
+    "assets": true,
+    "http_provider_roundtrip": true,
+    "credential_roundtrip": true,
+    "credential_cleanup": true,
+    "ocr_exact": true,
+    "ocr_ms": 2127.168900005927,
+    "ocr_cleanup": true
+  },
+  "qt_backend": "offscreen",
+  "native_foreground_smoke": "NOT TESTED for this rebuilt artifact under the non-invasive policy",
+  "passed": true
+}

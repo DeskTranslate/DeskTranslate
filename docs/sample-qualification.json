@@ -1,0 +1,197 @@
+{
+  "version": "2.0.0b2",
+  "authored_samples_only": true,
+  "live_provider": "Google public web endpoint",
+  "paid_provider_or_local_llm_qualification": false,
+  "samples": [
+    {
+      "source": "ja",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2386.31,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "ko",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2195.29,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "en",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2370.7,
+      "target": "es",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "es",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2949.53,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "zh-CN",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 0.947,
+      "ocr_ms": 2302.01,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "zh-TW",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 0.842,
+      "ocr_ms": 2202.93,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "fr",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2181.8,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "de",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2256.49,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "it",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2259.78,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "pt",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 0.972,
+      "ocr_ms": 2297.35,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "nl",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2330.94,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "pl",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2253.72,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "vi",
+      "ocr": "FAIL",
+      "translation": "NOT TESTED",
+      "recognition_fidelity": 0.791,
+      "ocr_ms": 2297.87,
+      "limitation": "Below setup fidelity guard; no text sent"
+    },
+    {
+      "source": "id",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2131.69,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "tr",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2161.59,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "ru",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2205.75,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "uk",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2220.2,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "ar",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2170.97,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    },
+    {
+      "source": "hi",
+      "ocr": "PASS",
+      "translation": "PASS",
+      "recognition_fidelity": 1.0,
+      "ocr_ms": 2236.44,
+      "target": "en",
+      "translation_nonempty": true,
+      "translation_changed": true
+    }
+  ],
+  "passed": false
+}
