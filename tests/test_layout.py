@@ -33,14 +33,21 @@ def test_mixed_order_keeps_caption_and_columns_but_not_cross_column_fragments():
     assert len(body) == 3 and not annotations
 
 
-def test_ruby_is_preserved_as_an_annotation_without_dropping_small_body_text():
-    main = line("魔導炉", 418, 24, 35, 117)
-    ruby = line("まどうろ", 453, 29, 11, 67)
-    number = line("101", 453, 29, 11, 67)
-    distant = line("まどうろ", 530, 29, 11, 67)
+@pytest.mark.parametrize(
+    "reading_x,reading_width,scale", [(453, 11, 1), (452, 13, 1), (905, 24, 2)]
+)
+def test_ruby_is_preserved_as_an_annotation_without_dropping_small_body_text(
+    reading_x, reading_width, scale
+):
+    main = line("魔導炉", 418 * scale, 24 * scale, 35 * scale, 117 * scale)
+    ruby = line("まどうろ", reading_x, 29 * scale, reading_width, 67 * scale)
+    number = line("101", reading_x, 29 * scale, reading_width, 67 * scale)
+    latin = line("MP", reading_x, 29 * scale, reading_width, 67 * scale)
+    distant = line("まどうろ", 530 * scale, 29 * scale, reading_width, 67 * scale)
+    inside = line("まどうろ", 425 * scale, 29 * scale, reading_width, 67 * scale)
     text, body, annotations = resolve_layout((), (main, ruby))
     assert text == "魔導炉" and body == (main,) and annotations == (ruby,)
-    for independent in (number, distant):
+    for independent in (number, latin, distant, inside):
         text, body, annotations = resolve_layout((), (main, independent))
         assert independent in body and independent.text in text and not annotations
 

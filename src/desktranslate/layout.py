@@ -66,7 +66,9 @@ def resolve_layout(
         and any(
             has_kanji(other.text)
             and other.box.width >= line.box.width * 1.8
-            and 0 <= line.box.x - other.box.right <= other.box.width * 0.75
+            # Detector padding changes slightly after contrast/scaling. Permit
+            # a small overlap at the body's right edge, never an interior column.
+            and -line.box.width * 0.25 <= line.box.x - other.box.right <= other.box.width * 0.75
             and min(line.box.bottom, other.box.bottom) - max(line.box.y, other.box.y)
             >= line.box.height * 0.7
             for other in columns
