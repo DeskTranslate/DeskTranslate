@@ -165,11 +165,12 @@ def test_background_ocr_benchmarks_require_explicit_opt_in(script, tmp_path):
     assert not output.exists()
 
 
-def test_real_ocr_product_probe_is_an_explicit_separate_command(tmp_path):
+@pytest.mark.parametrize("script", ["qualify_product.py", "qualify_media_pipeline.py"])
+def test_real_ocr_product_probe_is_an_explicit_separate_command(tmp_path, script):
     root = Path(__file__).resolve().parents[1]
     output = tmp_path / "not-created.json"
     result = subprocess.run(
-        [sys.executable, str(root / "tools/qualify_product.py"), "--output", str(output)],
+        [sys.executable, str(root / "tools" / script), "--output", str(output)],
         cwd=root,
         capture_output=True,
         timeout=15,

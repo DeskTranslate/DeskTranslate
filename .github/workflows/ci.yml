@@ -35,7 +35,7 @@ jobs:
         run: |
           python tools/library_sources.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python tools/build.py
+          python tools/build.py --qualification
       - name: Packaged startup
         shell: pwsh
         run: |

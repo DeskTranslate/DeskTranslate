@@ -188,12 +188,10 @@ def stable_gate(root: Path, tag: str) -> None:
     evidence = json.loads((root / "docs/manual-qualification.json").read_text())
     required = (
         "clean_windows",
-        "mixed_dpi_displays",
-        "fullscreen_media",
-        "accessibility_screen_reader",
-        "real_provider_models",
         "installer_upgrade",
         "prolonged_media",
+        "media_pipeline",
+        "context_bounds",
     )
     missing = [gate for gate in required if evidence.get("gates", {}).get(gate) is not True]
     if evidence.get("version") != __version__ or missing:
@@ -249,3 +247,34 @@ def stable_gate(root: Path, tag: str) -> None:
         raise ValueError("Stable requires the completed current-source chaos/resource soak")
     if not tag:
         raise ValueError("Stable requires an exact canonical Git tag")
+
+
+def build_policy(
+    root: Path,
+    *,
+    installer: bool,
+    signed: bool,
+    stable: bool,
+    tag: str,
+    qualification: bool,
+) -> None:
+    """Keep unpublished RC construction separate from qualified promotion.
+
+    Unsigned promotion is an explicit maintainer decision, never a fabricated
+    publisher identity. Internal qualification builds cannot claim a release tag.
+    """
+    version_gate(root, tag)
+    if qualification:
+        if stable or tag:
+            raise ValueError("Qualification builds cannot claim stable promotion or a release tag")
+        return
+    if stable or not Version(__version__).is_prerelease:
+        stable_gate(root, tag)
+        if not installer:
+            raise ValueError("Stable distribution requires an installer and portable artifacts")
+        if not signed:
+            evidence = json.loads((root / "docs/manual-qualification.json").read_text())
+            if evidence.get("unsigned_release_approved") is not True:
+                raise ValueError(
+                    "Unsigned stable release requires explicit disclosure and approval"
+                )

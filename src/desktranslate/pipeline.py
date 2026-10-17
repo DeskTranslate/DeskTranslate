@@ -576,6 +576,7 @@ class Pipeline:
                 if not self.session.recognition_current(work.stamp, work.control_generation):
                     self.counters["stale"] += 1
                     continue
+                reconcile_start = time.perf_counter()
                 text = (
                     result.text
                     if self.once
@@ -585,6 +586,7 @@ class Pipeline:
                         settled_frame=not work.moving and self.settings.quality != "accuracy",
                     )
                 )
+                timings["temporal_ms"] = (time.perf_counter() - reconcile_start) * 1000
                 if not self.session.current(work.stamp):
                     self.counters["stale"] += 1
                     continue

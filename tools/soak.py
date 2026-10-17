@@ -279,7 +279,13 @@ class Handler(BaseHTTPRequestHandler):
 
 class FixtureCapture:
     def __init__(self) -> None:
-        self.image = Image.open(ROOT / "tests/fixtures/ja-game.png").convert("RGB")
+        self.images = []
+        for name in ("ja-game", "ja-katakana-pixel", "ja-columns-mixed", "ja-columns-ruby"):
+            with Image.open(ROOT / "tests/fixtures" / (name + ".png")) as source:
+                canvas = Image.new("RGB", (660, 260), "#14262e")
+                canvas.paste(source.convert("RGB"), (0, 0))
+                self.images.append(canvas)
+        self.image = self.images[0]
         self.font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 24)
         self.started = time.monotonic()
         self.previous = -1
@@ -297,9 +303,9 @@ class FixtureCapture:
             if elapsed % 12 < 2:
                 return Image.new("RGB", self.image.size, "#14262e")
         if sequence != self.previous:
-            self.current = self.image.copy()
+            self.current = self.images[sequence % len(self.images)].copy()
             ImageDraw.Draw(self.current).text(
-                (24, 116), f"Sequence {sequence:04d}", font=self.font, fill="white"
+                (24, 224), f"Sequence {sequence:04d}", font=self.font, fill="white"
             )
             self.previous = sequence
         if self.phase == "active" and elapsed % 12 > 7:
@@ -320,7 +326,9 @@ def run(duration: float, output: Path, mode: str = "steady", stop_file: Path | N
             "Install the verified Japanese fixture models before running this opt-in test."
         )
     app = QApplication.instance() or QApplication([])
-    settings = Settings(quality="fast", recent_region=[0, 0, 660, 160], reduced_motion=True)
+    settings = Settings(
+        quality="fast", recent_region=[0, 0, 660, 260], reduced_motion=True, vertical=True
+    )
     apply_theme(app, settings.theme)
     overlay = Overlay(settings)
     capture = FixtureCapture()
@@ -420,6 +428,7 @@ def run(duration: float, output: Path, mode: str = "steady", stop_file: Path | N
                     raise RuntimeError("Stopped workers did not exit within the cleanup budget")
                 restarts += 1
                 settings.source = "en" if restarts % 2 else "ja"
+                settings.vertical = settings.source == "ja"
                 settings.profiles["Authored stress profile"] = {
                     "source": settings.source,
                     "target": "es",

@@ -7,4 +7,4 @@ import os
 # this switch for its non-Windows telemetry provider; its API is disabled too.
 os.environ["ORT_DISABLE_TELEMETRY"] = "1"
 
-__version__ = "2.0.0b2"
+__version__ = "2.0.0"

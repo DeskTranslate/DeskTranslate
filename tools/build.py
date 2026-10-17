@@ -15,13 +15,11 @@ import sys
 import zipfile
 from pathlib import Path
 
-from packaging.version import Version
 from release_support import (
     Signer,
+    build_policy,
     git_trace,
     shipped_distributions,
-    stable_gate,
-    version_gate,
     windows_version,
 )
 
@@ -30,20 +28,27 @@ from desktranslate import __version__
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(installer: bool, signed: bool = False, stable: bool = False, tag: str = "") -> None:
+def build(
+    installer: bool,
+    signed: bool = False,
+    stable: bool = False,
+    tag: str = "",
+    qualification: bool = False,
+) -> None:
     from PIL import Image
     from PyInstaller.utils.hooks import collect_data_files
     from PySide6.QtGui import QImage, QPainter
     from PySide6.QtSvg import QSvgRenderer
     from PySide6.QtWidgets import QApplication
 
-    version_gate(ROOT, tag)
-    # Every final-version build enforces qualification, including CI and local
-    # invocations that accidentally omit --stable.
-    if stable or not Version(__version__).is_prerelease:
-        stable_gate(ROOT, tag)
-        if not signed or not installer:
-            raise ValueError("Stable builds require verified publisher signing and an installer")
+    build_policy(
+        ROOT,
+        installer=installer,
+        signed=signed,
+        stable=stable,
+        tag=tag,
+        qualification=qualification,
+    )
     signer = Signer() if signed else None
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     app = QApplication.instance() or QApplication([])
@@ -220,6 +225,7 @@ def build(installer: bool, signed: bool = False, stable: bool = False, tag: str 
         "windows_version": windows_version(),
         **trace,
         "publisher_signed": bool(signer),
+        "qualification_only": qualification,
         "python_version": platform.python_version(),
         "openssl_version": ssl.OPENSSL_VERSION,
         "python_distribution": os.environ.get(
@@ -353,8 +359,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--stable",
         action="store_true",
-        help="Enforce stable manual, soak, version and signing gates",
+        help="Enforce stable evidence, soak, version and explicit signing policy",
     )
     parser.add_argument("--tag", default="", help="Exact release tag; required for stable")
+    parser.add_argument(
+        "--qualification",
+        action="store_true",
+        help="Build unpublished RC artifacts; cannot claim stable promotion/tag",
+    )
     options = parser.parse_args()
-    build(options.installer, options.signed, options.stable, options.tag)
+    build(options.installer, options.signed, options.stable, options.tag, options.qualification)

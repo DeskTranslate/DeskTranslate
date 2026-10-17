@@ -161,3 +161,39 @@ def test_story_and_glossary_persist_per_title_without_cross_language_or_legacy_c
     assert (
         restored.glossary == settings.glossary and restored.story_context == settings.story_context
     )
+
+
+def test_recurring_names_pronouns_terms_and_scene_change_keep_context_bounded():
+    recent = TranslationContext()
+    engine = ContextEngine(
+        recent,
+        {"アウレリア": "Aurelia", "魔導炉": "Mana Reactor", "星霜の鍵": "Astral Key"},
+        "Aurelia is female. Keep approved item names. Honorifics may be retained.",
+    )
+    dialogue = [
+        ("アウレリアさん、星霜の鍵を。", "Aurelia-san, the Astral Key."),
+        ("彼女は魔導炉へ向かった。", "She went to the Mana Reactor."),
+        ("それを使えば、街を救える。", "With it, we can save the city."),
+        ("星霜の鍵はどこ？", "Where is the Astral Key?"),
+    ]
+    for source, translation in dialogue:
+        request = engine.request(source, "ja", "en", contextual=True)
+        assert all(pair.source != source for pair in request.context)
+        assert len(request.context) <= 8
+        recent.accept(source, translation)
+    assert dict(request.glossary)["星霜の鍵"] == "Astral Key"
+    assert request.context[0].translation.startswith("Aurelia-san")
+    assert request.story_context == engine.story
+    for index in range(40):
+        recent.accept(f"Unrelated later dialogue {index}.", "A later scene.")
+    later = engine.request("Where are we now?", "ja", "en", contextual=True)
+    assert not later.glossary and len(later.context) == 8
+    assert recent.token_upper_bound() <= 2400
+    # User reset/new session drops ephemeral context; a different profile has
+    # its own notes and terminology, never an inferred permanent vocabulary.
+    recent.clear()
+    unrelated = ContextEngine(recent, {}, "A different title.").request(
+        "アウレリアさん", "ja", "en", contextual=True
+    )
+    assert not unrelated.context and not unrelated.glossary
+    assert unrelated.story_context == "A different title."

@@ -28,7 +28,7 @@ class LatencyMetrics:
                     and math.isfinite(value)
                     and 0 <= value <= 600_000
                 ):
-                    if name not in self.samples and len(self.samples) >= 16:
+                    if name not in self.samples and len(self.samples) >= 24:
                         continue
                     self.samples.setdefault(name, deque(maxlen=self.capacity)).append(float(value))
 

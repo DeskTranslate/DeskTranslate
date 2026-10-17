@@ -79,6 +79,7 @@ jobs:
           if ($env:RELEASE_TAG) { $options += @('--tag', $env:RELEASE_TAG) }
           if ($env:RELEASE_SIGNED -eq 'true') { $options += '--signed' }
           if ($env:RELEASE_STABLE -eq 'true') { $options += '--stable' }
+          else { $options += '--qualification' }
           & python @options
       - name: Smoke packaged runtime
         run: |
@@ -96,6 +97,9 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Installer lifecycle and artifact privacy
         run: |
+          $portableProbe = @{ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"}
+          if ($env:RELEASE_SIGNED -eq 'true') { $portableProbe.Signed = $true }
+          ./tools/qualify_portable.ps1 @portableProbe
           $probe = @{OcrFixture="$PWD/tests/fixtures/ja-game.png"; ModelDataDirectory="$env:DESKTRANSLATE_DATA_DIR/models"; AllowInstallChanges=$true}
           if ($env:RELEASE_SIGNED -eq 'true') { $probe.Signed = $true }
           ./tools/qualify_installer.ps1 @probe
@@ -144,6 +148,8 @@ jobs:
             dist/*provenance.json
             dist/SHA256SUMS.txt
             docs/installer-qualification.json
+            docs/portable-qualification.json
+            .audit/portable-runtime.json
             docs/privacy-scan.json
             docs/soak-2h-hosted.json
             docs/soak-chaos-hosted.json

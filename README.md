@@ -8,7 +8,7 @@ Translate the dialogue in a game, subtitles in a video, a menu, or text in an im
 
 [Release readiness](docs/release-readiness.md) · [Acceptance matrix](docs/validation.md) · [Non-invasive testing](docs/testing.md) · [Published releases](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Upgrade guide](docs/upgrade.md)
 
-**Version 2.0.0 is undergoing stable-release qualification. It has not been published as stable.** The new Windows application brings managed local OCR, contextual translation, application-following capture, profiles, guided setup, and an editable subtitle overlay. Existing internal prerelease identifiers remain until acceptance gates pass; we are not publishing another beta. Publisher signing and physical/manual qualification remain outstanding. The release page currently contains the legacy application.
+**Version 2.0.0 is undergoing stable-release qualification. It has not been published as stable.** The new Windows application brings managed local OCR, contextual translation, application-following capture, profiles, guided setup, and an editable subtitle overlay. The final unpublished candidate uses version2.0.0; packaging and exact-source endurance gates remain pending. No new beta is planned. Publisher signing is unavailable; the approved release will disclose unsigned binaries. The release page currently contains the legacy application.
 
 ![DeskTranslate 2 in its midnight mint theme, showing synthetic Japanese dialogue](docs/screenshots/translate-dark.png)
 
@@ -35,7 +35,7 @@ The planned stable distribution is **Windows x64**, primarily Windows 11. The in
 
 For portable use, extract the **entire** ZIP into a writable folder and launch `DeskTranslate.exe`. Keep `_internal` and `portable-mode` beside it. Portable settings, logs, and downloaded models live in `DeskTranslateData` beside the executable; installed builds use `%LOCALAPPDATA%\DeskTranslate`. Credentials remain in your Windows account's vault. Move the entire folder to retain portable data.
 
-Internal qualification binaries are **unsigned** and must not be treated as stable. Checksums detect changed files but do not establish publisher identity. Separate runtime/build SBOMs, a build provenance statement, library sources and third-party notices accompany new builds. Trusted Authenticode signing with RFC 3161 timestamps is required before stable promotion; no publisher certificate is currently available.
+Internal qualification binaries are **unsigned** and must not be treated as stable. Checksums detect changed files but do not establish publisher identity. Separate runtime/build SBOMs, a build provenance statement, library sources and third-party notices accompany new builds. No publisher certificate is available. The maintainer has approved an unsigned stable release once application qualification passes. Windows/SmartScreen may warn; no trusted publisher identity is claimed. Signing remains a future release improvement.
 
 V1 did not persist language preferences. V2 starts with new settings and does not remove an unrelated legacy installation or Tesseract. Read [upgrade and data retention](docs/upgrade.md) before replacing an existing setup.
 
@@ -110,7 +110,7 @@ The [validation report](docs/validation.md) distinguishes measured evidence from
 ## Current limits
 
 - Regions stay within one monitor. Negative origins and mixed-scale coordinate transforms are tested; physical mixed-DPI, hot-plug and exclusive-fullscreen coverage still need a hardware matrix. Use windowed/borderless mode if capture is blank. Protected content cannot be promised.
-- Auto recognition uses a Chinese/Latin family and is not universal. Choose the source script explicitly. Vietnamese accents, Chinese punctuation/Traditional characters and Japanese punctuation/name formatting retain fixture errors. Japanese columns use regional recognition with upright captions and conservative ruby handling; enable **Vertical columns** in Recognition. Representative real-media qualification remains incomplete. Other managed languages retain experimental vertical ordering. A verified model download guarantees integrity, not recognition accuracy; reinstalling the same pack will not fix these errors.
+- Auto recognition uses a Chinese/Latin family and is not universal. Choose the source script explicitly. Vietnamese accents, Chinese punctuation/Traditional characters and Japanese punctuation/name formatting retain fixture errors. Japanese columns use regional recognition with upright captions and conservative ruby handling; enable **Vertical columns** in Recognition. Paced authored moving/VN/subtitle/ruby/column workflows pass; this does not establish accuracy for every real game or film. Other managed languages retain experimental vertical ordering. A verified model download guarantees integrity, not recognition accuracy; reinstalling the same pack will not fix these errors.
 - All adapters have contract/failure tests. Actual Ollama and LM Studio lifecycle tests have also run, but the tiny test model failed plain-text translation-quality checks. Paid-account APIs and a real LibreTranslate server remain unqualified. Choose and evaluate a model for your content; no universal accuracy or compatibility claim is made.
 - The current implementation uses local CPU OCR and visible-window following. Cloud OCR, vision uploads, production GPU inference, universal automatic script routing, multiple simultaneous regions, speech and persistent history are not shipped. DirectML and Windows Graphics Capture remain documented investigations.
 - macOS/Linux source portability is unqualified. The separate legacy [Mac project](https://github.com/DeskTranslate/DeskTranslate-Mac) is not the DeskTranslate 2 release.
@@ -136,7 +136,7 @@ Use the hash-pinned **CPython 3.12.15 Windows x64** runtime prepared by `tools/i
 .\.venv\Scripts\python -m desktranslate --smoke-test
 .\.venv\Scripts\python -m pip_audit --require-hashes --disable-pip -r requirements-windows.lock
 .\.venv\Scripts\python tools/library_sources.py
-.\.venv\Scripts\python tools/build.py --installer
+.\.venv\Scripts\python tools/build.py --installer --qualification
 ```
 
 Install [Inno Setup 6](https://jrsoftware.org/isinfo.php) and put `ISCC` on PATH or set `ISCC_PATH` to its verified compiler. Build outputs are in `dist/`: portable ZIP, per-user installer, runtime/build SBOMs, provenance and checksums. Version metadata comes from `desktranslate.__version__`; a mismatched tag fails the build. [Signing and release qualification](docs/release-checklist.md), [CONTRIBUTING](CONTRIBUTING.md), [architecture](docs/architecture.md), [troubleshooting](docs/troubleshooting.md), and [the original audit](docs/audit.md) explain the workflow. See [SECURITY](SECURITY.md) for private vulnerability reporting.

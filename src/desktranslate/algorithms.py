@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections import deque
 from dataclasses import dataclass
 
 from PIL import Image, ImageChops, ImageEnhance, ImageStat
@@ -125,6 +126,7 @@ class FrameGate:
         self.unstable_since: float | None = None
         self.last_sample = float("-inf")
         self.moving = False
+        self.recent_changes: deque[float] = deque(maxlen=8)
 
     def observe(self, image: Image.Image, now: float) -> FrameDecision:
         # The thumbnail retains aspect ratio, reducing work to at most ~32K pixels.
@@ -139,12 +141,23 @@ class FrameGate:
             significant = sum(histogram[20:]) / (sample.width * sample.height)
             changed = stats.mean[0] > self.threshold or significant > 0.008
         if changed:
+            if self.motion_interval:
+                self.recent_changes.append(now)
+                while self.recent_changes and now - self.recent_changes[0] > 2.5:
+                    self.recent_changes.popleft()
+                if len(self.recent_changes) >= 3:
+                    self.moving = True
             if self.unstable_since is None:
                 self.unstable_since = now
             self.candidate = sample
             self.since = now
             self.emitted = False
         quiet = now - self.since >= self.settle
+        # Animation can have short quiet gaps (or alias with capture cadence).
+        # Do not revoke every slow OCR result by oscillating motion/static on
+        # those gaps. Genuine stillness returns to cheap static suppression.
+        if self.moving:
+            quiet = quiet and now - self.since >= max(1.0, self.settle * 2)
         ready = quiet and (not self.emitted or self.moving)
         if quiet:
             self.moving = False

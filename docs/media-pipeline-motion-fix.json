@@ -1,0 +1,603 @@
+{
+  "version": "2.0.0b2",
+  "python_version": "3.12.15",
+  "source_hashes": {
+    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
+    "algorithms.py": "aec3f333eac8d8d70cb00babe15d524e5d40693a88a2fdfb9458e32a927f1f49",
+    "app.py": "eaf1210358be8bbf1321dff838f5710a8231bebeadc15ac6e9954aa938349cc7",
+    "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
+    "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
+    "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
+    "assets/models.json": "e3779d40993d8219dbd2565e0e335f4fb8ae9a463727e1402b6d85dcac8c436d",
+    "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
+    "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
+    "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
+    "assets/samples/es-ui.png": "05ca04ae605c6302cfef2c93ec62ca51e8504856eb9d573e41ab59001aecfc10",
+    "assets/samples/fr-setup.png": "7dca787ee262e0f228adb2b9d48584bfd4c70895666189ce2d4ebe044ce278a2",
+    "assets/samples/hi-setup.png": "251eb9439c0c5751251a39a73dd2c6de93a6b1091981ac4431e87f1e40e8cf5f",
+    "assets/samples/id-setup.png": "3c37ac9b6e2fd8563c6fdb7047fb61176673123ab55833a1c5741716c533e0d5",
+    "assets/samples/it-setup.png": "09e22b1f82726acf557d243ae6a8ce5dac4017578ef2d4850014641087c44448",
+    "assets/samples/ja-game.png": "9e19c0b36bc44f99a68f5d34dd2bde028d407f01b30b69013feb34a6bda9f6a6",
+    "assets/samples/ko-subtitle.png": "451f0c556de5ec870173c7a2ee3ebf5f383217979e08814a8324accf5d762b57",
+    "assets/samples/nl-setup.png": "79ccf4fc8f8d523299db33f58a3afdfb0bd0c7bbdb8cab19023d571926f3e090",
+    "assets/samples/pl-setup.png": "6a449b59fcd3ab7a86243b990dccb2bf48f5a5e486a548d20bb1df787dd9cc60",
+    "assets/samples/pt-setup.png": "ed198556be96f12da078fb1a8c3e5fe7288e775391ed19ef5e0d73f6df321f3a",
+    "assets/samples/ru-setup.png": "3fa9d2b19b962a0151e55f555d9d4bbd2ef6bbba9a97e64380356f2491da5f04",
+    "assets/samples/tr-setup.png": "5d4a2cf70e08f877d29362344778e426766b9a5d529b0ed264d96dba2b485fcf",
+    "assets/samples/uk-setup.png": "4ec030681c0b78324fff9126ff6c03fc63e1fa1ce422a68b62cd2b654a21b5d2",
+    "assets/samples/vi-setup.png": "1fe6f789b20ab3703965f8fe51216e047497839e713f33812fb03416f783929c",
+    "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
+    "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
+    "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
+    "context.py": "90d1f28b6d6448caad5ce057de19592ab5dfaef5a34d0b80bca92e42380684a3",
+    "diagnostics.py": "6d7f526eea6325f0b992fe7d67b288dbb158179f1ad49c3f8aaa40e1fa8edac4",
+    "errors.py": "2094c09ebd08bbeeadc9cdb2e037e5c11c6162b2db16f479b59b2270e23f1cdc",
+    "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
+    "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "instance.py": "e57b9bd91fb2a16d0b99139157255de51a0771e61423b0c38d70a1bb60a4c309",
+    "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "layout.py": "8af419e3946b4a6b4d7a49ece960a4bf97ca11a307e8cf6adbedeed24cc7319c",
+    "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
+    "metrics.py": "174037edfe76abbb61242e4928b2fdf7d2aaf28a3a1d400d6a97a5dfe13463ba",
+    "models.py": "6a33ff0c4637860764fcc9e662a6b6066aaebe7ff854de4790ed3eb560293181",
+    "network.py": "702b617972b83b71099568a573a468ec149b56347ceeffa5003e92e337611b02",
+    "ocr.py": "4cd8469291f6c429822674b482d3d059fdfaf62c2427bb8a579bddde63ac63b7",
+    "pipeline.py": "9ec7a0cac5cf514354668f4b68498e94dc3ed745a6306716ee5863f177d63409",
+    "presentation.py": "47dbfaeb97ebe5381bcb0fea3fe969839e31fafe96af77d76b49ddb0d86d32e9",
+    "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
+    "profiles.py": "ff1215ba938a8d5e2ffec99e4fcaa56a8961280079466e7e91a3f31eebc91be7",
+    "providers.py": "d2adf93ffe98326653e97af1665f99bccda0b0c168b5c775c5c8cd373c715614",
+    "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
+    "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
+    "settings.py": "e8bfac9517023eab952155909091d24207d3fa1d73953e5d147dd9ecfef1120c",
+    "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
+    "temporal.py": "c9932112cf492c30351824659d65197139e5be92892c3fb5aa9dcc8adf0f0204",
+    "transcript.py": "e38502fb06472f0d5af0fc7440db418ae2ab68dbb6e3f615ea0b1f3f5e95b1e9",
+    "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
+    "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
+    "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
+    "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
+    "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
+    "ui/onboarding.py": "a99d5b86a363249b444f44ec5b364474822c21b778d105d92e2b22a2142e939e",
+    "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
+    "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
+    "ui/profiles.py": "2cdf5e893f05a9ade79be612a6c2287c7908198813e0738933d593307b8abd3c",
+    "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
+    "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
+    "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
+    "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
+    "ui/transcript.py": "352aa89ef5ad01577d2c2266a118a3640072312efefbc154d8c1d66a0fbd20f2",
+    "ui/window.py": "26551158de46425cb85a7caacb69312873a4983cb004115e41e883f6c7d39c77",
+    "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
+    "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
+  },
+  "source_unchanged": true,
+  "harness_sha256": "39816cf74e0d375ac9d6b789830167674ebf494dc06dbcd868ce1d5f79725b69",
+  "scope": "Opt-in paced authored media → real OCR/HTTP → offscreen overlay qualification.\n\nNo desktop capture, input, playback, credentials or external provider. Generation\nand timing assertions exercise the application pipeline; HTTP replies are authored\nechoes and do not qualify semantic translation. Owns a five-minute deadline.\n",
+  "paced": true,
+  "desktop_capture": false,
+  "semantic_translation": false,
+  "workloads": [
+    {
+      "name": "vn-moving-fade-return",
+      "language": "ja",
+      "vertical": false,
+      "checks": {
+        "required_dialogue_delivered": true,
+        "freshness_no_backlog": false,
+        "bounded_work": true,
+        "no_wrong_source": true,
+        "progressive_consolidated": true,
+        "workers_closed": true,
+        "no_post_stop_results": true,
+        "no_remaining_children": true
+      },
+      "passed": false,
+      "cold_first_presentation_ms": 5875.0,
+      "warm_stage_ms": {
+        "capture_ms": {
+          "count": 6,
+          "p50": 0.237,
+          "p95": 0.491
+        },
+        "change_ms": {
+          "count": 6,
+          "p50": 1.673,
+          "p95": 1.978
+        },
+        "preprocess_ms": {
+          "count": 6,
+          "p50": 0.011,
+          "p95": 0.015
+        },
+        "ocr_regional_ms": {
+          "count": 6,
+          "p50": 45.705,
+          "p95": 76.378
+        },
+        "ocr_detect_ms": {
+          "count": 6,
+          "p50": 988.686,
+          "p95": 1010.513
+        },
+        "ocr_recognize_ms": {
+          "count": 6,
+          "p50": 85.769,
+          "p95": 99.281
+        },
+        "ocr_reconstruct_ms": {
+          "count": 6,
+          "p50": 0.056,
+          "p95": 0.072
+        },
+        "ocr_ms": {
+          "count": 6,
+          "p50": 1119.346,
+          "p95": 1164.139
+        },
+        "ocr_call_ms": {
+          "count": 6,
+          "p50": 1120.609,
+          "p95": 1165.336
+        },
+        "temporal_ms": {
+          "count": 6,
+          "p50": 0.119,
+          "p95": 0.285
+        },
+        "context_ms": {
+          "count": 6,
+          "p50": 0.054,
+          "p95": 0.101
+        },
+        "queue_ms": {
+          "count": 6,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "provider_ms": {
+          "count": 6,
+          "p50": 141.0,
+          "p95": 141.0
+        },
+        "total_ms": {
+          "count": 6,
+          "p50": 1445.5,
+          "p95": 1735.0
+        },
+        "gui_delivery_ms": {
+          "count": 6,
+          "p50": 0.0,
+          "p95": 16.0
+        },
+        "render_ms": {
+          "count": 6,
+          "p50": 0.0,
+          "p95": 15.0
+        },
+        "presentation_ms": {
+          "count": 6,
+          "p50": 1453.0,
+          "p95": 1750.0
+        },
+        "onset_ms": {
+          "count": 6,
+          "p50": 2087.5,
+          "p95": 2498.0
+        }
+      },
+      "records": [
+        {
+          "cue": "prefix2",
+          "source": "彼女は",
+          "at_s": 4.297,
+          "source_cer": 0.0,
+          "lag_cues": 2,
+          "presentation_ms": 1202.9999999940628,
+          "onset_ms": 1257.0000000059372,
+          "replaces_source": ""
+        },
+        {
+          "cue": "complete",
+          "source": "彼女は昨日ここに来た。",
+          "at_s": 5.453,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1750.0,
+          "onset_ms": 2173.0000000086143,
+          "replaces_source": "彼女は"
+        },
+        {
+          "cue": "outline",
+          "source": "ミカ、鍵を見つけた？",
+          "at_s": 10.063,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1641.0000000032596,
+          "onset_ms": 2283.0000000091964,
+          "replaces_source": ""
+        },
+        {
+          "cue": "translucent",
+          "source": "彼女の名前はアウレリア。",
+          "at_s": 13.782,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1610.000000000582,
+          "onset_ms": 2002.0000000065181,
+          "replaces_source": ""
+        },
+        {
+          "cue": "return",
+          "source": "彼女は昨日ここに来た。",
+          "at_s": 19.313,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1218.9999999973224,
+          "onset_ms": 1733.000000009195,
+          "replaces_source": ""
+        },
+        {
+          "cue": "static",
+          "source": "明日、ま またここで会おう。",
+          "at_s": 24.078,
+          "source_cer": 0.0833,
+          "lag_cues": 0,
+          "presentation_ms": 1296.0000000020955,
+          "onset_ms": 2498.000000008613,
+          "replaces_source": ""
+        }
+      ],
+      "missing": [],
+      "max_pending": {
+        "frames": 1,
+        "texts": 0,
+        "events": 2,
+        "children": 1
+      },
+      "counters": {
+        "captures": 188,
+        "ocr": 20,
+        "translations": 7,
+        "stale": 2,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "http_requests": 7
+    },
+    {
+      "name": "brief-one-character-subtitles",
+      "language": "en",
+      "vertical": false,
+      "checks": {
+        "required_dialogue_delivered": true,
+        "freshness_no_backlog": true,
+        "bounded_work": true,
+        "no_wrong_source": true,
+        "progressive_consolidated": true,
+        "workers_closed": true,
+        "no_post_stop_results": true,
+        "no_remaining_children": true
+      },
+      "passed": true,
+      "cold_first_presentation_ms": 5312.999999994645,
+      "warm_stage_ms": {
+        "capture_ms": {
+          "count": 4,
+          "p50": 0.187,
+          "p95": 0.266
+        },
+        "change_ms": {
+          "count": 4,
+          "p50": 1.003,
+          "p95": 1.658
+        },
+        "preprocess_ms": {
+          "count": 4,
+          "p50": 0.009,
+          "p95": 0.013
+        },
+        "ocr_detect_ms": {
+          "count": 4,
+          "p50": 989.715,
+          "p95": 1001.794
+        },
+        "ocr_recognize_ms": {
+          "count": 4,
+          "p50": 30.687,
+          "p95": 33.384
+        },
+        "ocr_reconstruct_ms": {
+          "count": 4,
+          "p50": 0.046,
+          "p95": 0.051
+        },
+        "ocr_ms": {
+          "count": 4,
+          "p50": 1024.59,
+          "p95": 1034.948
+        },
+        "ocr_call_ms": {
+          "count": 4,
+          "p50": 1025.845,
+          "p95": 1036.24
+        },
+        "temporal_ms": {
+          "count": 4,
+          "p50": 0.08,
+          "p95": 0.238
+        },
+        "context_ms": {
+          "count": 4,
+          "p50": 0.046,
+          "p95": 0.049
+        },
+        "queue_ms": {
+          "count": 4,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "provider_ms": {
+          "count": 4,
+          "p50": 133.0,
+          "p95": 141.0
+        },
+        "total_ms": {
+          "count": 4,
+          "p50": 1195.5,
+          "p95": 1250.0
+        },
+        "gui_delivery_ms": {
+          "count": 4,
+          "p50": 0.0,
+          "p95": 15.0
+        },
+        "render_ms": {
+          "count": 4,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "presentation_ms": {
+          "count": 4,
+          "p50": 1203.0,
+          "p95": 1250.0
+        },
+        "onset_ms": {
+          "count": 4,
+          "p50": 1859.5,
+          "p95": 2309.0
+        }
+      },
+      "records": [
+        {
+          "cue": "me",
+          "source": "Wait for me!",
+          "at_s": 4.141,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1157.0000000065193,
+          "onset_ms": 1641.0000000032596,
+          "replaces_source": ""
+        },
+        {
+          "cue": "us",
+          "source": "Wait for us!",
+          "at_s": 6.578,
+          "source_cer": 0.0,
+          "lag_cues": 1,
+          "presentation_ms": 1250.0,
+          "onset_ms": 2078.0000000086147,
+          "replaces_source": ""
+        },
+        {
+          "cue": "go",
+          "source": "Go!",
+          "at_s": 7.906,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1172.0000000059372,
+          "onset_ms": 1406.0000000026776,
+          "replaces_source": ""
+        },
+        {
+          "cue": "return",
+          "source": "Go!",
+          "at_s": 13.109,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1233.9999999967404,
+          "onset_ms": 2308.9999999967395,
+          "replaces_source": ""
+        }
+      ],
+      "missing": [],
+      "max_pending": {
+        "frames": 1,
+        "texts": 0,
+        "events": 2,
+        "children": 1
+      },
+      "counters": {
+        "captures": 108,
+        "ocr": 11,
+        "translations": 4,
+        "stale": 1,
+        "cache_hits": 1,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "http_requests": 4
+    },
+    {
+      "name": "columns-ruby-captions",
+      "language": "ja",
+      "vertical": true,
+      "checks": {
+        "required_dialogue_delivered": true,
+        "freshness_no_backlog": true,
+        "bounded_work": true,
+        "no_wrong_source": true,
+        "progressive_consolidated": true,
+        "workers_closed": true,
+        "no_post_stop_results": true,
+        "no_remaining_children": true
+      },
+      "passed": true,
+      "cold_first_presentation_ms": 5718.999999997322,
+      "warm_stage_ms": {
+        "capture_ms": {
+          "count": 3,
+          "p50": 0.211,
+          "p95": 0.403
+        },
+        "change_ms": {
+          "count": 3,
+          "p50": 2.144,
+          "p95": 2.34
+        },
+        "preprocess_ms": {
+          "count": 3,
+          "p50": 0.01,
+          "p95": 0.011
+        },
+        "ocr_layout_detect_ms": {
+          "count": 3,
+          "p50": 617.824,
+          "p95": 621.388
+        },
+        "ocr_layout_recognize_ms": {
+          "count": 3,
+          "p50": 88.214,
+          "p95": 137.42
+        },
+        "ocr_detect_ms": {
+          "count": 3,
+          "p50": 601.406,
+          "p95": 633.526
+        },
+        "ocr_recognize_ms": {
+          "count": 3,
+          "p50": 293.659,
+          "p95": 308.267
+        },
+        "ocr_reconstruct_ms": {
+          "count": 3,
+          "p50": 0.012,
+          "p95": 0.012
+        },
+        "ocr_ms": {
+          "count": 3,
+          "p50": 1618.321,
+          "p95": 1684.313
+        },
+        "ocr_call_ms": {
+          "count": 3,
+          "p50": 1619.786,
+          "p95": 1685.903
+        },
+        "temporal_ms": {
+          "count": 3,
+          "p50": 0.104,
+          "p95": 0.105
+        },
+        "context_ms": {
+          "count": 3,
+          "p50": 0.059,
+          "p95": 0.062
+        },
+        "queue_ms": {
+          "count": 3,
+          "p50": 0.0,
+          "p95": 0.0
+        },
+        "provider_ms": {
+          "count": 3,
+          "p50": 141.0,
+          "p95": 141.0
+        },
+        "total_ms": {
+          "count": 3,
+          "p50": 1750.0,
+          "p95": 1828.0
+        },
+        "gui_delivery_ms": {
+          "count": 3,
+          "p50": 0.0,
+          "p95": 16.0
+        },
+        "render_ms": {
+          "count": 3,
+          "p50": 0.0,
+          "p95": 15.0
+        },
+        "presentation_ms": {
+          "count": 3,
+          "p50": 1765.0,
+          "p95": 1828.0
+        },
+        "onset_ms": {
+          "count": 3,
+          "p50": 2015.0,
+          "p95": 2218.0
+        }
+      },
+      "records": [
+        {
+          "cue": "columns",
+          "source": "アルトリア\n魔導炉",
+          "at_s": 4.672,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1485.000000000582,
+          "onset_ms": 1672.0000000059372,
+          "replaces_source": ""
+        },
+        {
+          "cue": "ruby",
+          "source": "魔導炉\n明日の光",
+          "at_s": 10.015,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1827.9999999940628,
+          "onset_ms": 2014.999999999418,
+          "replaces_source": ""
+        },
+        {
+          "cue": "caption",
+          "source": "ミカ：待って！\nアルトリア\n魔導炉",
+          "at_s": 15.218,
+          "source_cer": 0.0,
+          "lag_cues": 0,
+          "presentation_ms": 1764.999999999418,
+          "onset_ms": 2218.0000000080327,
+          "replaces_source": ""
+        }
+      ],
+      "missing": [],
+      "max_pending": {
+        "frames": 0,
+        "texts": 0,
+        "events": 1,
+        "children": 1
+      },
+      "counters": {
+        "captures": 123,
+        "ocr": 5,
+        "translations": 4,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "http_requests": 4
+    }
+  ],
+  "remaining_children": 0,
+  "passed": false
+}

@@ -76,6 +76,7 @@ def test_release_signing_and_stable_fail_closed(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.delenv("DESKTRANSLATE_SIGNING_THUMBPRINT", raising=False)
     with pytest.raises(ValueError, match="publisher"):
         release_support.Signer()
+    monkeypatch.setattr(release_support, "__version__", "2.0.0b2")
     with pytest.raises(ValueError, match="prerelease"):
         release_support.stable_gate(
             Path(__file__).resolve().parents[1], "v" + release_support.__version__
@@ -83,6 +84,32 @@ def test_release_signing_and_stable_fail_closed(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.setattr(release_support, "__version__", "2.0.0")
     with pytest.raises(ValueError, match="qualification"):
         release_support.stable_gate(Path(__file__).resolve().parents[1], "v2.0.0")
+
+
+def test_final_build_policy_requires_evidence_but_permits_disclosed_unsigned(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(release_support, "__version__", "2.0.0")
+    monkeypatch.setattr(release_support, "version_gate", lambda root, tag: None)
+    monkeypatch.setattr(release_support, "stable_gate", lambda root, tag: calls.append(tag))
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "manual-qualification.json").write_text('{"unsigned_release_approved": false}')
+    with pytest.raises(ValueError, match="Unsigned"):
+        release_support.build_policy(
+            tmp_path, installer=True, signed=False, stable=True, tag="v2.0.0", qualification=False
+        )
+    (docs / "manual-qualification.json").write_text('{"unsigned_release_approved": true}')
+    release_support.build_policy(
+        tmp_path, installer=True, signed=False, stable=True, tag="v2.0.0", qualification=False
+    )
+    assert calls == ["v2.0.0", "v2.0.0"]  # Approval never skips source/endurance gates.
+    with pytest.raises(ValueError, match="Qualification"):
+        release_support.build_policy(
+            tmp_path, installer=True, signed=False, stable=True, tag="v2.0.0", qualification=True
+        )
+    release_support.build_policy(
+        tmp_path, installer=False, signed=False, stable=False, tag="", qualification=True
+    )
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,113 @@
+{
+  "authored_content_only": true,
+  "keys_persisted_or_printed": false,
+  "providers": [
+    {
+      "provider": "google",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "PASS",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "authored_tests": [
+        {
+          "target": "es",
+          "nonempty": true,
+          "changed": true,
+          "hebrew_script": null
+        },
+        {
+          "target": "he",
+          "nonempty": true,
+          "changed": true,
+          "hebrew_script": true
+        },
+        {
+          "target": "th",
+          "nonempty": true,
+          "changed": true,
+          "hebrew_script": null
+        },
+        {
+          "target": "cs",
+          "nonempty": true,
+          "changed": true,
+          "hebrew_script": null
+        }
+      ]
+    },
+    {
+      "provider": "deepl",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured account key is available in Windows Credential Manager"
+    },
+    {
+      "provider": "libre",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured server is available"
+    },
+    {
+      "provider": "openai",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured account key is available in Windows Credential Manager"
+    },
+    {
+      "provider": "anthropic",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured account key is available in Windows Credential Manager"
+    },
+    {
+      "provider": "gemini",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured account key is available in Windows Credential Manager"
+    },
+    {
+      "provider": "openrouter",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured account key is available in Windows Credential Manager"
+    },
+    {
+      "provider": "ollama",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "FAIL",
+      "configured_credential_available": false,
+      "real_observation": "LocalServerUnavailableError",
+      "limitation": "Server/account/model qualification could not complete; no success is claimed"
+    },
+    {
+      "provider": "lmstudio",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "FAIL",
+      "configured_credential_available": false,
+      "real_observation": "LocalServerUnavailableError",
+      "limitation": "Server/account/model qualification could not complete; no success is claimed"
+    },
+    {
+      "provider": "custom",
+      "wire_contract": "PASS in pytest",
+      "real_generation": "NOT TESTED",
+      "real_catalog": "NOT TESTED",
+      "configured_credential_available": false,
+      "limitation": "No configured server is available"
+    }
+  ]
+}

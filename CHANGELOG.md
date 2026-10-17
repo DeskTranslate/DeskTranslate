@@ -2,7 +2,7 @@
 
 ## 2.0.0 — unreleased, stable qualification in progress
 
-DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow with a packaged Windows application, local managed OCR and a Qt 6 interface. Normal users will use the installer or portable ZIP, without installing Python, pip or Tesseract. Publisher signing and the remaining manual acceptance matrix must pass before this section becomes a stable release announcement.
+DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow with a packaged Windows application, local managed OCR and a Qt 6 interface. Normal users will use the installer or portable ZIP, without installing Python, pip or Tesseract. This section describes the final candidate; exact-source qualification is still in progress. The approved release is unsigned and will disclose Windows/SmartScreen warnings.
 
 - Explicit region, monitor and application-client capture; monitor-relative physical coordinates; frozen selection with resize handles; invalidation after display/session changes.
 - Local hash-verified OCR packs for 19 source languages, optional detected Tesseract, and the 133 translation targets available in V1. Source selection reflects the chosen engine's coverage.
@@ -27,6 +27,8 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Add optional per-title story notes and locally retrieved, language-bound terminology. Separate recent dialogue from caching; conventional translation uses exact whole-term matches and preserves complete sentences. Retain title-context save/load/delete recovery and explicit privacy controls.
 - Recognize Japanese columns and upright captions by region, with conservative ruby annotations and a separately verified recognizer loaded only for eligible word/column regions. All eight authored vertical/mixed/ruby layouts now match. Selective word recognition also fixes the authored pixel, translucent, low-contrast and small-text cases; punctuation/name differences and background false positives remain. Short text and counters keep their original path because global model replacement worsened false positives.
 - Preserve ruby annotations when contrast/scaling slightly overlaps detector boxes; all eight authored layouts match in all three image treatments. Make the full OCR benchmark explicitly opted-in, bounded and limited to one native model family, with partial failure reports and safe private defaults.
+
+- Fix intermittent animation starvation: short quiet gaps no longer repeatedly cancel in-flight OCR. Add paced authored end-to-end media/slow-provider qualification and complete presentation-stage metrics.
 
 See [validation](docs/validation.md) for actual results and untested configurations. Experimental vertical OCR and provider/model availability are not promises of universal recognition or translation quality. Earlier release entries below remain historical.
 

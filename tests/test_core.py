@@ -124,8 +124,10 @@ def test_live_motion_sampling_is_bounded_and_returns_to_static_suppression():
     assert len(times) >= 5
     assert all(right - left >= 1.49 for left, right in zip(times, times[1:], strict=False))
     settled = gate.observe(image, 10.4)
+    assert settled.moving  # A half-second gap can be an intermittent animation.
+    settled = gate.observe(image, 11)
     assert settled.ready and not settled.moving
-    assert not gate.observe(image, 11).ready
+    assert not gate.observe(image, 11.2).ready
 
 
 def test_confirmed_text_can_change_by_one_character_at_lower_confidence():

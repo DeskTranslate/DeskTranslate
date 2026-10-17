@@ -1,12 +1,16 @@
 # Stable-release acceptance matrix
 
-Target: **DeskTranslate v2.0.0**. **Publication HOLD; not qualified as stable.** The canonical identifier remains `2.0.0b2`; no new beta has been published. Results below describe their exact scope. A build or synthetic pass cannot replace physical hardware, account or human qualification.
+Target: **DeskTranslate v2.0.0**. **Publication HOLD; not qualified as stable.** The unpublished final candidate now uses `2.0.0`; no release is implied by that identifier. Current blocking evidence and accepted limitations are in [stable-release-plan.md](stable-release-plan.md). Results below describe their exact scope. A build or synthetic pass cannot replace physical hardware, account or human qualification.
 
 Host: Windows 11 Pro build26200, Lenovo82RD, single native1920×1080 panel at125% (Qt1536×864), non-RDP. AMD integrated graphics is active and an NVIDIA RTX3060 Laptop GPU is enumerated; GPU-routing compatibility is unqualified. Pinned CPython3.12.15 x64 / OpenSSL3.5.9, fresh76-distribution hash-locked venv. Tests run concurrently with other release QA where stated.
 
 **PASS** means measured success within the stated scope. **FAIL** means an observed failure. **NOT TESTED** means missing evidence. **NOT APPLICABLE** means outside that criterion's purpose. Findings/root causes are in [production-audit.md](production-audit.md); every historical issue is in [issues-v2.md](issues-v2.md).
 
 See [testing.md](testing.md) for the non-invasive routine/pre-deployment path and separate manual tiers. Native observations below were collected before that policy; they are not repeated automatically.
+
+## Current final-candidate evidence
+
+See [release readiness](release-readiness.md) for paced media PASS, the preserved animation-starvation failure/fix, end-to-end p50/p95, fresh real-provider inventory and pending exact-source qualification. Tables below preserve prior checkpoint scope and do not qualify newer application bytes.
 
 ## Automated engineering and security
 
@@ -46,7 +50,7 @@ The current regional/media/context implementation is assessed in [media-engineer
 | Effective100/125/150/175/200% layouts | Native Qt overrides on actual OS125% display | PASS | [ui-scale-qualification.json](ui-scale-qualification.json), eight pages each | Not five OS scaling settings or mixed-DPI hardware |
 | Compact640×360/720×405/960×540 layouts | Simulated available workspace | PASS | Eight pages, no horizontal overflow, native screenshots reviewed | Dimensions/layout only; simulated desktop positioning not a pass |
 | Negative origins/mixed-DPI transforms/topology changes | Synthetic monitor geometry and native message regressions | PASS | Core/window/capture/overlay tests | Physical layouts remain separate |
-| Physical1440p/4K/ultrawide, multi-monitor, negative origins, mixed DPI | Required hardware | NOT TESTED | No matching physical rig | Must qualify before stable |
+| Physical1440p/4K/ultrawide, multi-monitor, negative origins, mixed DPI | Required hardware | NOT TESTED | No matching physical rig | Physical hardware NOT TESTED; disclosed accepted limitation |
 | Hot-plug, docking, primary-display changes, sleep/lock/RDP reconnect | Actual transitions | NOT TESTED | WTS/power handler tests cover messages only | Native registration is not a real transition |
 | Long Unicode/CJK/RTL, themes, reduced-motion and contrast branches | Qt tests and native authored UI | PASS | Overlay tests, font profile, reviewed fresh screenshots | Actual Narrator/OS contrast switching separate |
 | Real screen reader / high-contrast session | Human-assisted Windows accessibility | NOT TESTED | Accessible names/StaticText roles inspected only | End-user screen-reader qualification absent |
@@ -118,6 +122,6 @@ The current regional/media/context implementation is assessed in [media-engineer
 
 ## Decision
 
-No known P0 is intentionally left unresolved. Unresolved P1 qualification gaps have no implicit waiver. Physical mixed-DPI/media/accessibility, clean-Windows/legacy install, provider accounts/model quality and publisher signing remain explicit blockers. No stable promotion follows from CI success alone.
+No known P0 is intentionally left unresolved. Current exact-source hosted runtime/installer/endurance and artifact-integrity evidence remain blockers. Unavailable physical mixed-DPI/media/accessibility, legacy installation, paid accounts/model quality and trusted signing are disclosed limitations under the maintainer's final policy; no missing test becomes PASS. No stable promotion follows from CI success alone.
 
 Earlier window/onboarding/focus and hosted build reports are historical evidence for their recorded source. Legitimate beta changelog history remains. The canonical prerelease identifier cannot change until stable gates actually pass.
