@@ -34,6 +34,8 @@ Further detector profiling rejected two speed shortcuts. Natural-scale detection
 
 [Hosted quality at db623d1](hosted-quality-db623d1.json) passes474 tests46.620s, portable build, frozen startup/ownership/OCR/vault/HTTP and artifact privacy, with archive digest independently verified and zero known dependency vulnerabilities. This precedes the annotation edge correction and benchmark refactor; it is preserved as checkpoint evidence rather than a final release qualification.
 
+[Hosted quality at final application checkpoint4b5a06e](hosted-quality-4b5a06e.json) also passes:480 tests47.328s, portable build, frozen startup/ownership/crash recovery/OCR/vault/HTTP, zero known vulnerabilities and source/history/runtime/archive/frozen-module privacy. The report archive digest is independently verified and application digest matches local source. It does not qualify an installer, sustained media/endurance, consumer Windows/physical displays or signing. Later report-only edits preserve application bytes.
+
 The completed d5f56dc baseline candidate has independently verified archive/checksum/provenance and three hosted attestations, installer lifecycle,7,200.26-second steady and1,800.30-second fault workloads. [Preserved baseline](hosted-candidate-d5f56dc.json). The01263ed checkpoint also [passes hosted quality](hosted-quality-01263ed.json), including463 tests and frozen startup/OCR/vault/HTTP/privacy. Neither result qualifies this new regional OCR source.
 
 ## Previous media/context checkpoint at01263ed
