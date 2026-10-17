@@ -1,8 +1,8 @@
 # Changelog
 
-## 2.0.0 — unreleased, stable qualification in progress
+## 2.0.0 — 2026-10-17
 
-DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow with a packaged Windows application, local managed OCR and a Qt 6 interface. Normal users will use the installer or portable ZIP, without installing Python, pip or Tesseract. This section describes the final candidate; exact-source qualification is still in progress. The approved release is unsigned and will disclose Windows/SmartScreen warnings.
+DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow with a packaged Windows application, local managed OCR and a Qt 6 interface. Normal users use the installer or portable ZIP, without installing Python, pip or Tesseract. The Windows release is unsigned; Windows/SmartScreen may warn. Source-matched qualification, hashes and provenance accompany the release; see the validation report for exact scope and remaining limitations.
 
 - Explicit region, monitor and application-client capture; monitor-relative physical coordinates; frozen selection with resize handles; invalidation after display/session changes.
 - Local hash-verified OCR packs for 19 source languages, optional detected Tesseract, and the 133 translation targets available in V1. Source selection reflects the chosen engine's coverage.
@@ -11,7 +11,7 @@ DeskTranslate 2 replaces the Tesseract-only, Python-dependent desktop workflow w
 - Bounded work queues, stale-result rejection, OCR crash recovery, Windows process-tree containment and explicit cleanup failure reporting. Moving backgrounds now receive bounded OCR samples instead of starving recognition indefinitely.
 - Cleanup failures retain a clear restart-required state, including after completed one-shot work, rather than leaving an apparent success until the next action.
 - Transactional settings/profile changes, safe corrupt-configuration recovery, credential rollback on failed saves and portable data isolation. Installer reinstalls remove obsolete owned runtime files while retaining user data.
-- Improved Latin, Cyrillic and Devanagari recognizers, corrected Arabic logical text order, and a47-fixture authored multilingual regression corpus. Chinese punctuation, stylized Japanese and real-media limitations remain documented.
+- Improved Latin, Cyrillic and Devanagari recognizers, corrected Arabic logical text order, and a 47-fixture authored multilingual regression corpus. Chinese punctuation, stylized Japanese and real-media limitations remain documented.
 - Faster long-subtitle layout with bounded glyph caches, safer provider parsing and endpoint handling, locked dependency hashes, supply-chain notices/SBOM/provenance, stronger CI and separate steady-worker/fault soak gates.
 - Corrected live DPI-transition overlay clipping with a coalesced native-geometry refit; compact navigation keeps smaller workspaces usable. Actual 1080p→720p→1080p capture/reselection checks now complement synthetic coordinate tests.
 - Release failed async sessions promptly without waiting for cyclic GC. Routine validation now forces offscreen components, isolates OS/network boundaries and tests picker/coordinate behavior without touching the real desktop; manual and extended probes require explicit opt-in.

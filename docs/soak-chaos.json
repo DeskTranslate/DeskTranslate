@@ -1,8 +1,8 @@
 {
-  "version": "2.0.0b2",
+  "version": "2.0.0",
   "python_version": "3.12.15",
   "requested_duration_s": 1800.0,
-  "elapsed_s": 2009.58,
+  "elapsed_s": 1800.23,
   "completed": true,
   "mode": "chaos",
   "failure_category": "",
@@ -11,14 +11,14 @@
   "loopback_http": true,
   "source_unchanged": true,
   "source_hashes": {
-    "__init__.py": "38c717a6a5d5c693551b576214681eabe82503807aa8006fd980235da4fffc0e",
+    "__init__.py": "932b6a0755599d7d9aa220a7db8912dd36b8e64f2aabcf78b43d682eb788b95b",
     "__main__.py": "f4bd21e4824f5eb0497e0d5f7ce3769aa8e79297df8392afea701f4c72a92734",
-    "algorithms.py": "89b77b42079aa39b4f4746912f71fcd2fe9ab2e7c9ec2c99a30b1bff9b5d1f2f",
-    "app.py": "aa5871e8dc0242e35fd33335d7b7d272f0e9876da38a86846d21e04c761225a8",
+    "algorithms.py": "1ec7765d39528b57a2716d019612d38bd7569dcf343e22aba950557ba1906c5c",
+    "app.py": "eaf1210358be8bbf1321dff838f5710a8231bebeadc15ac6e9954aa938349cc7",
     "assets/chevron-down.svg": "cb4e5043e84e3ea509243dd331369ab224d6401b6262757ac0a649558c931309",
     "assets/chevron-up.svg": "055771d8c132db3391435303732704d836bc4edb9f95040f0744d3b88586d8f9",
     "assets/icon.svg": "5c1f30a25ba4411336af8dc43631c332b043d4f1cc738ad6bfe8338a459225a2",
-    "assets/models.json": "445593aa092719625f87f17161a28c7ddbf43f7cf7c074c7a5e8a3c1bed77fbc",
+    "assets/models.json": "e3779d40993d8219dbd2565e0e335f4fb8ae9a463727e1402b6d85dcac8c436d",
     "assets/samples/ar-setup.png": "3d6e66afa6e5b77e5c6af890128147299462292b0ce609228143e5c8b638b652",
     "assets/samples/de-setup.png": "b41b12c43b6b337b26f9d73cc43ea54d379431342b854dfcecf9c4e287024ae6",
     "assets/samples/en-ui.png": "e9a3431307459764e9664e86dd8d966b74bca7ea842135c1c842620d5446efa3",
@@ -39,150 +39,212 @@
     "assets/samples/zh-dialogue.png": "1b75fc0f0d459c37e87237a9b00331125577bf6d93876217eb8b454bded75f5d",
     "assets/samples/zh-traditional.png": "babf12579c07a2df7f7ebca7b7b83a07a0aaf4c2d5da18f266dcca2970f097a3",
     "capture.py": "fdfd94b757bab18767212a202202268efd4b0616d9a2cc1856bf73817a1ff62c",
-    "context.py": "d1f7fd7c34932a7ffc317706a0b40e430afd9398422184eb95823bee27b8dd74",
-    "diagnostics.py": "2af30568b78d98f6e375be759d67caa512e46d32e9ea9a8181c8f94b7af071ed",
+    "context.py": "90d1f28b6d6448caad5ce057de19592ab5dfaef5a34d0b80bca92e42380684a3",
+    "diagnostics.py": "6d7f526eea6325f0b992fe7d67b288dbb158179f1ad49c3f8aaa40e1fa8edac4",
     "errors.py": "2094c09ebd08bbeeadc9cdb2e037e5c11c6162b2db16f479b59b2270e23f1cdc",
     "hardware.py": "fa39a927c734c4e5e995ba5bf3d5ed8218537ce3e20e2e02a95e4105fac7a5c8",
     "hotkeys.py": "3b918e80984b096f8dc8f2d58aaa8c17719965eb3b31f27c8a18ba6200a0e3ee",
+    "instance.py": "e57b9bd91fb2a16d0b99139157255de51a0771e61423b0c38d70a1bb60a4c309",
     "languages.py": "4a7c3425360a5bca83e32698526b7d8681187bcf7cd4e54e74e7d95d73ef0fd0",
+    "layout.py": "8af419e3946b4a6b4d7a49ece960a4bf97ca11a307e8cf6adbedeed24cc7319c",
     "logging.py": "8bf372dbe306790f4cc3123b7519eda9d62cc4486981295b40904ffa6c1280a2",
-    "metrics.py": "8d53eca475768d8ed3a0d8e00e85b67d12ec2d2cdcff5f2110624086c956ab2f",
-    "models.py": "b1cdec4d50bd1829fbb589b0ad5f24e3eb8a8ef0cfd4582a7900c061ce68539d",
+    "metrics.py": "174037edfe76abbb61242e4928b2fdf7d2aaf28a3a1d400d6a97a5dfe13463ba",
+    "models.py": "6a33ff0c4637860764fcc9e662a6b6066aaebe7ff854de4790ed3eb560293181",
     "network.py": "702b617972b83b71099568a573a468ec149b56347ceeffa5003e92e337611b02",
-    "ocr.py": "5d22e4230f958ab423830f9409f0bcd9dee6c9c1a8dd9f9fc2a14f050fca5233",
-    "pipeline.py": "2eee4b7c0b7cad20feedf0dc9585fb25ee84de559945f2113dfa8c737b73cc59",
+    "ocr.py": "4cd8469291f6c429822674b482d3d059fdfaf62c2427bb8a579bddde63ac63b7",
+    "pipeline.py": "9ec7a0cac5cf514354668f4b68498e94dc3ed745a6306716ee5863f177d63409",
+    "presentation.py": "47dbfaeb97ebe5381bcb0fea3fe969839e31fafe96af77d76b49ddb0d86d32e9",
     "processes.py": "cd1872974dea8e827957c80ebe55842f5e5e3625248cc7362a4917e706b46d29",
-    "profiles.py": "2fbd02b8e67050b794e6cef5499cff45af740ee452896d29bdecdeee15e29be3",
-    "providers.py": "c6f4bc8f31c47a516adef0e3c7a391cd9893d669e96fa1360d290b8ef6dd6a65",
+    "profiles.py": "ff1215ba938a8d5e2ffec99e4fcaa56a8961280079466e7e91a3f31eebc91be7",
+    "providers.py": "d2adf93ffe98326653e97af1665f99bccda0b0c168b5c775c5c8cd373c715614",
     "py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "runtime_verification.py": "d6c7435338c70c7f3a2f8dcf34bf53373c1de6870b43568637c364386672eccb",
     "security.py": "ec639a596e52438bea0222d14b1b1ad7b9746cb69bd26bb0c02f1c72570d5c43",
-    "settings.py": "297fc2e7f526773abbce3b72fbd52322805c55a02c2a41724606292c7f7e64a2",
+    "settings.py": "e8bfac9517023eab952155909091d24207d3fa1d73953e5d147dd9ecfef1120c",
     "shortcuts.py": "41a488d142227175c237efbdc7d772c70e674bcfe3f94f0b0f0640294677cff4",
-    "transcript.py": "28afb150ac86e6ceda4e8305ae046fb20c6f73785be9ef849291d7b432f65d64",
+    "temporal.py": "c9932112cf492c30351824659d65197139e5be92892c3fb5aa9dcc8adf0f0204",
+    "transcript.py": "e38502fb06472f0d5af0fc7440db418ae2ab68dbb6e3f615ea0b1f3f5e95b1e9",
     "ui/__init__.py": "fbebd6b205eb3f708c5589233394d8f8be7d24f6b8d486cf920d1691c6228e86",
     "ui/capture_picker.py": "71640a76c0ad223e548b1ef02a31c38187355476831a9a9dfa99b47cf579c0a8",
     "ui/glossary.py": "8871e099d11171d68e9dc88d3870ce54cdf63c5f217001fbe739515071af6134",
     "ui/jobs.py": "01d69b055d80c30004dd010c0f91d4ac54b58b621b576c233bd12ab8cf115a37",
     "ui/layout.py": "f043f52b618aa1a543a02c8f13ac2a4f9d01cb3e60992ca4522a75a609d61d0f",
-    "ui/onboarding.py": "233e4022a404118fdb67df5b4f4c164b6274e8d18b2ab6b9b56037a6b742a209",
+    "ui/onboarding.py": "a99d5b86a363249b444f44ec5b364474822c21b778d105d92e2b22a2142e939e",
     "ui/overlay.py": "d9bd140cb50ad1309af012fc8a58fb37ecaeca046b6e42c84689d3d993e5fb91",
     "ui/overlay_editor.py": "fb894417d70484fd7698fe6e977baf0d914f3466d55104e28291cdafb5186473",
-    "ui/profiles.py": "b1b108d1da6c90aa85f28bf97226280b1daea0381b84dddc9c633c27f64446d2",
+    "ui/profiles.py": "2cdf5e893f05a9ade79be612a6c2287c7908198813e0738933d593307b8abd3c",
     "ui/selection.py": "43643355dd8053846bdea6f4daeeb34b4d62de50ced4024476e62e350309a95b",
     "ui/subtitles.py": "3c1177f52f9a83868c19433800de7b348f7f57e126e0b28d2771955071451ab1",
     "ui/support.py": "b3bc3328b5aea6065d7fc258db0f4c5ae8e8a1832fae3a81e6882fa64909d4dc",
     "ui/theme.py": "c9b25de13901f86ff159e50fc2894c48af518d7e1b2d40b1ea6ad85d70bca97c",
-    "ui/transcript.py": "f7de5d1ecfc60b069891db875a71d1a0d625039db06c50e36acee718a503c848",
-    "ui/window.py": "09aa478abe8ce99831b44d3d13803d1eb8544f7105ea747eea22a5cb1255dce2",
+    "ui/transcript.py": "352aa89ef5ad01577d2c2266a118a3640072312efefbc154d8c1d66a0fbd20f2",
+    "ui/window.py": "26551158de46425cb85a7caacb69312873a4983cb004115e41e883f6c7d39c77",
     "updates.py": "f7f7d3d5c2854f770e2347b3ec548bfe0276d676665be1945f85a43c62bdf3b1",
     "window_capture.py": "6d89abd2fde9edd4e1ddec120d9fa9a03087e4446613ca9bbf522e0a334ebffc"
   },
-  "harness_sha256": "412c5a693abaee1b1d6194957f148f23b18978b41a74d196deecf921c3aafd2d",
+  "harness_sha256": "36ffa766a7e0d81bf3b5f45d600d161b5a34fbe684201edad9146ae4c94888c5",
   "harness_unchanged": true,
-  "accepted": 54,
-  "session_restarts": 16,
-  "injected_http_faults": 27,
-  "http_requests": 81,
+  "accepted": 231,
+  "session_restarts": 50,
+  "injected_http_faults": 114,
+  "http_requests": 335,
   "errors": {
-    "ProviderUnavailableError": 7,
-    "LocalServerUnavailableError": 4,
-    "ProviderTimeoutError": 5
+    "ProviderUnavailableError": 25,
+    "LocalServerUnavailableError": 19,
+    "ProviderTimeoutError": 4
   },
   "counters": {
-    "captures": 5906,
-    "ocr": 359,
-    "translations": 71,
-    "stale": 208,
-    "cache_hits": 0,
-    "ocr_restarts": 6
+    "captures": 9835,
+    "ocr": 1329,
+    "translations": 315,
+    "stale": 269,
+    "cache_hits": 5,
+    "ocr_restarts": 9,
+    "glossary_hits": 0,
+    "temporal_suppressed": 50
   },
   "max_event_queue": 8,
   "latency_ms": {
     "capture_ms": {
-      "count": 54,
-      "p50": 0.227,
-      "p95": 0.396,
-      "p99": 0.501
+      "count": 231,
+      "p50": 1.123,
+      "p95": 1.609,
+      "p99": 2.468
     },
     "change_ms": {
-      "count": 54,
-      "p50": 1.454,
-      "p95": 2.716,
-      "p99": 10.641
+      "count": 231,
+      "p50": 1.262,
+      "p95": 2.085,
+      "p99": 3.165
     },
     "preprocess_ms": {
-      "count": 54,
-      "p50": 0.017,
-      "p95": 0.129,
-      "p99": 0.197
+      "count": 231,
+      "p50": 0.015,
+      "p95": 0.272,
+      "p99": 0.332
+    },
+    "ocr_layout_detect_ms": {
+      "count": 109,
+      "p50": 320.234,
+      "p95": 360.379,
+      "p99": 384.93
+    },
+    "ocr_regional_ms": {
+      "count": 66,
+      "p50": 37.175,
+      "p95": 144.097,
+      "p99": 166.754
+    },
+    "ocr_detect_ms": {
+      "count": 231,
+      "p50": 308.9,
+      "p95": 603.246,
+      "p99": 634.382
+    },
+    "ocr_recognize_ms": {
+      "count": 231,
+      "p50": 80.818,
+      "p95": 246.684,
+      "p99": 282.127
+    },
+    "ocr_reconstruct_ms": {
+      "count": 231,
+      "p50": 0.043,
+      "p95": 0.15,
+      "p99": 0.843
     },
     "ocr_ms": {
-      "count": 54,
-      "p50": 1132.077,
-      "p95": 1338.876,
-      "p99": 1997.03
+      "count": 231,
+      "p50": 699.632,
+      "p95": 962.995,
+      "p99": 1369.011
+    },
+    "ocr_call_ms": {
+      "count": 231,
+      "p50": 701.258,
+      "p95": 2338.963,
+      "p99": 2852.365
+    },
+    "temporal_ms": {
+      "count": 231,
+      "p50": 0.166,
+      "p95": 0.588,
+      "p99": 0.725
+    },
+    "context_ms": {
+      "count": 231,
+      "p50": 0.069,
+      "p95": 0.092,
+      "p99": 0.107
     },
     "queue_ms": {
-      "count": 54,
+      "count": 231,
       "p50": 0.0,
-      "p95": 47.0,
-      "p99": 47.0
+      "p95": 32.0,
+      "p99": 406.0
     },
     "provider_ms": {
-      "count": 54,
-      "p50": 32.0,
-      "p95": 1063.0,
-      "p99": 1079.0
+      "count": 231,
+      "p50": 16.0,
+      "p95": 1031.0,
+      "p99": 1047.0
     },
     "total_ms": {
-      "count": 54,
-      "p50": 1187.0,
-      "p95": 2312.0,
-      "p99": 5219.0
+      "count": 231,
+      "p50": 844.0,
+      "p95": 2360.0,
+      "p99": 2891.0
     },
     "overlay_paint_ms": {
-      "count": 54,
-      "p50": 6.012,
-      "p95": 9.555,
-      "p99": 28.929
+      "count": 231,
+      "p50": 3.537,
+      "p95": 6.096,
+      "p99": 7.624
+    },
+    "ocr_layout_recognize_ms": {
+      "count": 43,
+      "p50": 79.468,
+      "p95": 198.37,
+      "p99": 215.512
     }
   },
   "cancellation_ms": {
-    "count": 68,
-    "median": 46.999999991385266,
-    "p95": 62.000000005355105
+    "count": 112,
+    "median": 15.99999999962165,
+    "p95": 31.9999999992433
   },
   "samples": [
     {
       "elapsed_s": 0.0,
       "phase": "static",
       "main": {
-        "rss_bytes": 71630848,
-        "private_bytes": 46358528,
-        "peak_rss_bytes": 71630848,
-        "handles": 340,
-        "cpu_seconds": 0.890625,
+        "rss_bytes": 72044544,
+        "private_bytes": 49737728,
+        "peak_rss_bytes": 72044544,
+        "handles": 301,
+        "cpu_seconds": 0.515625,
         "native_threads": 8,
-        "tcp_connections": 3
+        "tcp_connections": 1
       },
       "workers": [],
       "subprocesses": 0,
       "python_threads": 5,
-      "python_heap_bytes": 3046,
-      "python_peak_bytes": 3889,
+      "python_heap_bytes": 3566,
+      "python_peak_bytes": 4374,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 1,
+      "event_queue": 0,
       "cache_entries": 0,
       "context_pairs": 0,
       "counters": {
-        "captures": 3,
-        "ocr": 1,
+        "captures": 1,
+        "ocr": 0,
         "translations": 0,
         "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
@@ -190,30 +252,30 @@
       "elapsed_s": 30.0,
       "phase": "static",
       "main": {
-        "rss_bytes": 90083328,
-        "private_bytes": 60604416,
-        "peak_rss_bytes": 90959872,
-        "handles": 370,
-        "cpu_seconds": 2.75,
-        "native_threads": 11,
+        "rss_bytes": 92635136,
+        "private_bytes": 66281472,
+        "peak_rss_bytes": 92635136,
+        "handles": 330,
+        "cpu_seconds": 0.890625,
+        "native_threads": 9,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 3176,
-          "rss_bytes": 196952064,
-          "private_bytes": 531820544,
-          "peak_rss_bytes": 466653184,
-          "handles": 457,
-          "cpu_seconds": 6.6875,
-          "native_threads": 33,
+          "pid": 2228,
+          "rss_bytes": 205058048,
+          "private_bytes": 276189184,
+          "peak_rss_bytes": 411709440,
+          "handles": 420,
+          "cpu_seconds": 4.09375,
+          "native_threads": 18,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 3791777,
-      "python_peak_bytes": 3800727,
+      "python_heap_bytes": 4000187,
+      "python_peak_bytes": 4006521,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
@@ -225,7 +287,9 @@
         "translations": 1,
         "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
@@ -233,42 +297,44 @@
       "elapsed_s": 60.0,
       "phase": "static",
       "main": {
-        "rss_bytes": 90480640,
-        "private_bytes": 60911616,
-        "peak_rss_bytes": 91336704,
-        "handles": 370,
-        "cpu_seconds": 3.984375,
-        "native_threads": 8,
+        "rss_bytes": 92610560,
+        "private_bytes": 66166784,
+        "peak_rss_bytes": 92839936,
+        "handles": 330,
+        "cpu_seconds": 0.90625,
+        "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 3176,
-          "rss_bytes": 196952064,
-          "private_bytes": 531820544,
-          "peak_rss_bytes": 466653184,
-          "handles": 457,
-          "cpu_seconds": 6.6875,
-          "native_threads": 33,
+          "pid": 2228,
+          "rss_bytes": 205058048,
+          "private_bytes": 276189184,
+          "peak_rss_bytes": 411709440,
+          "handles": 420,
+          "cpu_seconds": 4.09375,
+          "native_threads": 18,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 3785310,
-      "python_peak_bytes": 3814613,
+      "python_heap_bytes": 3987412,
+      "python_peak_bytes": 4019067,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 204,
+        "captures": 206,
         "ocr": 1,
         "translations": 1,
         "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
@@ -276,85 +342,89 @@
       "elapsed_s": 90.0,
       "phase": "active",
       "main": {
-        "rss_bytes": 92131328,
-        "private_bytes": 62468096,
-        "peak_rss_bytes": 93032448,
-        "handles": 370,
-        "cpu_seconds": 5.984375,
+        "rss_bytes": 94756864,
+        "private_bytes": 68046848,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 1.140625,
         "native_threads": 8,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 28844,
-          "rss_bytes": 231833600,
-          "private_bytes": 566935552,
-          "peak_rss_bytes": 723087360,
-          "handles": 463,
-          "cpu_seconds": 25.875,
-          "native_threads": 36,
+          "pid": 4700,
+          "rss_bytes": 205053952,
+          "private_bytes": 275722240,
+          "peak_rss_bytes": 572751872,
+          "handles": 422,
+          "cpu_seconds": 37.96875,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4099990,
-      "python_peak_bytes": 4640643,
+      "python_heap_bytes": 4314703,
+      "python_peak_bytes": 5276339,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 4,
       "context_pairs": 4,
       "counters": {
-        "captures": 387,
-        "ocr": 13,
+        "captures": 385,
+        "ocr": 25,
         "translations": 4,
         "stale": 6,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 120.0,
+      "elapsed_s": 120.01,
       "phase": "active",
       "main": {
-        "rss_bytes": 93995008,
-        "private_bytes": 64278528,
-        "peak_rss_bytes": 93995008,
-        "handles": 371,
-        "cpu_seconds": 7.609375,
+        "rss_bytes": 94363648,
+        "private_bytes": 67518464,
+        "peak_rss_bytes": 95989760,
+        "handles": 332,
+        "cpu_seconds": 1.3125,
         "native_threads": 8,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 28844,
-          "rss_bytes": 465047552,
-          "private_bytes": 969465856,
-          "peak_rss_bytes": 760676352,
-          "handles": 462,
-          "cpu_seconds": 54.328125,
-          "native_threads": 36,
+          "pid": 4700,
+          "rss_bytes": 343482368,
+          "private_bytes": 473620480,
+          "peak_rss_bytes": 573403136,
+          "handles": 421,
+          "cpu_seconds": 78.78125,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4073697,
-      "python_peak_bytes": 4696367,
+      "python_heap_bytes": 4543115,
+      "python_peak_bytes": 5587216,
       "frame_queue": 1,
       "text_queue": 0,
       "event_queue": 0,
-      "cache_entries": 6,
-      "context_pairs": 6,
+      "cache_entries": 8,
+      "context_pairs": 8,
       "counters": {
-        "captures": 564,
-        "ocr": 27,
-        "translations": 6,
-        "stale": 15,
+        "captures": 557,
+        "ocr": 51,
+        "translations": 8,
+        "stale": 9,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 7
       },
       "pending_provider": 0
     },
@@ -362,202 +432,660 @@
       "elapsed_s": 150.0,
       "phase": "active",
       "main": {
-        "rss_bytes": 92934144,
-        "private_bytes": 63512576,
-        "peak_rss_bytes": 94892032,
-        "handles": 368,
-        "cpu_seconds": 9.921875,
-        "native_threads": 6,
+        "rss_bytes": 87011328,
+        "private_bytes": 69427200,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 1.59375,
+        "native_threads": 8,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 8656,
-          "rss_bytes": 194301952,
-          "private_bytes": 528969728,
-          "peak_rss_bytes": 723058688,
-          "handles": 458,
-          "cpu_seconds": 21.828125,
+          "pid": 5556,
+          "rss_bytes": 295116800,
+          "private_bytes": 365735936,
+          "peak_rss_bytes": 529412096,
+          "handles": 419,
+          "cpu_seconds": 9.046875,
           "native_threads": 1,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4307085,
-      "python_peak_bytes": 4847281,
+      "python_heap_bytes": 4341263,
+      "python_peak_bytes": 5632984,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 2,
-      "cache_entries": 9,
-      "context_pairs": 8,
-      "counters": {
-        "captures": 746,
-        "ocr": 39,
-        "translations": 9,
-        "stale": 20,
-        "cache_hits": 0,
-        "ocr_restarts": 1
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 180.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 93065216,
-        "private_bytes": 63737856,
-        "peak_rss_bytes": 95543296,
-        "handles": 369,
-        "cpu_seconds": 12.0,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 20420,
-          "rss_bytes": 203952128,
-          "private_bytes": 539979776,
-          "peak_rss_bytes": 757616640,
-          "handles": 460,
-          "cpu_seconds": 23.0625,
-          "native_threads": 35,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4115369,
-      "python_peak_bytes": 4938235,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 1,
+      "event_queue": 0,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 126,
-        "ocr": 9,
+        "captures": 41,
+        "ocr": 4,
         "translations": 1,
-        "stale": 6,
+        "stale": 2,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 210.02,
+      "elapsed_s": 180.01,
       "phase": "active",
       "main": {
-        "rss_bytes": 94633984,
-        "private_bytes": 64667648,
-        "peak_rss_bytes": 95543296,
-        "handles": 368,
-        "cpu_seconds": 13.453125,
-        "native_threads": 6,
+        "rss_bytes": 76267520,
+        "private_bytes": 69255168,
+        "peak_rss_bytes": 95989760,
+        "handles": 332,
+        "cpu_seconds": 1.78125,
+        "native_threads": 8,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 26736,
-          "rss_bytes": 191614976,
-          "private_bytes": 527003648,
-          "peak_rss_bytes": 757465088,
-          "handles": 461,
-          "cpu_seconds": 19.109375,
-          "native_threads": 35,
+          "pid": 5952,
+          "rss_bytes": 269127680,
+          "private_bytes": 369979392,
+          "peak_rss_bytes": 574152704,
+          "handles": 423,
+          "cpu_seconds": 42.875,
+          "native_threads": 20,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4426054,
-      "python_peak_bytes": 4971153,
+      "python_heap_bytes": 4491359,
+      "python_peak_bytes": 5632984,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 3,
+      "context_pairs": 3,
+      "counters": {
+        "captures": 216,
+        "ocr": 31,
+        "translations": 3,
+        "stale": 6,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 3
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 210.0,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 72785920,
+        "private_bytes": 70029312,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 2.171875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 7180,
+          "rss_bytes": 220372992,
+          "private_bytes": 291487744,
+          "peak_rss_bytes": 544108544,
+          "handles": 421,
+          "cpu_seconds": 19.71875,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4713199,
+      "python_peak_bytes": 5853923,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 121,
+        "ocr": 23,
+        "translations": 8,
+        "stale": 4,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 1
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 240.0,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 70979584,
+        "private_bytes": 70041600,
+        "peak_rss_bytes": 95989760,
+        "handles": 339,
+        "cpu_seconds": 2.59375,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 6888,
+          "rss_bytes": 271204352,
+          "private_bytes": 344784896,
+          "peak_rss_bytes": 544452608,
+          "handles": 420,
+          "cpu_seconds": 23.390625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 4491734,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 0,
+      "text_queue": 1,
+      "event_queue": 0,
+      "cache_entries": 5,
+      "context_pairs": 5,
+      "counters": {
+        "captures": 132,
+        "ocr": 24,
+        "translations": 7,
+        "stale": 3,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 270.0,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 64417792,
+        "private_bytes": 70184960,
+        "peak_rss_bytes": 95989760,
+        "handles": 329,
+        "cpu_seconds": 2.84375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3936,
+          "rss_bytes": 316223488,
+          "private_bytes": 386686976,
+          "peak_rss_bytes": 573382656,
+          "handles": 424,
+          "cpu_seconds": 35.0,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4792431,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 178,
+        "ocr": 24,
+        "translations": 4,
+        "stale": 5,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 1
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 300.0,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 57081856,
+        "private_bytes": 69853184,
+        "peak_rss_bytes": 95989760,
+        "handles": 337,
+        "cpu_seconds": 3.15625,
+        "native_threads": 8,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 1516,
+          "rss_bytes": 319127552,
+          "private_bytes": 449077248,
+          "peak_rss_bytes": 341286912,
+          "handles": 420,
+          "cpu_seconds": 3.578125,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 4879796,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 0,
+      "context_pairs": 0,
+      "counters": {
+        "captures": 18,
+        "ocr": 1,
+        "translations": 0,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 330.0,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 53006336,
+        "private_bytes": 69804032,
+        "peak_rss_bytes": 95989760,
+        "handles": 329,
+        "cpu_seconds": 3.21875,
+        "native_threads": 7,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3372,
+          "rss_bytes": 205611008,
+          "private_bytes": 276140032,
+          "peak_rss_bytes": 411742208,
+          "handles": 417,
+          "cpu_seconds": 4.03125,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4764834,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 1,
+      "context_pairs": 1,
+      "counters": {
+        "captures": 136,
+        "ocr": 6,
+        "translations": 2,
+        "stale": 1,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 360.0,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 71188480,
+        "private_bytes": 69844992,
+        "peak_rss_bytes": 95989760,
+        "handles": 329,
+        "cpu_seconds": 3.265625,
+        "native_threads": 7,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 6936,
+          "rss_bytes": 203280384,
+          "private_bytes": 274300928,
+          "peak_rss_bytes": 409911296,
+          "handles": 420,
+          "cpu_seconds": 4.15625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4495388,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 1,
+      "context_pairs": 1,
+      "counters": {
+        "captures": 244,
+        "ocr": 8,
+        "translations": 2,
+        "stale": 1,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 390.03,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 71258112,
+        "private_bytes": 70070272,
+        "peak_rss_bytes": 95989760,
+        "handles": 329,
+        "cpu_seconds": 3.4375,
+        "native_threads": 7,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3876,
+          "rss_bytes": 295055360,
+          "private_bytes": 365838336,
+          "peak_rss_bytes": 572944384,
+          "handles": 422,
+          "cpu_seconds": 35.015625,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4831425,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 422,
+        "ocr": 30,
+        "translations": 5,
+        "stale": 6,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 420.03,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 71913472,
+        "private_bytes": 71319552,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 3.5625,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3876,
+          "rss_bytes": 316571648,
+          "private_bytes": 387559424,
+          "peak_rss_bytes": 574611456,
+          "handles": 423,
+          "cpu_seconds": 77.828125,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4968931,
+      "python_peak_bytes": 6088511,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 7,
+      "context_pairs": 7,
+      "counters": {
+        "captures": 595,
+        "ocr": 57,
+        "translations": 8,
+        "stale": 10,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 450.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 70451200,
+        "private_bytes": 69660672,
+        "peak_rss_bytes": 95989760,
+        "handles": 329,
+        "cpu_seconds": 3.953125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 6140,
+          "rss_bytes": 250372096,
+          "private_bytes": 321642496,
+          "peak_rss_bytes": 571412480,
+          "handles": 424,
+          "cpu_seconds": 21.40625,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 5048018,
+      "python_peak_bytes": 6088511,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 3,
       "context_pairs": 3,
       "counters": {
-        "captures": 307,
-        "ocr": 19,
-        "translations": 4,
-        "stale": 11,
+        "captures": 101,
+        "ocr": 13,
+        "translations": 3,
+        "stale": 3,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 240.02,
+      "elapsed_s": 480.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 93835264,
-        "private_bytes": 63844352,
-        "peak_rss_bytes": 96002048,
-        "handles": 369,
-        "cpu_seconds": 15.140625,
+        "rss_bytes": 70623232,
+        "private_bytes": 69824512,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 4.0625,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 9016,
-          "rss_bytes": 195629056,
-          "private_bytes": 530153472,
-          "peak_rss_bytes": 723607552,
-          "handles": 459,
-          "cpu_seconds": 23.140625,
-          "native_threads": 34,
+          "pid": 6140,
+          "rss_bytes": 494546944,
+          "private_bytes": 591020032,
+          "peak_rss_bytes": 573763584,
+          "handles": 423,
+          "cpu_seconds": 66.15625,
+          "native_threads": 20,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4245524,
-      "python_peak_bytes": 5147511,
+      "python_heap_bytes": 5032530,
+      "python_peak_bytes": 6185701,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 273,
+        "ocr": 40,
+        "translations": 6,
+        "stale": 8,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 4
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 510.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 70606848,
+        "private_bytes": 71606272,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 4.453125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 6584,
+          "rss_bytes": 226779136,
+          "private_bytes": 297504768,
+          "peak_rss_bytes": 502419456,
+          "handles": 0,
+          "cpu_seconds": 8.796875,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 4939740,
+      "python_peak_bytes": 6310231,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 1,
+      "event_queue": 0,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 127,
-        "ocr": 9,
+        "captures": 39,
+        "ocr": 4,
         "translations": 1,
-        "stale": 6,
+        "stale": 2,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 270.02,
+      "elapsed_s": 540.03,
       "phase": "active",
       "main": {
-        "rss_bytes": 94089216,
-        "private_bytes": 64331776,
-        "peak_rss_bytes": 96002048,
-        "handles": 369,
-        "cpu_seconds": 16.9375,
+        "rss_bytes": 69902336,
+        "private_bytes": 71344128,
+        "peak_rss_bytes": 95989760,
+        "handles": 340,
+        "cpu_seconds": 4.78125,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 552,
+          "rss_bytes": 381923328,
+          "private_bytes": 513228800,
+          "peak_rss_bytes": 521191424,
+          "handles": 418,
+          "cpu_seconds": 10.796875,
+          "native_threads": 17,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 5191217,
+      "python_peak_bytes": 6338800,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 50,
+        "ocr": 11,
+        "translations": 7,
+        "stale": 1,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 570.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 69992448,
+        "private_bytes": 72933376,
+        "peak_rss_bytes": 95989760,
+        "handles": 353,
+        "cpu_seconds": 5.078125,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 4492,
-          "rss_bytes": 52662272,
-          "private_bytes": 36233216,
-          "peak_rss_bytes": 52662272,
-          "handles": 217,
-          "cpu_seconds": 0.78125,
-          "native_threads": 4,
+          "pid": 1084,
+          "rss_bytes": 194514944,
+          "private_bytes": 272875520,
+          "peak_rss_bytes": 215846912,
+          "handles": 418,
+          "cpu_seconds": 1.6875,
+          "native_threads": 17,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4492430,
-      "python_peak_bytes": 5148275,
+      "python_heap_bytes": 5080639,
+      "python_peak_bytes": 6409178,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
@@ -569,694 +1097,324 @@
         "translations": 0,
         "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 300.0,
+      "elapsed_s": 600.02,
       "phase": "static",
       "main": {
-        "rss_bytes": 95932416,
-        "private_bytes": 65785856,
-        "peak_rss_bytes": 96808960,
-        "handles": 369,
-        "cpu_seconds": 18.8125,
+        "rss_bytes": 60702720,
+        "private_bytes": 70889472,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 5.3125,
         "native_threads": 7,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 4492,
-          "rss_bytes": 351571968,
-          "private_bytes": 857505792,
-          "peak_rss_bytes": 758235136,
-          "handles": 460,
-          "cpu_seconds": 35.859375,
-          "native_threads": 35,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4542067,
-      "python_peak_bytes": 5210929,
-      "frame_queue": 1,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 2,
-      "context_pairs": 2,
-      "counters": {
-        "captures": 191,
-        "ocr": 14,
-        "translations": 2,
-        "stale": 9,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 330.0,
-      "phase": "static",
-      "main": {
-        "rss_bytes": 95952896,
-        "private_bytes": 65785856,
-        "peak_rss_bytes": 96817152,
-        "handles": 361,
-        "cpu_seconds": 20.109375,
-        "native_threads": 7,
-        "tcp_connections": 3
-      },
-      "workers": [],
-      "subprocesses": 0,
-      "python_threads": 5,
-      "python_heap_bytes": 4455642,
-      "python_peak_bytes": 5257843,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 305,
-        "ocr": 16,
-        "translations": 3,
-        "stale": 10,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 360.0,
-      "phase": "static",
-      "main": {
-        "rss_bytes": 95965184,
-        "private_bytes": 65785856,
-        "peak_rss_bytes": 96829440,
-        "handles": 361,
-        "cpu_seconds": 21.21875,
-        "native_threads": 7,
-        "tcp_connections": 3
-      },
-      "workers": [],
-      "subprocesses": 0,
-      "python_threads": 5,
-      "python_heap_bytes": 4514328,
-      "python_peak_bytes": 5257843,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 401,
-        "ocr": 16,
-        "translations": 3,
-        "stale": 10,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 390.02,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 96276480,
-        "private_bytes": 66129920,
-        "peak_rss_bytes": 97157120,
-        "handles": 368,
-        "cpu_seconds": 22.984375,
-        "native_threads": 7,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 14400,
-          "rss_bytes": 268242944,
-          "private_bytes": 603119616,
-          "peak_rss_bytes": 651960320,
-          "handles": 467,
-          "cpu_seconds": 12.890625,
-          "native_threads": 38,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4605836,
-      "python_peak_bytes": 5257843,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 1,
-      "context_pairs": 1,
-      "counters": {
-        "captures": 79,
-        "ocr": 4,
-        "translations": 1,
-        "stale": 2,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 420.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 96350208,
-        "private_bytes": 66109440,
-        "peak_rss_bytes": 97226752,
-        "handles": 369,
-        "cpu_seconds": 24.578125,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 14400,
-          "rss_bytes": 422547456,
-          "private_bytes": 763777024,
-          "peak_rss_bytes": 760815616,
-          "handles": 466,
-          "cpu_seconds": 45.09375,
-          "native_threads": 38,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4803984,
-      "python_peak_bytes": 5428432,
-      "frame_queue": 1,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 257,
-        "ocr": 19,
-        "translations": 3,
-        "stale": 12,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 450.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 95682560,
-        "private_bytes": 65425408,
-        "peak_rss_bytes": 97234944,
-        "handles": 369,
-        "cpu_seconds": 26.328125,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 30908,
-          "rss_bytes": 113926144,
-          "private_bytes": 456204288,
-          "peak_rss_bytes": 113926144,
+          "pid": 2336,
+          "rss_bytes": 270430208,
+          "private_bytes": 341696512,
+          "peak_rss_bytes": 573878272,
           "handles": 420,
-          "cpu_seconds": 1.9375,
+          "cpu_seconds": 17.859375,
           "native_threads": 18,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4880879,
-      "python_peak_bytes": 5428432,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 0,
-      "context_pairs": 0,
-      "counters": {
-        "captures": 19,
-        "ocr": 1,
-        "translations": 0,
-        "stale": 0,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 480.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 97411072,
-        "private_bytes": 67039232,
-        "peak_rss_bytes": 98291712,
-        "handles": 369,
-        "cpu_seconds": 27.921875,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 31112,
-          "rss_bytes": 232652800,
-          "private_bytes": 567590912,
-          "peak_rss_bytes": 725118976,
-          "handles": 461,
-          "cpu_seconds": 26.0625,
-          "native_threads": 35,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4750553,
-      "python_peak_bytes": 5480778,
+      "python_heap_bytes": 5170047,
+      "python_peak_bytes": 6604789,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 1,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 126,
-        "ocr": 10,
-        "translations": 1,
-        "stale": 8,
+        "captures": 79,
+        "ocr": 11,
+        "translations": 2,
+        "stale": 2,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 510.0,
-      "phase": "active",
+      "elapsed_s": 630.03,
+      "phase": "static",
       "main": {
-        "rss_bytes": 96010240,
-        "private_bytes": 65683456,
-        "peak_rss_bytes": 98291712,
-        "handles": 373,
-        "cpu_seconds": 29.46875,
+        "rss_bytes": 54714368,
+        "private_bytes": 72527872,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 5.375,
         "native_threads": 7,
-        "tcp_connections": 5
-      },
-      "workers": [
-        {
-          "pid": 6168,
-          "rss_bytes": 31293440,
-          "private_bytes": 21618688,
-          "peak_rss_bytes": 31870976,
-          "handles": 166,
-          "cpu_seconds": 0.40625,
-          "native_threads": 0,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 6,
-      "python_heap_bytes": 4507280,
-      "python_peak_bytes": 5558547,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 2,
-      "cache_entries": 0,
-      "context_pairs": 0,
-      "counters": {
-        "captures": 7,
-        "ocr": 2,
-        "translations": 0,
-        "stale": 0,
-        "cache_hits": 0,
-        "ocr_restarts": 1
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 540.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 97185792,
-        "private_bytes": 66945024,
-        "peak_rss_bytes": 98291712,
-        "handles": 369,
-        "cpu_seconds": 31.515625,
-        "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 14084,
-          "rss_bytes": 402026496,
-          "private_bytes": 856125440,
-          "peak_rss_bytes": 757293056,
-          "handles": 458,
-          "cpu_seconds": 35.34375,
-          "native_threads": 34,
+          "pid": 1500,
+          "rss_bytes": 204058624,
+          "private_bytes": 275255296,
+          "peak_rss_bytes": 410517504,
+          "handles": 422,
+          "cpu_seconds": 4.0625,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4695484,
-      "python_peak_bytes": 5558547,
-      "frame_queue": 1,
+      "python_heap_bytes": 5061015,
+      "python_peak_bytes": 6604789,
+      "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 2,
       "context_pairs": 2,
       "counters": {
-        "captures": 187,
+        "captures": 196,
         "ocr": 15,
-        "translations": 2,
-        "stale": 9,
-        "cache_hits": 0,
-        "ocr_restarts": 1
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 570.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 96915456,
-        "private_bytes": 66723840,
-        "peak_rss_bytes": 98291712,
-        "handles": 368,
-        "cpu_seconds": 33.34375,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 6716,
-          "rss_bytes": 340504576,
-          "private_bytes": 675377152,
-          "peak_rss_bytes": 723587072,
-          "handles": 459,
-          "cpu_seconds": 16.96875,
-          "native_threads": 34,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4935373,
-      "python_peak_bytes": 5558547,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 1,
-      "context_pairs": 1,
-      "counters": {
-        "captures": 90,
-        "ocr": 6,
-        "translations": 1,
-        "stale": 4,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 600.0,
-      "phase": "static",
-      "main": {
-        "rss_bytes": 97198080,
-        "private_bytes": 67072000,
-        "peak_rss_bytes": 98291712,
-        "handles": 369,
-        "cpu_seconds": 34.734375,
-        "native_threads": 8,
-        "tcp_connections": 3
-      },
-      "workers": [
-        {
-          "pid": 6716,
-          "rss_bytes": 562380800,
-          "private_bytes": 898777088,
-          "peak_rss_bytes": 760668160,
-          "handles": 462,
-          "cpu_seconds": 47.9375,
-          "native_threads": 36,
-          "tcp_connections": 0
-        }
-      ],
-      "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4839557,
-      "python_peak_bytes": 5558547,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 1,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 268,
-        "ocr": 22,
         "translations": 3,
-        "stale": 16,
+        "stale": 3,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 630.02,
+      "elapsed_s": 660.03,
       "phase": "static",
       "main": {
-        "rss_bytes": 97837056,
-        "private_bytes": 67710976,
-        "peak_rss_bytes": 98291712,
-        "handles": 361,
-        "cpu_seconds": 35.75,
-        "native_threads": 8,
+        "rss_bytes": 52301824,
+        "private_bytes": 72527872,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 5.421875,
+        "native_threads": 7,
         "tcp_connections": 3
       },
-      "workers": [],
-      "subprocesses": 0,
+      "workers": [
+        {
+          "pid": 1500,
+          "rss_bytes": 204058624,
+          "private_bytes": 275255296,
+          "peak_rss_bytes": 410517504,
+          "handles": 422,
+          "cpu_seconds": 4.0625,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4772604,
-      "python_peak_bytes": 5558547,
+      "python_heap_bytes": 5150923,
+      "python_peak_bytes": 6604789,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
-      "cache_entries": 4,
-      "context_pairs": 4,
+      "cache_entries": 2,
+      "context_pairs": 2,
       "counters": {
-        "captures": 383,
-        "ocr": 23,
-        "translations": 4,
-        "stale": 16,
+        "captures": 293,
+        "ocr": 15,
+        "translations": 3,
+        "stale": 3,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 660.0,
-      "phase": "static",
-      "main": {
-        "rss_bytes": 97841152,
-        "private_bytes": 67710976,
-        "peak_rss_bytes": 98709504,
-        "handles": 361,
-        "cpu_seconds": 36.59375,
-        "native_threads": 8,
-        "tcp_connections": 3
-      },
-      "workers": [],
-      "subprocesses": 0,
-      "python_threads": 5,
-      "python_heap_bytes": 4824915,
-      "python_peak_bytes": 5558547,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 4,
-      "context_pairs": 4,
-      "counters": {
-        "captures": 479,
-        "ocr": 23,
-        "translations": 4,
-        "stale": 16,
-        "cache_hits": 0,
-        "ocr_restarts": 0
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 690.0,
+      "elapsed_s": 690.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 96497664,
-        "private_bytes": 66408448,
-        "peak_rss_bytes": 98713600,
-        "handles": 361,
-        "cpu_seconds": 38.15625,
+        "rss_bytes": 51531776,
+        "private_bytes": 72552448,
+        "peak_rss_bytes": 95989760,
+        "handles": 349,
+        "cpu_seconds": 5.671875,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 27412,
-          "rss_bytes": 112332800,
-          "private_bytes": 455249920,
-          "peak_rss_bytes": 112365568,
-          "handles": 422,
-          "cpu_seconds": 1.890625,
+          "pid": 6764,
+          "rss_bytes": 174559232,
+          "private_bytes": 245174272,
+          "peak_rss_bytes": 406720512,
+          "handles": 416,
+          "cpu_seconds": 3.828125,
           "native_threads": 1,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 4798153,
-      "python_peak_bytes": 5607497,
+      "python_heap_bytes": 5425356,
+      "python_peak_bytes": 6604789,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 2,
-      "cache_entries": 0,
-      "context_pairs": 0,
+      "event_queue": 0,
+      "cache_entries": 1,
+      "context_pairs": 1,
       "counters": {
-        "captures": 19,
+        "captures": 34,
         "ocr": 2,
-        "translations": 0,
-        "stale": 0,
+        "translations": 1,
+        "stale": 1,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 720.0,
+      "elapsed_s": 720.03,
       "phase": "active",
       "main": {
-        "rss_bytes": 97775616,
-        "private_bytes": 67461120,
-        "peak_rss_bytes": 98713600,
-        "handles": 368,
-        "cpu_seconds": 39.75,
-        "native_threads": 6,
-        "tcp_connections": 3
+        "rss_bytes": 52948992,
+        "private_bytes": 72818688,
+        "peak_rss_bytes": 95989760,
+        "handles": 357,
+        "cpu_seconds": 6.03125,
+        "native_threads": 7,
+        "tcp_connections": 5
       },
       "workers": [
         {
-          "pid": 2468,
-          "rss_bytes": 169418752,
-          "private_bytes": 504213504,
-          "peak_rss_bytes": 723496960,
-          "handles": 458,
-          "cpu_seconds": 21.140625,
-          "native_threads": 34,
+          "pid": 1244,
+          "rss_bytes": 467533824,
+          "private_bytes": 538804224,
+          "peak_rss_bytes": 544821248,
+          "handles": 422,
+          "cpu_seconds": 23.671875,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 4959276,
-      "python_peak_bytes": 5607497,
+      "python_threads": 6,
+      "python_heap_bytes": 5875334,
+      "python_peak_bytes": 6972196,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 1,
-      "cache_entries": 1,
-      "context_pairs": 1,
+      "event_queue": 0,
+      "cache_entries": 7,
+      "context_pairs": 7,
       "counters": {
-        "captures": 115,
-        "ocr": 8,
-        "translations": 1,
-        "stale": 5,
+        "captures": 116,
+        "ocr": 24,
+        "translations": 9,
+        "stale": 4,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
-      "pending_provider": 0
+      "pending_provider": 1
     },
     {
-      "elapsed_s": 750.0,
+      "elapsed_s": 750.03,
       "phase": "active",
       "main": {
-        "rss_bytes": 97792000,
-        "private_bytes": 67338240,
-        "peak_rss_bytes": 98713600,
-        "handles": 368,
-        "cpu_seconds": 41.546875,
+        "rss_bytes": 53334016,
+        "private_bytes": 73293824,
+        "peak_rss_bytes": 95989760,
+        "handles": 371,
+        "cpu_seconds": 6.328125,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 9492,
-          "rss_bytes": 301490176,
-          "private_bytes": 636776448,
-          "peak_rss_bytes": 683995136,
-          "handles": 461,
-          "cpu_seconds": 15.859375,
-          "native_threads": 35,
+          "pid": 1504,
+          "rss_bytes": 172613632,
+          "private_bytes": 243048448,
+          "peak_rss_bytes": 404574208,
+          "handles": 419,
+          "cpu_seconds": 4.046875,
+          "native_threads": 17,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5012698,
-      "python_peak_bytes": 5731996,
+      "python_heap_bytes": 5765529,
+      "python_peak_bytes": 7003300,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 89,
-        "ocr": 5,
+        "captures": 29,
+        "ocr": 2,
         "translations": 1,
-        "stale": 3,
+        "stale": 1,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 780.0,
+      "elapsed_s": 780.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 98516992,
-        "private_bytes": 68014080,
-        "peak_rss_bytes": 99389440,
-        "handles": 370,
-        "cpu_seconds": 43.34375,
+        "rss_bytes": 52043776,
+        "private_bytes": 71884800,
+        "peak_rss_bytes": 95989760,
+        "handles": 333,
+        "cpu_seconds": 6.640625,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 9492,
-          "rss_bytes": 436666368,
-          "private_bytes": 824446976,
-          "peak_rss_bytes": 757977088,
-          "handles": 462,
-          "cpu_seconds": 48.515625,
-          "native_threads": 36,
+          "pid": 1504,
+          "rss_bytes": 390791168,
+          "private_bytes": 469204992,
+          "peak_rss_bytes": 545337344,
+          "handles": 420,
+          "cpu_seconds": 35.515625,
+          "native_threads": 18,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5069306,
-      "python_peak_bytes": 5820751,
-      "frame_queue": 1,
+      "python_heap_bytes": 5976420,
+      "python_peak_bytes": 7023103,
+      "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
+      "cache_entries": 12,
+      "context_pairs": 8,
       "counters": {
-        "captures": 267,
-        "ocr": 20,
-        "translations": 3,
-        "stale": 13,
-        "cache_hits": 0,
-        "ocr_restarts": 0
+        "captures": 202,
+        "ocr": 40,
+        "translations": 14,
+        "stale": 4,
+        "cache_hits": 1,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
@@ -1264,85 +1422,89 @@
       "elapsed_s": 810.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 97894400,
-        "private_bytes": 67350528,
-        "peak_rss_bytes": 99393536,
-        "handles": 369,
-        "cpu_seconds": 45.234375,
+        "rss_bytes": 53297152,
+        "private_bytes": 73379840,
+        "peak_rss_bytes": 95989760,
+        "handles": 332,
+        "cpu_seconds": 6.859375,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 24744,
-          "rss_bytes": 229588992,
-          "private_bytes": 566022144,
-          "peak_rss_bytes": 757444608,
-          "handles": 459,
-          "cpu_seconds": 25.15625,
-          "native_threads": 34,
+          "pid": 3352,
+          "rss_bytes": 172998656,
+          "private_bytes": 243716096,
+          "peak_rss_bytes": 522440704,
+          "handles": 423,
+          "cpu_seconds": 19.203125,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5119291,
-      "python_peak_bytes": 5883588,
+      "python_heap_bytes": 5486199,
+      "python_peak_bytes": 7023103,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
-      "cache_entries": 6,
-      "context_pairs": 6,
+      "cache_entries": 5,
+      "context_pairs": 5,
       "counters": {
-        "captures": 448,
-        "ocr": 32,
+        "captures": 124,
+        "ocr": 20,
         "translations": 6,
-        "stale": 20,
+        "stale": 2,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 840.0,
+      "elapsed_s": 840.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 98521088,
-        "private_bytes": 68153344,
-        "peak_rss_bytes": 99393536,
-        "handles": 370,
-        "cpu_seconds": 47.1875,
+        "rss_bytes": 53788672,
+        "private_bytes": 74625024,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 7.3125,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 10960,
-          "rss_bytes": 525369344,
-          "private_bytes": 860721152,
-          "peak_rss_bytes": 525369344,
-          "handles": 456,
-          "cpu_seconds": 8.703125,
-          "native_threads": 33,
+          "pid": 5824,
+          "rss_bytes": 197832704,
+          "private_bytes": 268591104,
+          "peak_rss_bytes": 432103424,
+          "handles": 419,
+          "cpu_seconds": 4.953125,
+          "native_threads": 17,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5191151,
-      "python_peak_bytes": 5883588,
-      "frame_queue": 1,
+      "python_heap_bytes": 5463719,
+      "python_peak_bytes": 7023103,
+      "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
-      "cache_entries": 0,
-      "context_pairs": 0,
+      "cache_entries": 3,
+      "context_pairs": 3,
       "counters": {
-        "captures": 45,
-        "ocr": 2,
-        "translations": 0,
-        "stale": 1,
+        "captures": 24,
+        "ocr": 3,
+        "translations": 3,
+        "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 0
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
@@ -1350,85 +1512,89 @@
       "elapsed_s": 870.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 97759232,
-        "private_bytes": 67366912,
-        "peak_rss_bytes": 99397632,
-        "handles": 370,
-        "cpu_seconds": 49.40625,
-        "native_threads": 7,
+        "rss_bytes": 54087680,
+        "private_bytes": 74256384,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 7.5625,
+        "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 14508,
-          "rss_bytes": 111194112,
-          "private_bytes": 453406720,
-          "peak_rss_bytes": 111222784,
-          "handles": 422,
-          "cpu_seconds": 1.890625,
+          "pid": 3972,
+          "rss_bytes": 273559552,
+          "private_bytes": 344207360,
+          "peak_rss_bytes": 572891136,
+          "handles": 0,
+          "cpu_seconds": 28.375,
           "native_threads": 1,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5095271,
-      "python_peak_bytes": 5904986,
+      "python_heap_bytes": 5693458,
+      "python_peak_bytes": 7023103,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 2,
-      "cache_entries": 0,
-      "context_pairs": 0,
+      "event_queue": 0,
+      "cache_entries": 2,
+      "context_pairs": 2,
       "counters": {
-        "captures": 19,
-        "ocr": 2,
-        "translations": 0,
-        "stale": 0,
+        "captures": 119,
+        "ocr": 16,
+        "translations": 2,
+        "stale": 6,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 900.0,
-      "phase": "static",
+      "elapsed_s": 900.02,
+      "phase": "active",
       "main": {
-        "rss_bytes": 99454976,
-        "private_bytes": 68919296,
-        "peak_rss_bytes": 100315136,
-        "handles": 370,
-        "cpu_seconds": 50.9375,
-        "native_threads": 7,
+        "rss_bytes": 53166080,
+        "private_bytes": 73433088,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 7.765625,
+        "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 18784,
-          "rss_bytes": 304398336,
-          "private_bytes": 639680512,
-          "peak_rss_bytes": 723722240,
-          "handles": 459,
-          "cpu_seconds": 30.1875,
-          "native_threads": 34,
+          "pid": 7040,
+          "rss_bytes": 436613120,
+          "private_bytes": 530284544,
+          "peak_rss_bytes": 574595072,
+          "handles": 421,
+          "cpu_seconds": 42.546875,
+          "native_threads": 19,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5382399,
-      "python_peak_bytes": 6042091,
-      "frame_queue": 0,
+      "python_heap_bytes": 5751336,
+      "python_peak_bytes": 7023103,
+      "frame_queue": 1,
       "text_queue": 0,
-      "event_queue": 1,
-      "cache_entries": 2,
-      "context_pairs": 2,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
       "counters": {
-        "captures": 197,
-        "ocr": 13,
-        "translations": 2,
-        "stale": 7,
+        "captures": 293,
+        "ocr": 42,
+        "translations": 4,
+        "stale": 11,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
@@ -1436,106 +1602,134 @@
       "elapsed_s": 930.02,
       "phase": "static",
       "main": {
-        "rss_bytes": 99479552,
-        "private_bytes": 68919296,
-        "peak_rss_bytes": 100327424,
-        "handles": 362,
-        "cpu_seconds": 52.109375,
-        "native_threads": 7,
-        "tcp_connections": 3
-      },
-      "workers": [],
-      "subprocesses": 0,
-      "python_threads": 5,
-      "python_heap_bytes": 5217665,
-      "python_peak_bytes": 6042091,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 312,
-        "ocr": 14,
-        "translations": 3,
-        "stale": 7,
-        "cache_hits": 0,
-        "ocr_restarts": 1
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 960.0,
-      "phase": "static",
-      "main": {
-        "rss_bytes": 99467264,
-        "private_bytes": 68890624,
-        "peak_rss_bytes": 100331520,
-        "handles": 362,
-        "cpu_seconds": 53.046875,
-        "native_threads": 6,
-        "tcp_connections": 3
-      },
-      "workers": [],
-      "subprocesses": 0,
-      "python_threads": 5,
-      "python_heap_bytes": 5272609,
-      "python_peak_bytes": 6042091,
-      "frame_queue": 0,
-      "text_queue": 0,
-      "event_queue": 0,
-      "cache_entries": 3,
-      "context_pairs": 3,
-      "counters": {
-        "captures": 410,
-        "ocr": 14,
-        "translations": 3,
-        "stale": 7,
-        "cache_hits": 0,
-        "ocr_restarts": 1
-      },
-      "pending_provider": 0
-    },
-    {
-      "elapsed_s": 990.0,
-      "phase": "active",
-      "main": {
-        "rss_bytes": 99618816,
-        "private_bytes": 68972544,
-        "peak_rss_bytes": 100478976,
-        "handles": 369,
-        "cpu_seconds": 54.46875,
+        "rss_bytes": 53178368,
+        "private_bytes": 73539584,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 7.84375,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 4392,
-          "rss_bytes": 268460032,
-          "private_bytes": 603459584,
-          "peak_rss_bytes": 759951360,
-          "handles": 461,
-          "cpu_seconds": 27.203125,
-          "native_threads": 35,
+          "pid": 7984,
+          "rss_bytes": 205414400,
+          "private_bytes": 276856832,
+          "peak_rss_bytes": 411258880,
+          "handles": 420,
+          "cpu_seconds": 4.140625,
+          "native_threads": 18,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5402396,
-      "python_peak_bytes": 6042091,
+      "python_heap_bytes": 5640487,
+      "python_peak_bytes": 7023103,
       "frame_queue": 0,
       "text_queue": 0,
       "event_queue": 0,
       "cache_entries": 5,
       "context_pairs": 5,
       "counters": {
-        "captures": 593,
-        "ocr": 25,
+        "captures": 410,
+        "ocr": 47,
         "translations": 5,
-        "stale": 13,
+        "stale": 12,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 960.02,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 52715520,
+        "private_bytes": 73596928,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 7.875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 7984,
+          "rss_bytes": 205414400,
+          "private_bytes": 276856832,
+          "peak_rss_bytes": 411258880,
+          "handles": 420,
+          "cpu_seconds": 4.140625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 5725489,
+      "python_peak_bytes": 7023103,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 5,
+      "context_pairs": 5,
+      "counters": {
+        "captures": 508,
+        "ocr": 47,
+        "translations": 5,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 990.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52338688,
+        "private_bytes": 73199616,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 8.234375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 4252,
+          "rss_bytes": 230014976,
+          "private_bytes": 301342720,
+          "peak_rss_bytes": 573956096,
+          "handles": 424,
+          "cpu_seconds": 27.078125,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6049049,
+      "python_peak_bytes": 7117284,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 117,
+        "ocr": 16,
+        "translations": 4,
+        "stale": 5,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
       },
       "pending_provider": 0
     },
@@ -1543,85 +1737,1158 @@
       "elapsed_s": 1020.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 99663872,
-        "private_bytes": 68993024,
-        "peak_rss_bytes": 100519936,
-        "handles": 370,
-        "cpu_seconds": 56.59375,
-        "native_threads": 6,
-        "tcp_connections": 3
+        "rss_bytes": 52334592,
+        "private_bytes": 72957952,
+        "peak_rss_bytes": 95989760,
+        "handles": 338,
+        "cpu_seconds": 8.390625,
+        "native_threads": 7,
+        "tcp_connections": 5
       },
       "workers": [
         {
-          "pid": 4392,
-          "rss_bytes": 378777600,
-          "private_bytes": 713854976,
-          "peak_rss_bytes": 761831424,
-          "handles": 461,
-          "cpu_seconds": 59.140625,
-          "native_threads": 35,
+          "pid": 1756,
+          "rss_bytes": 112545792,
+          "private_bytes": 190222336,
+          "peak_rss_bytes": 112545792,
+          "handles": 395,
+          "cpu_seconds": 1.0625,
+          "native_threads": 10,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
-      "python_threads": 5,
-      "python_heap_bytes": 5448756,
-      "python_peak_bytes": 6123198,
-      "frame_queue": 0,
+      "python_threads": 6,
+      "python_heap_bytes": 5904149,
+      "python_peak_bytes": 7117284,
+      "frame_queue": 1,
       "text_queue": 0,
-      "event_queue": 1,
-      "cache_entries": 7,
-      "context_pairs": 7,
+      "event_queue": 0,
+      "cache_entries": 0,
+      "context_pairs": 0,
       "counters": {
-        "captures": 770,
-        "ocr": 41,
-        "translations": 7,
-        "stale": 25,
+        "captures": 9,
+        "ocr": 1,
+        "translations": 0,
+        "stale": 0,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     },
     {
-      "elapsed_s": 1050.0,
+      "elapsed_s": 1050.02,
       "phase": "active",
       "main": {
-        "rss_bytes": 99512320,
-        "private_bytes": 69894144,
-        "peak_rss_bytes": 100532224,
-        "handles": 369,
-        "cpu_seconds": 58.28125,
+        "rss_bytes": 53698560,
+        "private_bytes": 74272768,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 8.6875,
         "native_threads": 6,
         "tcp_connections": 3
       },
       "workers": [
         {
-          "pid": 29536,
-          "rss_bytes": 267132928,
-          "private_bytes": 601772032,
-          "peak_rss_bytes": 650203136,
-          "handles": 456,
-          "cpu_seconds": 13.6875,
+          "pid": 4748,
+          "rss_bytes": 271364096,
+          "private_bytes": 341979136,
+          "peak_rss_bytes": 574263296,
+          "handles": 419,
+          "cpu_seconds": 28.828125,
           "native_threads": 1,
           "tcp_connections": 0
         }
       ],
       "subprocesses": 1,
       "python_threads": 5,
-      "python_heap_bytes": 5341546,
-      "python_peak_bytes": 6163456,
+      "python_heap_bytes": 5852245,
+      "python_peak_bytes": 7319882,
       "frame_queue": 0,
       "text_queue": 0,
-      "event_queue": 2,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 128,
+        "ocr": 16,
+        "translations": 4,
+        "stale": 4,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1080.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52875264,
+        "private_bytes": 73625600,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 9.03125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 1272,
+          "rss_bytes": 456605696,
+          "private_bytes": 532631552,
+          "peak_rss_bytes": 574705664,
+          "handles": 421,
+          "cpu_seconds": 16.59375,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6176581,
+      "python_peak_bytes": 7319882,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
       "cache_entries": 1,
       "context_pairs": 1,
       "counters": {
-        "captures": 80,
-        "ocr": 5,
+        "captures": 73,
+        "ocr": 9,
         "translations": 1,
         "stale": 2,
         "cache_hits": 0,
-        "ocr_restarts": 1
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1110.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 53039104,
+        "private_bytes": 74043392,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 9.1875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 7256,
+          "rss_bytes": 180543488,
+          "private_bytes": 252915712,
+          "peak_rss_bytes": 574857216,
+          "handles": 422,
+          "cpu_seconds": 36.75,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6134956,
+      "python_peak_bytes": 7319882,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 252,
+        "ocr": 35,
+        "translations": 4,
+        "stale": 10,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 1
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1140.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52334592,
+        "private_bytes": 72929280,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 9.53125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 2104,
+          "rss_bytes": 249122816,
+          "private_bytes": 319590400,
+          "peak_rss_bytes": 483401728,
+          "handles": 423,
+          "cpu_seconds": 8.046875,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6034475,
+      "python_peak_bytes": 7466719,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 1,
+      "context_pairs": 1,
+      "counters": {
+        "captures": 33,
+        "ocr": 4,
+        "translations": 1,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1170.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52211712,
+        "private_bytes": 72568832,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 9.734375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 1420,
+          "rss_bytes": 296054784,
+          "private_bytes": 366714880,
+          "peak_rss_bytes": 573911040,
+          "handles": 424,
+          "cpu_seconds": 34.390625,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6405878,
+      "python_peak_bytes": 7466719,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 5,
+      "context_pairs": 5,
+      "counters": {
+        "captures": 213,
+        "ocr": 29,
+        "translations": 5,
+        "stale": 6,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 1
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1200.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54054912,
+        "private_bytes": 74571776,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 9.953125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 1420,
+          "rss_bytes": 405540864,
+          "private_bytes": 478081024,
+          "peak_rss_bytes": 573911040,
+          "handles": 423,
+          "cpu_seconds": 77.1875,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6214611,
+      "python_peak_bytes": 7542913,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 7,
+      "context_pairs": 7,
+      "counters": {
+        "captures": 386,
+        "ocr": 56,
+        "translations": 7,
+        "stale": 11,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1230.02,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 51900416,
+        "private_bytes": 72671232,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 10.046875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 7672,
+          "rss_bytes": 205107200,
+          "private_bytes": 276144128,
+          "peak_rss_bytes": 411041792,
+          "handles": 0,
+          "cpu_seconds": 4.171875,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6178843,
+      "python_peak_bytes": 7542913,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 8,
+      "context_pairs": 8,
+      "counters": {
+        "captures": 503,
+        "ocr": 60,
+        "translations": 8,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1260.02,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 52391936,
+        "private_bytes": 73179136,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 10.09375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3312,
+          "rss_bytes": 203501568,
+          "private_bytes": 274317312,
+          "peak_rss_bytes": 409354240,
+          "handles": 420,
+          "cpu_seconds": 4.15625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6275838,
+      "python_peak_bytes": 7542913,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 8,
+      "context_pairs": 8,
+      "counters": {
+        "captures": 610,
+        "ocr": 62,
+        "translations": 8,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 1,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1290.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 53448704,
+        "private_bytes": 74006528,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 10.46875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 5976,
+          "rss_bytes": 294203392,
+          "private_bytes": 364871680,
+          "peak_rss_bytes": 551272448,
+          "handles": 424,
+          "cpu_seconds": 26.03125,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6271861,
+      "python_peak_bytes": 7549664,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 2,
+      "context_pairs": 2,
+      "counters": {
+        "captures": 107,
+        "ocr": 13,
+        "translations": 2,
+        "stale": 5,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1320.03,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52891648,
+        "private_bytes": 73486336,
+        "peak_rss_bytes": 95989760,
+        "handles": 339,
+        "cpu_seconds": 10.796875,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 6652,
+          "rss_bytes": 264003584,
+          "private_bytes": 334655488,
+          "peak_rss_bytes": 521789440,
+          "handles": 419,
+          "cpu_seconds": 16.3125,
+          "native_threads": 17,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 6421430,
+      "python_peak_bytes": 7620732,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 90,
+        "ocr": 18,
+        "translations": 8,
+        "stale": 3,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1350.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54063104,
+        "private_bytes": 74428416,
+        "peak_rss_bytes": 95989760,
+        "handles": 332,
+        "cpu_seconds": 11.15625,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 364,
+          "rss_bytes": 218468352,
+          "private_bytes": 289042432,
+          "peak_rss_bytes": 521129984,
+          "handles": 423,
+          "cpu_seconds": 16.234375,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6383660,
+      "python_peak_bytes": 7682346,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 84,
+        "ocr": 16,
+        "translations": 8,
+        "stale": 2,
+        "cache_hits": 1,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1380.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54435840,
+        "private_bytes": 75157504,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 11.390625,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3456,
+          "rss_bytes": 436580352,
+          "private_bytes": 508407808,
+          "peak_rss_bytes": 574255104,
+          "handles": 423,
+          "cpu_seconds": 37.171875,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6595849,
+      "python_peak_bytes": 7682346,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 3,
+      "context_pairs": 3,
+      "counters": {
+        "captures": 159,
+        "ocr": 22,
+        "translations": 3,
+        "stale": 4,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1410.03,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54800384,
+        "private_bytes": 75218944,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 11.640625,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 6936,
+          "rss_bytes": 293789696,
+          "private_bytes": 364273664,
+          "peak_rss_bytes": 573939712,
+          "handles": 0,
+          "cpu_seconds": 34.4375,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6567315,
+      "python_peak_bytes": 7732430,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 338,
+        "ocr": 47,
+        "translations": 6,
+        "stale": 10,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1440.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54681600,
+        "private_bytes": 75100160,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 11.890625,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 96,
+          "rss_bytes": 415272960,
+          "private_bytes": 545976320,
+          "peak_rss_bytes": 529502208,
+          "handles": 421,
+          "cpu_seconds": 13.703125,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6458045,
+      "python_peak_bytes": 7741472,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 1,
+      "context_pairs": 1,
+      "counters": {
+        "captures": 54,
+        "ocr": 7,
+        "translations": 1,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1470.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54059008,
+        "private_bytes": 74498048,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 12.125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 8120,
+          "rss_bytes": 227655680,
+          "private_bytes": 298835968,
+          "peak_rss_bytes": 573825024,
+          "handles": 424,
+          "cpu_seconds": 36.625,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6527030,
+      "python_peak_bytes": 7741472,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 232,
+        "ocr": 34,
+        "translations": 4,
+        "stale": 8,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1500.03,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 52908032,
+        "private_bytes": 73707520,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 12.3125,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 8120,
+          "rss_bytes": 413839360,
+          "private_bytes": 544739328,
+          "peak_rss_bytes": 573992960,
+          "handles": 423,
+          "cpu_seconds": 80.1875,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6573816,
+      "python_peak_bytes": 7741472,
+      "frame_queue": 1,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 6,
+      "context_pairs": 6,
+      "counters": {
+        "captures": 405,
+        "ocr": 60,
+        "translations": 6,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1530.02,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 53325824,
+        "private_bytes": 74530816,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 12.359375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3800,
+          "rss_bytes": 204730368,
+          "private_bytes": 275599360,
+          "peak_rss_bytes": 411222016,
+          "handles": 420,
+          "cpu_seconds": 4.140625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6471974,
+      "python_peak_bytes": 7804106,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 7,
+      "context_pairs": 7,
+      "counters": {
+        "captures": 522,
+        "ocr": 64,
+        "translations": 7,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1560.02,
+      "phase": "static",
+      "main": {
+        "rss_bytes": 53223424,
+        "private_bytes": 74530816,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 12.375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 3800,
+          "rss_bytes": 204730368,
+          "private_bytes": 275599360,
+          "peak_rss_bytes": 411222016,
+          "handles": 420,
+          "cpu_seconds": 4.140625,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6557144,
+      "python_peak_bytes": 7804106,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 7,
+      "context_pairs": 7,
+      "counters": {
+        "captures": 620,
+        "ocr": 64,
+        "translations": 7,
+        "stale": 12,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1590.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 52740096,
+        "private_bytes": 74616832,
+        "peak_rss_bytes": 95989760,
+        "handles": 337,
+        "cpu_seconds": 12.578125,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 2456,
+          "rss_bytes": 178683904,
+          "private_bytes": 249253888,
+          "peak_rss_bytes": 573165568,
+          "handles": 0,
+          "cpu_seconds": 36.625,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 6843561,
+      "python_peak_bytes": 7804106,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 9,
+      "context_pairs": 8,
+      "counters": {
+        "captures": 799,
+        "ocr": 87,
+        "translations": 10,
+        "stale": 17,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 1
+    },
+    {
+      "elapsed_s": 1620.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 51458048,
+        "private_bytes": 73277440,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 12.875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 7788,
+          "rss_bytes": 346337280,
+          "private_bytes": 477306880,
+          "peak_rss_bytes": 574017536,
+          "handles": 423,
+          "cpu_seconds": 37.09375,
+          "native_threads": 20,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6808624,
+      "python_peak_bytes": 7966463,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 2,
+      "context_pairs": 2,
+      "counters": {
+        "captures": 147,
+        "ocr": 22,
+        "translations": 2,
+        "stale": 5,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1650.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 51572736,
+        "private_bytes": 73191424,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 13.09375,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 2420,
+          "rss_bytes": 203251712,
+          "private_bytes": 274415616,
+          "peak_rss_bytes": 574128128,
+          "handles": 422,
+          "cpu_seconds": 36.40625,
+          "native_threads": 19,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 6935560,
+      "python_peak_bytes": 8038080,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 5,
+      "context_pairs": 5,
+      "counters": {
+        "captures": 326,
+        "ocr": 48,
+        "translations": 5,
+        "stale": 13,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 2
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1680.03,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 51191808,
+        "private_bytes": 73912320,
+        "peak_rss_bytes": 95989760,
+        "handles": 352,
+        "cpu_seconds": 13.421875,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [],
+      "subprocesses": 0,
+      "python_threads": 6,
+      "python_heap_bytes": 7086875,
+      "python_peak_bytes": 8224412,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 0,
+      "context_pairs": 0,
+      "counters": {
+        "captures": 1,
+        "ocr": 0,
+        "translations": 0,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1710.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 53071872,
+        "private_bytes": 75190272,
+        "peak_rss_bytes": 95989760,
+        "handles": 331,
+        "cpu_seconds": 13.796875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 588,
+          "rss_bytes": 376696832,
+          "private_bytes": 447102976,
+          "peak_rss_bytes": 376696832,
+          "handles": 420,
+          "cpu_seconds": 3.859375,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 7363382,
+      "python_peak_bytes": 8409607,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 0,
+      "context_pairs": 0,
+      "counters": {
+        "captures": 18,
+        "ocr": 1,
+        "translations": 0,
+        "stale": 0,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1740.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 53882880,
+        "private_bytes": 75853824,
+        "peak_rss_bytes": 95989760,
+        "handles": 339,
+        "cpu_seconds": 14.171875,
+        "native_threads": 7,
+        "tcp_connections": 5
+      },
+      "workers": [
+        {
+          "pid": 1624,
+          "rss_bytes": 195051520,
+          "private_bytes": 266207232,
+          "peak_rss_bytes": 521318400,
+          "handles": 421,
+          "cpu_seconds": 10.03125,
+          "native_threads": 18,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 6,
+      "python_heap_bytes": 7111319,
+      "python_peak_bytes": 8409607,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 4,
+      "context_pairs": 4,
+      "counters": {
+        "captures": 43,
+        "ocr": 9,
+        "translations": 5,
+        "stale": 2,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 1
+      },
+      "pending_provider": 0
+    },
+    {
+      "elapsed_s": 1770.02,
+      "phase": "active",
+      "main": {
+        "rss_bytes": 54947840,
+        "private_bytes": 76849152,
+        "peak_rss_bytes": 95989760,
+        "handles": 330,
+        "cpu_seconds": 14.421875,
+        "native_threads": 6,
+        "tcp_connections": 3
+      },
+      "workers": [
+        {
+          "pid": 1272,
+          "rss_bytes": 206254080,
+          "private_bytes": 277110784,
+          "peak_rss_bytes": 573210624,
+          "handles": 0,
+          "cpu_seconds": 36.78125,
+          "native_threads": 1,
+          "tcp_connections": 0
+        }
+      ],
+      "subprocesses": 1,
+      "python_threads": 5,
+      "python_heap_bytes": 7273608,
+      "python_peak_bytes": 8409607,
+      "frame_queue": 0,
+      "text_queue": 0,
+      "event_queue": 0,
+      "cache_entries": 3,
+      "context_pairs": 3,
+      "counters": {
+        "captures": 154,
+        "ocr": 22,
+        "translations": 3,
+        "stale": 5,
+        "cache_hits": 0,
+        "ocr_restarts": 0,
+        "glossary_hits": 0,
+        "temporal_suppressed": 0
       },
       "pending_provider": 0
     }
@@ -1629,11 +2896,11 @@
   "workers_closed": true,
   "remaining_children": 0,
   "final_resources": {
-    "rss_bytes": 96841728,
-    "private_bytes": 67543040,
-    "peak_rss_bytes": 100532224,
-    "handles": 348,
-    "cpu_seconds": 59.53125,
+    "rss_bytes": 51347456,
+    "private_bytes": 71790592,
+    "peak_rss_bytes": 95989760,
+    "handles": 306,
+    "cpu_seconds": 14.671875,
     "native_threads": 2,
     "tcp_connections": 0
   },
@@ -1642,23 +2909,23 @@
     "bounded_collections_workers_sockets": true,
     "main_growth": {
       "rss_bytes": {
-        "initial_median": 96143360.0,
-        "final_median": 99461120.0,
-        "growth": 3317760.0,
+        "initial_median": 70529024.0,
+        "final_median": 52989952.0,
+        "growth": -17539072.0,
         "budget": 33554432,
         "passed": true
       },
       "private_bytes": {
-        "initial_median": 65947648.0,
-        "final_median": 68904960.0,
-        "growth": 2957312.0,
+        "initial_median": 69961728.0,
+        "final_median": 74530816.0,
+        "growth": 4569088.0,
         "budget": 33554432,
         "passed": true
       },
       "handles": {
-        "initial_median": 369.0,
-        "final_median": 369.5,
-        "growth": 0.5,
+        "initial_median": 330.0,
+        "final_median": 331.0,
+        "growth": 1.0,
         "budget": 32,
         "passed": true
       },
@@ -1671,32 +2938,41 @@
       }
     },
     "python_heap_growth": {
-      "bytes": 594477.0,
+      "bytes": 1935225.0,
       "budget": 16777216
     }
+  },
+  "observation_coverage": {
+    "qualified": true,
+    "reason": "All observation gaps, including start/end, must be at most 90 seconds",
+    "max_gap_s": 30.214,
+    "end_gap_s": 30.214,
+    "observed_span_s": 1770.02
   },
   "continuous_worker_qualification": {
     "qualified": false,
     "reason": "NOT APPLICABLE to restart workload"
   },
   "measurement_scope": "Authored synthetic capture, real isolated CPU OCR, real loopback HTTP and Qt overlay. Not physical monitor or real media qualification.",
-  "workload_passed": false,
+  "workload_passed": true,
   "rates_per_minute": {
-    "captures": 176.336,
-    "ocr": 10.719,
-    "translations": 2.12,
-    "stale": 6.21,
-    "cache_hits": 0.0,
-    "ocr_restarts": 0.179
+    "captures": 327.791,
+    "ocr": 44.294,
+    "translations": 10.499,
+    "stale": 8.966,
+    "cache_hits": 0.167,
+    "ocr_restarts": 0.3,
+    "glossary_hits": 0.0,
+    "temporal_suppressed": 1.666
   },
   "main_cpu_percent_one_core": {
     "active": {
-      "median": 5.989583333333333,
-      "samples": 20
+      "median": 0.9895833333333334,
+      "samples": 39
     },
     "static": {
-      "median": 3.8007821174772385,
-      "samples": 8
+      "median": 0.15625,
+      "samples": 9
     }
   }
 }

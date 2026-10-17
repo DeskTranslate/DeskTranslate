@@ -1,6 +1,6 @@
 # v2.0.0 final release scope
 
-2026-10-17. Working integration: PR38, starting at5d17f81 / application4b5a06e.
+2026-10-17. Working integration: PR #38, starting at5d17f81 / application4b5a06e.
 This plan implements the maintainer's final practical release policy and supersedes
 the earlier requirement to wait for purchased signing, a physical monitor lab,
 every paid account, or a consumer-Windows VM unavailable to this project.

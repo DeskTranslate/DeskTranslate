@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "passed": true,
+  "archive_sha256": "fc7a3de81d72d256e0fe6a483c2a958eeb60d75496ce75222165ff8355498e2c",
+  "unicode_extraction_path": true,
+  "empty_unicode_working_directory": true,
+  "system_only_path": true,
+  "pythonpath_removed": true,
+  "portable_data_isolation": true,
+  "installed_appdata_absent": true,
+  "runtime": {
+    "qt": true,
+    "assets": true,
+    "http_provider_roundtrip": true,
+    "credential_roundtrip": true,
+    "credential_cleanup": true,
+    "ocr_exact": true,
+    "ocr_ms": 1194.2837999999938,
+    "ocr_cleanup": true
+  },
+  "signature": "NotSigned",
+  "model_setup": "Separately downloaded SHA-256-verified Japanese pack, explicitly copied to portable storage before runtime",
+  "scope": "Hosted disposable Windows; frozen runtime with authored fixture and loopback provider. No consumer hardware or real desktop capture claim."
+}

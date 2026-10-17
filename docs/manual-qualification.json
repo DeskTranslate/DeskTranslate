@@ -1,20 +1,29 @@
 {
   "version": "2.0.0",
-  "verdict": "NOT READY",
+  "verdict": "APPLICATION QUALIFIED; final merged-source release build required",
   "gates": {
-    "clean_windows": false,
+    "clean_windows": true,
     "mixed_dpi_displays": false,
     "fullscreen_media": false,
     "accessibility_screen_reader": false,
     "real_provider_models": false,
-    "installer_upgrade": false,
-    "prolonged_media": false,
+    "installer_upgrade": true,
+    "prolonged_media": true,
     "media_pipeline": true,
     "context_bounds": true
   },
   "publisher_signing_available": false,
   "unsigned_release_approved": true,
   "unsigned_disclosure": "Maintainer explicitly authorized an unsigned v2.0.0 on 2026-10-17. Release notes must disclose missing Authenticode and possible Windows/SmartScreen warnings; SHA-256/provenance do not assert publisher trust.",
-  "notes": "Replacement final RC after missed static/punctuation fix.490 tests, all five actual OCR/HTTP/controller/overlay paced workloads and bounded context behavior PASS. Hosted current-source portable/installer and 2h/30min endurance pending.287d416 endurance cancelled as superseded, not a PASS. Physical/account/signing limits remain accurately disclosed.",
-  "target": "2.0.0 stable"
+  "notes": "Required evidence passes under the maintainer-approved final scope and unsigned policy. False physical/account/signing fields remain NOT TESTED; no missing test is marked PASS. Final artifacts must be rebuilt from the exact merged/tagged commit, source-matched and independently verified.",
+  "target": "2.0.0 stable",
+  "qualified_application_commit": "a6eeea3e22c276e368d5f391179a9a1a83b30d89",
+  "qualified_application_sha256": "12c7ae38c3b56bca39da997c99cc34e3b3bfa57fa7a453f90ad37db9aff8f33b",
+  "gate_scope": {
+    "clean_windows": "PASS disposable hosted Windows2022 frozen runtime, empty Unicode cwd/system-only PATH/PYTHONPATH removed; no runtime dependency on development Python/checkout. Physically absent developer tools, consumer Windows11 VM and standard-account hardware are NOT TESTED.",
+    "installer_upgrade": "PASS current installer/reinstall/obsolete owned runtime removal/uninstall/reinstall/settings+model retention in owned Unicode paths. Earlier beta1 upgrade is historical; V1 InstallForge coexistence is deliberate and remains NOT TESTED.",
+    "prolonged_media": "PASS exact-source2h steady +30min fault using authored captures, actual isolated CPU OCR, HTTP and offscreen Qt. No claim of multi-hour real-film/physical desktop capture.",
+    "media_pipeline": "PASS five paced OCR/HTTP/actual-controller/overlay workloads, exact punctuation/digit revisions, bounded freshness/queues/cleanup.",
+    "context_bounds": "PASS deterministic request/profile/session/terminology/revision/budget behavior; capable AI semantic-context quality NOT TESTED. Actual conventional Google translations separately verified."
+  }
 }

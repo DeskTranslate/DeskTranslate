@@ -8,7 +8,8 @@ Translate the dialogue in a game, subtitles in a video, a menu, or text in an im
 
 [Release readiness](docs/release-readiness.md) · [Acceptance matrix](docs/validation.md) · [Non-invasive testing](docs/testing.md) · [Published releases](https://github.com/DeskTranslate/DeskTranslate/releases) · [Getting started](#your-first-translation) · [Upgrade guide](docs/upgrade.md)
 
-**Version 2.0.0 is undergoing stable-release qualification. It has not been published as stable.** The new Windows application brings managed local OCR, contextual translation, application-following capture, profiles, guided setup, and an editable subtitle overlay. The final unpublished candidate uses version2.0.0; packaging and exact-source endurance gates remain pending. No new beta is planned. Publisher signing is unavailable; the approved release will disclose unsigned binaries. The release page currently contains the legacy application.
+**DeskTranslate 2.0.0** brings a rebuilt Windows experience, managed local OCR, continuous dialogue handling, contextual translation, title profiles and an editable subtitle overlay. [Download the Windows release](https://github.com/DeskTranslate/DeskTranslate/releases/tag/v2.0.0). Binaries are currently unsigned; see the Windows warning below.
+
 
 ![DeskTranslate 2 in its midnight mint theme, showing synthetic Japanese dialogue](docs/screenshots/translate-dark.png)
 
@@ -31,11 +32,12 @@ Save a setup for each game, show or task, then load it when you're ready. The ex
 
 ## Install
 
-The planned stable distribution is **Windows x64**, primarily Windows 11. The installer's configured minimum is Windows 10 build19041; that setting does not establish current Microsoft support or successful runtime/hardware qualification. Once qualified artifacts are published, download the versioned `Setup-x64.exe` from this repository's release page. Installation is per user and needs no administrator account. Normal users need no Python, pip, Visual Studio, Tesseract, or manual DLL installation. See the [acceptance matrix](docs/validation.md).
+Download **Windows x64**, primarily Windows 11. The installer's configured minimum is Windows 10 build19041; that setting does not establish current Microsoft support or successful runtime/hardware qualification. Download `DeskTranslate-2.0.0-Setup-x64.exe` from the [official release page](https://github.com/DeskTranslate/DeskTranslate/releases/tag/v2.0.0). Installation is per user and needs no administrator account. Normal users need no Python, pip, Visual Studio, Tesseract, or manual DLL installation. See the [acceptance matrix](docs/validation.md).
 
 For portable use, extract the **entire** ZIP into a writable folder and launch `DeskTranslate.exe`. Keep `_internal` and `portable-mode` beside it. Portable settings, logs, and downloaded models live in `DeskTranslateData` beside the executable; installed builds use `%LOCALAPPDATA%\DeskTranslate`. Credentials remain in your Windows account's vault. Move the entire folder to retain portable data.
 
-Internal qualification binaries are **unsigned** and must not be treated as stable. Checksums detect changed files but do not establish publisher identity. Separate runtime/build SBOMs, a build provenance statement, library sources and third-party notices accompany new builds. No publisher certificate is available. The maintainer has approved an unsigned stable release once application qualification passes. Windows/SmartScreen may warn; no trusted publisher identity is claimed. Signing remains a future release improvement.
+**Windows binaries are currently unsigned.** No legitimate publisher certificate is available, and Windows/SmartScreen may warn. Download only from this repository. Published SHA-256 checksums and hosted build attestations verify integrity/provenance; they do not establish an Authenticode publisher identity. Runtime/build SBOMs, a source-matched provenance statement, matching library sources and third-party notices accompany the release. Trusted signing remains a future release improvement.
+
 
 V1 did not persist language preferences. V2 starts with new settings and does not remove an unrelated legacy installation or Tesseract. Read [upgrade and data retention](docs/upgrade.md) before replacing an existing setup.
 

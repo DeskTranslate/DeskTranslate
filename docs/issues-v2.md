@@ -1,6 +1,6 @@
 # Historical issue review for the v2.0.0 target
 
-The audit read all 23 issue bodies and available comments, including the 18 open issues. This is a disposition review, not a bulk closure. No comments or closures have been posted. V2 remains unpublished and cannot yet be recommended as a stable fix to reporters. Two old screenshot attachments could not be retrieved; authored regressions do not reproduce those exact images.
+The audit read all 23 issue bodies and available comments, including the 18 open issues. This is a disposition review, not a bulk closure. No comments or closures have been posted. Qualified v2 paths are scoped below; publication details belong to the 2.0.0 release page. Original reporter verification remains necessary where noted, and this review does not automatically close issues. Two old screenshot attachments could not be retrieved; authored regressions do not reproduce those exact images.
 
 | Issue | Classification | Evidence and remaining work |
 |---|---|---|
